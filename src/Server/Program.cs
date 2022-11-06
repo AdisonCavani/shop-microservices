@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Server.Services;
 using Server.Settings;
 using Server.Validators;
 using StackExchange.Redis;
@@ -30,6 +31,9 @@ builder.Services.AddDbContextPool<AppDbContext>(options =>
     options.UseNpgsql(dbSettings.PostgresConnectionString,
         npgSettings => npgSettings.EnableRetryOnFailure());
 });
+
+builder.Services.AddSingleton<MessageBusPublisher>();
+builder.Services.AddHostedService<MessageBusSubscriber>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services

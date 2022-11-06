@@ -15,3 +15,10 @@ services:
     restart: always
     ports:
       - 6379:6379
+
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
