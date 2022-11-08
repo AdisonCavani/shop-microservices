@@ -1,21 +1,23 @@
 ﻿using ProtoBuf;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Server.Contracts;
+using Server.Contracts.Events;
 
 namespace Server.Services;
 
 public class MessageBusSubscriber : BackgroundService
 {
-    private readonly ILogger<MessageBusSubscriber> _logger;
-    
+    private readonly IServiceProvider _serviceProvider;
+
     private readonly IConnection _connection;
     private readonly IModel _channel;
     private readonly string _queueName;
 
-    public MessageBusSubscriber(ILogger<MessageBusSubscriber> logger)
+    public MessageBusSubscriber(IServiceProvider serviceProvider, ILogger<MessageBusSubscriber> logger)
     {
-        _logger = logger;
-        
+        _serviceProvider = serviceProvider;
+
         var factory = new ConnectionFactory
         {
             HostName = "localhost",
@@ -25,13 +27,13 @@ public class MessageBusSubscriber : BackgroundService
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
 
-        _channel.ExchangeDeclare("MyExchange", ExchangeType.Fanout);
+        _channel.ExchangeDeclare(Exchanges.UserCreatedExchange, ExchangeType.Fanout);
         _queueName = _channel.QueueDeclare().QueueName;
-        _channel.QueueBind(_queueName, "MyExchange", string.Empty);
+        _channel.QueueBind(_queueName, Exchanges.UserCreatedExchange, string.Empty);
 
-        _logger.LogInformation($"{nameof(MessageBusSubscriber)} initialized");
+        logger.LogInformation($"{nameof(MessageBusSubscriber)} initialized");
         _connection.ConnectionShutdown += (_, _) =>
-            _logger.LogInformation($"{nameof(MessageBusSubscriber)}: connection shutdown");
+            logger.LogInformation($"{nameof(MessageBusSubscriber)}: connection shutdown");
     }
 
     protected override Task ExecuteAsync(CancellationToken cancellationToken)
@@ -39,10 +41,18 @@ public class MessageBusSubscriber : BackgroundService
         cancellationToken.ThrowIfCancellationRequested();
 
         var consumer = new EventingBasicConsumer(_channel);
-        consumer.Received += (_, ea) =>
+        consumer.Received += async (_, ea) =>
         {
-            var message = Serializer.Deserialize<string>(ea.Body);
-            _logger.LogInformation("Message received: {@Message}", message);
+            var message = Serializer.Deserialize<UserCreatedEvent>(ea.Body);
+
+            using var scope = _serviceProvider.CreateScope();
+            var emailHandler = scope.ServiceProvider.GetRequiredService<EmailHandler>();
+
+            await emailHandler.VerificationMailAsync(
+                message.Name,
+                message.Email,
+                message.Token,
+                cancellationToken);
         };
 
         _channel.BasicConsume(_queueName, true, consumer);

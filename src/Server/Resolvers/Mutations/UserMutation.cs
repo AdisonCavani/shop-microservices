@@ -9,7 +9,9 @@ using Server.Database.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Server.Contracts.Dtos;
+using Server.Contracts.Events;
 using Server.Contracts.Requests;
+using Server.Services;
 using Server.Validators;
 
 namespace Server.Resolvers.Mutations;
@@ -22,6 +24,7 @@ public class UserMutation
         [Service] IPasswordHasher<UserEntity> hasher,
         [Service] AppDbContext context,
         [Service] IHttpContextAccessor accessor,
+        [Service] MessageBusPublisher publisher,
         [UseFluentValidation, UseValidator<RegisterRequestValidator>] RegisterRequest req)
     {
         var user = new UserEntity
@@ -55,6 +58,13 @@ public class UserMutation
         await accessor.HttpContext.SignInAsync(
             new(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)),
             authProperties);
+
+        publisher.PublishEvent(new UserCreatedEvent
+        {
+            Name = user.Email,
+            Email = user.Email,
+            Token = Guid.NewGuid().ToString()
+        });
 
         return mapper.Map<UserDto>(user);
     }

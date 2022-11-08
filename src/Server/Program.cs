@@ -1,5 +1,6 @@
 using AppAny.HotChocolate.FluentValidation;
 using FluentValidation.AspNetCore;
+using Fluid;
 using Server.Auth;
 using Server.Database;
 using Server.Database.Entities;
@@ -9,10 +10,12 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Server.Services;
 using Server.Settings;
 using Server.Validators;
 using StackExchange.Redis;
+using Path = System.IO.Path;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +28,8 @@ builder.Services.AddTransient<RegisterRequestValidator>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(dbSettings.RedisConnectionString));
+builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
+    ConnectionMultiplexer.Connect(dbSettings.RedisConnectionString));
 builder.Services.AddDbContextPool<AppDbContext>(options =>
 {
     options.UseNpgsql(dbSettings.PostgresConnectionString,
@@ -57,6 +61,11 @@ builder.Services
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie();
+
+builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Templates")));
+builder.Services.AddSingleton<FluidParser>();
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<EmailHandler>();
 
 var app = builder.Build();
 
