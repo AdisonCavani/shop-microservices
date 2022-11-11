@@ -29,6 +29,8 @@ public class UserMutation
     {
         var user = new UserEntity
         {
+            FirstName = req.FirstName,
+            LastName = req.LastName,
             Email = req.Email.ToLower()
         };
 
@@ -59,12 +61,10 @@ public class UserMutation
             new(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)),
             authProperties);
 
-        publisher.PublishEvent(new UserCreatedEvent
-        {
-            Name = user.Email,
-            Email = user.Email,
-            Token = Guid.NewGuid().ToString()
-        });
+        var eventMessage = mapper.Map<UserCreatedEvent>(user);
+        eventMessage.Token = Guid.NewGuid().ToString();
+        
+        publisher.PublishEvent(eventMessage);
 
         return mapper.Map<UserDto>(user);
     }

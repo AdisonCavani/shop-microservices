@@ -16,8 +16,7 @@ public class RedisTicketStore : ITicketStore
 
     public async Task<string> StoreAsync(AuthenticationTicket ticket)
     {
-        var guid = Guid.NewGuid();
-        var key = KeyPrefix + guid;
+        var key = KeyPrefix + Guid.NewGuid();
         await RenewAsync(key, ticket);
         return key;
     }

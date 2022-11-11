@@ -1,33 +1,29 @@
-﻿using Server.Templates;
+﻿using AutoMapper;
+using Server.Contracts.Events;
+using Server.Templates;
 
 namespace Server.Services;
 
 public class EmailHandler
 {
+    private readonly IMapper _mapper;
     private readonly EmailService _emailService;
 
-    public EmailHandler(EmailService emailService)
+    public EmailHandler(IMapper mapper, EmailService emailService)
     {
+        _mapper = mapper;
         _emailService = emailService;
     }
 
     public async Task<bool> VerificationMailAsync(
-        string name,
-        string email,
-        string token,
+        UserCreatedEvent eventModel,
         CancellationToken cancellationToken = default)
     {
-        var model = new VerifyEmail
-        {
-            Name = name,
-            Token = token
-        };
-
         return await _emailService.SendEmailAsync(
-            name,
-            email,
+            $"{eventModel.FirstName} {eventModel.LastName}",
+            eventModel.Email,
             VerifyEmail.Subject,
-            model,
+            _mapper.Map<VerifyEmail>(eventModel),
             cancellationToken);
     }
 }

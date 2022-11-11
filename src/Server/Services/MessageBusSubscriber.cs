@@ -49,9 +49,7 @@ public class MessageBusSubscriber : BackgroundService
             var emailHandler = scope.ServiceProvider.GetRequiredService<EmailHandler>();
 
             await emailHandler.VerificationMailAsync(
-                message.Name,
-                message.Email,
-                message.Token,
+                message,
                 cancellationToken);
         };
 
