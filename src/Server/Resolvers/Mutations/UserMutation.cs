@@ -1,17 +1,11 @@
 ﻿using System.Security.Claims;
 using AppAny.HotChocolate.FluentValidation;
-using AutoMapper;
 using HotChocolate.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Server.Database;
-using Server.Database.Entities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Server.Contracts.Dtos;
-using Server.Contracts.Events;
 using Server.Contracts.Requests;
-using Server.Services;
+using Server.Repositories;
 using Server.Validators;
 
 namespace Server.Resolvers.Mutations;
@@ -20,94 +14,45 @@ namespace Server.Resolvers.Mutations;
 public class UserMutation
 {
     public async Task<UserDto> Register(
-        [Service] IMapper mapper,
-        [Service] IPasswordHasher<UserEntity> hasher,
-        [Service] AppDbContext context,
+        [Service] IUserRepository repository,
         [Service] IHttpContextAccessor accessor,
-        [Service] MessageBusPublisher publisher,
         [UseFluentValidation, UseValidator<RegisterRequestValidator>] RegisterRequest req)
     {
-        var user = new UserEntity
-        {
-            FirstName = req.FirstName,
-            LastName = req.LastName,
-            Email = req.Email.ToLower()
-        };
-
-        var hashedPassword = hasher.HashPassword(user, req.Password);
-        user.Password = hashedPassword;
-
-        context.Users.Add(user);
-        var result = await context.SaveChangesAsync();
-
-        if (result <= 0)
-            throw new GraphQLException(ExceptionMessages.DatabaseProblem);
+        var (claims, authProperties, user) = await repository.RegisterAsync(req);
 
         if (accessor.HttpContext is null)
             throw new GraphQLException(ExceptionMessages.HttpContextNull);
-
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, user.Id.ToString())
-        };
-
-        var authProperties = new AuthenticationProperties
-        {
-            ExpiresUtc = DateTime.UtcNow.AddYears(2),
-            IsPersistent = true
-        };
 
         await accessor.HttpContext.SignInAsync(
             new(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)),
             authProperties);
 
-        var eventMessage = mapper.Map<UserCreatedEvent>(user);
-        eventMessage.Token = Guid.NewGuid().ToString();
-        
-        publisher.PublishEvent(eventMessage);
-
-        return mapper.Map<UserDto>(user);
+        return user;
     }
 
     public async Task<UserDto?> Login(
-        [Service] IMapper mapper,
-        [Service] AppDbContext context,
-        [Service] IPasswordHasher<UserEntity> hasher,
+        [Service] IUserRepository repository,
         [Service] IHttpContextAccessor accessor,
         [UseFluentValidation, UseValidator<LoginRequestValidator>] LoginRequest req)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Email == req.Email.ToLower());
-
-        if (user is null)
-            throw new GraphQLException(ExceptionMessages.EmailNotExist);
-
-        var valid = hasher.VerifyHashedPassword(user, user.Password, req.Password);
-
-        if (valid == PasswordVerificationResult.Failed)
-            throw new GraphQLException(ExceptionMessages.PasswordInvalid);
-
-        if (valid == PasswordVerificationResult.SuccessRehashNeeded)
-            return null; // TODO: fix
+        var (claims, authProperties, user) = await repository.LoginAsync(req);
 
         if (accessor.HttpContext is null)
             throw new GraphQLException(ExceptionMessages.HttpContextNull);
-
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, user.Id.ToString())
-        };
-
-        var authProperties = new AuthenticationProperties
-        {
-            ExpiresUtc = DateTime.UtcNow.AddYears(2),
-            IsPersistent = req.Persistent
-        };
 
         await accessor.HttpContext.SignInAsync(
             new(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)),
             authProperties);
 
-        return mapper.Map<UserDto>(user);
+        return user;
+    }
+
+    public async Task<bool> VerifyEmail(
+        [Service] IUserRepository repository,
+        [UseFluentValidation, UseValidator<VerifyEmailRequestValidator>] VerifyEmailRequest req)
+    {
+        await repository.VerifyEmailAsync(req);
+        return true;
     }
 
     [Authorize]

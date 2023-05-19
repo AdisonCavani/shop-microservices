@@ -6,7 +6,6 @@ namespace Server.Auth;
 
 public class RedisTicketStore : ITicketStore
 {
-    private const string KeyPrefix = "AuthSessionStore-";
     private readonly IConnectionMultiplexer _connectionMultiplexer;
 
     public RedisTicketStore(IConnectionMultiplexer connectionMultiplexer)
@@ -16,7 +15,7 @@ public class RedisTicketStore : ITicketStore
 
     public async Task<string> StoreAsync(AuthenticationTicket ticket)
     {
-        var key = KeyPrefix + Guid.NewGuid();
+        var key = AuthSchema.TicketKeyPrefix + Guid.NewGuid();
         await RenewAsync(key, ticket);
         return key;
     }

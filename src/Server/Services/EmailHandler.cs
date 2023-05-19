@@ -16,7 +16,7 @@ public class EmailHandler
     }
 
     public async Task<bool> VerificationMailAsync(
-        UserCreatedEvent eventModel,
+        ConfirmEmailEvent eventModel,
         CancellationToken cancellationToken = default)
     {
         return await _emailService.SendEmailAsync(

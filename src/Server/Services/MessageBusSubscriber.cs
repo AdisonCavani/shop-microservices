@@ -43,7 +43,7 @@ public class MessageBusSubscriber : BackgroundService
         var consumer = new EventingBasicConsumer(_channel);
         consumer.Received += async (_, ea) =>
         {
-            var message = Serializer.Deserialize<UserCreatedEvent>(ea.Body);
+            var message = Serializer.Deserialize<ConfirmEmailEvent>(ea.Body);
 
             using var scope = _serviceProvider.CreateScope();
             var emailHandler = scope.ServiceProvider.GetRequiredService<EmailHandler>();

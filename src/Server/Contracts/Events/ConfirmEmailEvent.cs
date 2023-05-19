@@ -3,7 +3,7 @@
 namespace Server.Contracts.Events;
 
 [ProtoContract]
-public class UserCreatedEvent
+public class ConfirmEmailEvent
 {
     [ProtoMember(1)]
     public required string FirstName { get; set; }
@@ -15,5 +15,5 @@ public class UserCreatedEvent
     public required string Email { get; set; }
     
     [ProtoMember(4)]
-    public required string Token { get; set; }
+    public required Guid Token { get; set; }
 }

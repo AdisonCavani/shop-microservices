@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Server.Repositories;
 using Server.Services;
 using Server.Settings;
 using Server.Validators;
@@ -25,6 +26,7 @@ var dbSettings = builder.Configuration.GetSection(nameof(DbSettings)).Get<DbSett
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddTransient<LoginRequestValidator>();
 builder.Services.AddTransient<RegisterRequestValidator>();
+builder.Services.AddTransient<VerifyEmailRequestValidator>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -56,7 +58,7 @@ builder.Services
     .Configure<ITicketStore>((options, store) =>
     {
         options.SessionStore = store;
-        options.Cookie.Name = CookieSchema.CookieName;
+        options.Cookie.Name = AuthSchema.CookieName;
     });
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -66,6 +68,8 @@ builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Path.Combi
 builder.Services.AddSingleton<FluidParser>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<EmailHandler>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
