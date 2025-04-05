@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Server.Auth;
+using Server.Contracts;
 using Server.Database.Entities;
 
 namespace Server.Startup;
@@ -21,7 +22,17 @@ public static class Auth
         
         services
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie();
+            .AddCookie(options =>
+            {
+                options.LoginPath = ApiRoutes.User.Login;
+                options.LogoutPath = ApiRoutes.User.Logout;
+                
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
+            });
         
         services.AddAuthorization(options =>
         {
