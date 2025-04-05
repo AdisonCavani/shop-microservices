@@ -9,15 +9,9 @@ public class MessageBusPublisher : IDisposable
     private readonly IConnection _connection;
     private readonly IModel _channel;
 
-    public MessageBusPublisher(ILogger<MessageBusPublisher> logger)
+    public MessageBusPublisher(ILogger<MessageBusPublisher> logger, IConnection connection)
     {
-        var factory = new ConnectionFactory
-        {
-            HostName = "localhost",
-            Port = 5672
-        };
-
-        _connection = factory.CreateConnection();
+        _connection = connection;
         _channel = _connection.CreateModel();
 
         _channel.ExchangeDeclare(Exchanges.UserCreatedExchange, ExchangeType.Fanout);

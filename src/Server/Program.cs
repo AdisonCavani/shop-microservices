@@ -1,5 +1,4 @@
 using FluentValidation;
-using Fluid;
 using Server.Auth;
 using Server.Database;
 using Server.Database.Entities;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
+using RabbitMQ.Client;
 using Server.Contracts.Requests;
 using Server.Endpoints;
 using Server.Repositories;
@@ -15,7 +14,6 @@ using Server.Services;
 using Server.Settings;
 using Server.Validators;
 using StackExchange.Redis;
-using Path = System.IO.Path;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +36,16 @@ builder.Services.AddDbContextPool<AppDbContext>(options =>
     options.UseNpgsql(dbSettings.PostgresConnectionString,
         npgSettings => npgSettings.EnableRetryOnFailure());
 });
+builder.Services
+    .AddSingleton<IConnection>(_ => new ConnectionFactory
+    {
+        HostName = "localhost",
+        Port = 5672
+    }.CreateConnection())
+    .AddHealthChecks()
+    .AddNpgSql(dbSettings.PostgresConnectionString)
+    .AddRedis(dbSettings.RedisConnectionString)
+    .AddRabbitMQ();
 
 builder.Services.AddSingleton<MessageBusPublisher>();
 
