@@ -10,9 +10,9 @@ public class ApiRoutes
     {
         public const string BasePath = $"{ApiRoutes.BasePath}/user";
         
-        public const string Register = $"{BasePath}/register";
-        public const string Login = $"{BasePath}/login";
-        public const string VerifyEmail = $"{BasePath}/verify-email";
-        public const string Logout = $"{BasePath}/logout";
+        public const string Register = "/register";
+        public const string Login = "/login";
+        public const string VerifyEmail = "/verify-email";
+        public const string Logout = "/logout";
     }
 }

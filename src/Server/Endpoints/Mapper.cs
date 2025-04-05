@@ -25,7 +25,7 @@ public static class Mapper
             .RequireAuthorization()
             .WithOpenApi(User.Logout.OpenApi);
 
-        group.MapGet(ApiRoutes.User.BasePath, User.Get.HandleAsync)
+        group.MapGet("/", User.Get.HandleAsync)
             .RequireAuthorization()
             .WithOpenApi(User.Get.OpenApi);
 
