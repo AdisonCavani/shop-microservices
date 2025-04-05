@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{83774CBA-DED5-4055-9D68-988EFC4D4FB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService", "NotificationService\NotificationService.csproj", "{327F56CF-7CC6-4588-8057-DD38A38F03CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtobufSpec", "ProtobufSpec\ProtobufSpec.csproj", "{725C62BD-B2D1-4E32-B214-48057A7BD8A5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{83774CBA-DED5-4055-9D68-988EFC4D4FB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83774CBA-DED5-4055-9D68-988EFC4D4FB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83774CBA-DED5-4055-9D68-988EFC4D4FB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83774CBA-DED5-4055-9D68-988EFC4D4FB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{327F56CF-7CC6-4588-8057-DD38A38F03CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{327F56CF-7CC6-4588-8057-DD38A38F03CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{327F56CF-7CC6-4588-8057-DD38A38F03CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{327F56CF-7CC6-4588-8057-DD38A38F03CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{725C62BD-B2D1-4E32-B214-48057A7BD8A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{725C62BD-B2D1-4E32-B214-48057A7BD8A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{725C62BD-B2D1-4E32-B214-48057A7BD8A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{725C62BD-B2D1-4E32-B214-48057A7BD8A5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

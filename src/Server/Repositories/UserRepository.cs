@@ -3,13 +3,13 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ProtobufSpec.Events;
 using Server.Auth;
 using Server.Contracts.Dtos;
-using Server.Contracts.Events;
 using Server.Contracts.Requests;
 using Server.Database;
 using Server.Database.Entities;
-using Server.Resolvers;
+using Server.Endpoints;
 using Server.Services;
 using StackExchange.Redis;
 
@@ -49,7 +49,7 @@ public class UserRepository : IUserRepository
         return _mapper.Map<UserDto>(user);
     }
 
-    public async Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> RegisterAsync(RegisterRequest req)
+    public async Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> RegisterAsync(RegisterReq req)
     {
         var user = _mapper.Map<UserEntity>(req);
 
@@ -78,7 +78,7 @@ public class UserRepository : IUserRepository
         return Tuple.Create(claims, authProperties, _mapper.Map<UserDto>(user));
     }
 
-    public async Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> LoginAsync(LoginRequest req)
+    public async Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> LoginAsync(LoginReq req)
     {
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == req.Email.ToLower());
 
@@ -107,7 +107,7 @@ public class UserRepository : IUserRepository
         return Tuple.Create(claims, authProperties, _mapper.Map<UserDto>(user));
     }
 
-    public async Task VerifyEmailAsync(VerifyEmailRequest req)
+    public async Task VerifyEmailAsync(VerifyEmailReq req)
     {
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == req.Id);
 
@@ -130,10 +130,10 @@ public class UserRepository : IUserRepository
         var result = await _context.SaveChangesAsync();
         
         if (result <= 0)
-            throw new GraphQLException(ExceptionMessages.DatabaseProblem);
+            throw new Exception(ExceptionMessages.DatabaseProblem);
     }
 
-    public async Task ResendVerifyEmailAsync(ResendVerifyEmailRequest req)
+    public async Task ResendVerifyEmailAsync(ResendVerifyEmailReq req)
     {
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == req.Id);
 

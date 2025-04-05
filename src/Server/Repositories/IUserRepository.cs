@@ -9,8 +9,8 @@ public interface IUserRepository
 {
     Task<UserDto?> FindUserByIdAsync(Guid id);
     Task<UserDto> GetUserByIdAsync(Guid id);
-    Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> RegisterAsync(RegisterRequest req);
-    Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> LoginAsync(LoginRequest req);
-    Task VerifyEmailAsync(VerifyEmailRequest req);
-    Task ResendVerifyEmailAsync(ResendVerifyEmailRequest req);
+    Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> RegisterAsync(RegisterReq req);
+    Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> LoginAsync(LoginReq req);
+    Task VerifyEmailAsync(VerifyEmailReq req);
+    Task ResendVerifyEmailAsync(ResendVerifyEmailReq req);
 }

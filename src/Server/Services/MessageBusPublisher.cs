@@ -1,6 +1,6 @@
 ﻿using ProtoBuf;
+using ProtobufSpec;
 using RabbitMQ.Client;
-using Server.Contracts;
 
 namespace Server.Services;
 
