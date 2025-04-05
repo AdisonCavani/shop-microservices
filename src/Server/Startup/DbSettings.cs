@@ -1,4 +1,4 @@
-﻿namespace Server.Settings;
+﻿namespace Server.Startup;
 
 public class DbSettings
 {

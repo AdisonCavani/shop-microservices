@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 
-namespace Server.Settings;
+namespace Server.Startup;
 
-public static class Validator
+public static class SettingsValidator
 {
     public static DbSettings Validate(this DbSettings dbSettings)
     {

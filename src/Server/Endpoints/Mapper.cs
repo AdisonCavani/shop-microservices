@@ -1,5 +1,6 @@
 ﻿using Server.Contracts;
 using Server.Contracts.Requests;
+using Server.Startup;
 using Server.Validators;
 
 namespace Server.Endpoints;
@@ -38,5 +39,7 @@ public static class Mapper
             .WithOpenApi(Health.OpenApi);
         
         app.MapGroup(ApiRoutes.User.BasePath).MapUserApi();
+
+        app.MapGetSwaggerForYarp(app.Configuration);
     }
 }

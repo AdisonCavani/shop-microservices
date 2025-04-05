@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService", "Noti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtobufSpec", "ProtobufSpec\ProtobufSpec.csproj", "{725C62BD-B2D1-4E32-B214-48057A7BD8A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductService", "ProductService\ProductService.csproj", "{CEEE7D2B-C765-4529-80DA-1E694C04114E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{725C62BD-B2D1-4E32-B214-48057A7BD8A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{725C62BD-B2D1-4E32-B214-48057A7BD8A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{725C62BD-B2D1-4E32-B214-48057A7BD8A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEEE7D2B-C765-4529-80DA-1E694C04114E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEEE7D2B-C765-4529-80DA-1E694C04114E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEEE7D2B-C765-4529-80DA-1E694C04114E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEEE7D2B-C765-4529-80DA-1E694C04114E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
