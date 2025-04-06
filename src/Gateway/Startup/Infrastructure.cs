@@ -1,16 +1,15 @@
-﻿using Gateway.Database;
+﻿using CoreShared.Settings;
+using Gateway.Database;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using StackExchange.Redis;
 
 namespace Gateway.Startup;
 
-public static class Infrastucture
+public static class Infrastructure
 {
-    public static void AddInfrastructure(this IServiceCollection services, ConfigurationManager configuration)
+    public static void AddInfrastructure(this IServiceCollection services, AppSettings appSettings)
     {
-        var dbSettings = configuration.GetSection(nameof(DbSettings)).Get<DbSettings>()!.Validate();
-
         services.AddSingleton<IConnection>(_ => new ConnectionFactory 
         { 
             HostName = "localhost", 
@@ -18,17 +17,17 @@ public static class Infrastucture
         }.CreateConnection());
         
         services.AddSingleton<IConnectionMultiplexer>(_ =>
-            ConnectionMultiplexer.Connect(dbSettings.RedisConnectionString));
+            ConnectionMultiplexer.Connect(appSettings.RedisConnectionString));
         
         services.AddDbContextPool<AppDbContext>(options =>
         {
-            options.UseNpgsql(dbSettings.PostgresConnectionString,
+            options.UseNpgsql(appSettings.PostgresConnectionString,
                 npgSettings => npgSettings.EnableRetryOnFailure());
         });
         
         services.AddHealthChecks()
-            .AddNpgSql(dbSettings.PostgresConnectionString)
-            .AddRedis(dbSettings.RedisConnectionString)
+            .AddNpgSql(appSettings.PostgresConnectionString)
+            .AddRedis(appSettings.RedisConnectionString)
             .AddRabbitMQ();
     }
 }

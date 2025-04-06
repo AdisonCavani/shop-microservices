@@ -6,12 +6,12 @@ using Gateway.Contracts.Requests;
 using Gateway.Database;
 using Gateway.Database.Entities;
 using Gateway.Endpoints;
-using Gateway.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProtobufSpec.Events;
 using StackExchange.Redis;
+using CoreShared.Transit;
 
 namespace Gateway.Repositories;
 
@@ -19,7 +19,7 @@ public class UserRepository : IUserRepository
 {
     private readonly IMapper _mapper;
     private readonly AppDbContext _context;
-    private readonly MessageBusPublisher _publisher;
+    private readonly Publisher<ConfirmEmailEvent> _publisher;
     private readonly IPasswordHasher<UserEntity> _hasher;
     private readonly IConnectionMultiplexer _connectionMultiplexer;
 
@@ -27,7 +27,7 @@ public class UserRepository : IUserRepository
         IMapper mapper,
         AppDbContext context,
         IPasswordHasher<UserEntity> hasher,
-        MessageBusPublisher publisher,
+        Publisher<ConfirmEmailEvent> publisher,
         IConnectionMultiplexer connectionMultiplexer)
     {
         _mapper = mapper;

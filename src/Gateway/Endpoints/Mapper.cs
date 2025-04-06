@@ -40,6 +40,6 @@ public static class Mapper
         
         app.MapGroup(ApiRoutes.User.BasePath).MapUserApi();
 
-        app.MapGetSwaggerForYarp(app.Configuration);
+        app.MapGetSwaggerForYarp();
     }
 }

@@ -1,18 +1,9 @@
-using Fluid;
-using Microsoft.Extensions.FileProviders;
-using NotificationService.Services;
+using NotificationService.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Templates")));
-builder.Services.AddSingleton<FluidParser>();
-
-builder.Services.AddScoped<EmailService>();
-builder.Services.AddScoped<EmailHandler>();
-
-builder.Services.AddHostedService<MessageBusSubscriber>();
+builder.Services.AddInfrastructure();
+builder.Services.AddServices(builder.Environment);
 
 var app = builder.Build();
 

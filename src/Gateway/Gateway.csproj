@@ -30,7 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ProtobufSpec\ProtobufSpec.csproj" />
+      <ProjectReference Include="..\CoreShared\CoreShared.csproj" />
     </ItemGroup>
 
 </Project>

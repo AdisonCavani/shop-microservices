@@ -1,3 +1,4 @@
+using CoreShared.Settings;
 using Gateway.Database;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
@@ -6,16 +7,21 @@ using Gateway.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddUserSecrets<Program>();
+builder.Services.Configure<AppSettings>(builder.Configuration.GetRequiredSection("Settings"));
+
+var appSettings = builder.Configuration.GetRequiredSection("Settings").Get<AppSettings>()?.Validate()!;
+
 // Add services to the container.
 builder.Services.AddSwagger();
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddInfrastructure(appSettings);
 builder.Services.AddAuth();
 builder.Services.AddValidators();
 builder.Services.AddServices();
 
 builder.Services
     .AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+    .LoadFromConfig(builder.Configuration.GetRequiredSection("Settings:ReverseProxy"));
 
 var app = builder.Build();
 
@@ -27,6 +33,7 @@ if (app.Environment.IsDevelopment())
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "API Gateway");
         options.SwaggerEndpoint("/swagger/product-service/v1/swagger.json", "ProductService");
+        options.SwaggerEndpoint("/swagger/order-service/v1/swagger.json", "OrderService");
     });
 }
 

@@ -1,13 +1,13 @@
 ﻿using System.Reflection;
 
-namespace Gateway.Startup;
+namespace ProductService.Startup;
 
 public static class SettingsValidator
 {
-    public static DbSettings Validate(this DbSettings dbSettings)
+    public static AppSettings Validate(this AppSettings appSettings)
     {
-        ExecuteValidation(dbSettings);
-        return dbSettings;
+        ExecuteValidation(appSettings);
+        return appSettings;
     }
 
     private static void ExecuteValidation(object settings)
