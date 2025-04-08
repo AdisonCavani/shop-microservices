@@ -37,6 +37,9 @@
     </ItemGroup>
     
     <ItemGroup>
+        <Protobuf Include="..\ProtobufSpec\Protos\notification_service.proto" GrpcServices="Client">
+            <Link>Contracts\Protos\notification_service.proto</Link>
+        </Protobuf>
         <Protobuf Include="..\ProtobufSpec\Protos\product_service.proto" GrpcServices="Client">
             <Link>Contracts\Protos\product_service.proto</Link>
         </Protobuf>

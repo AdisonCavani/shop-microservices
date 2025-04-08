@@ -12,7 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="Protos\product_service.proto" GrpcServices="Server" />
+        <Protobuf Include="Protos\health.proto" GrpcServices="None" />
+        <Protobuf Include="Protos\notification_service.proto" GrpcServices="Server" AdditionalImportDirs="Protos" />
+        <Protobuf Include="Protos\product_service.proto" GrpcServices="Server" AdditionalImportDirs="Protos" />
     </ItemGroup>
 
 </Project>

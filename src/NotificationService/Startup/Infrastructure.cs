@@ -11,5 +11,7 @@ public static class Infrastructure
             HostName = "localhost", 
             Port = 5672
         }.CreateConnection());
+        
+        services.AddHealthChecks().AddRabbitMQ();
     }
 }

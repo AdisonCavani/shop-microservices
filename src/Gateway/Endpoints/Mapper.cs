@@ -36,9 +36,9 @@ public static class Mapper
     
     public static void MapEndpoints(this WebApplication app)
     {
-        app.MapGet(ApiRoutes.Health, HealthEndpoint.HandleAsync)
+        app.MapGet(ApiRoutes.Health, Health.HandleAsync)
             .WithTags("Health Endpoint")
-            .WithOpenApi(HealthEndpoint.OpenApi);
+            .WithOpenApi(Health.OpenApi);
         
         app.MapGroup(ApiRoutes.User.BasePath).MapUserApi();
 

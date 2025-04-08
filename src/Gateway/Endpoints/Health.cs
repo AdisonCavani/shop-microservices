@@ -1,28 +1,27 @@
-﻿using AutoMapper;
-using Gateway.Mappers;
+﻿using Gateway.Mappers;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
+using NotificationService;
 using ProtobufSpec.Dtos;
 using ProtobufSpec.Responses;
 using ProductService;
 
 namespace Gateway.Endpoints;
 
-public static class HealthEndpoint
+public static class Health
 {
     public static async Task<Results<JsonHttpResult<HealthCheckRes[]>, Ok<HealthCheckRes[]>>> HandleAsync(
         [FromServices] HealthCheckService service,
-        [FromServices] IMapper mapper,
         CancellationToken ct = default)
     {
         var gatewayReport = await service.CheckHealthAsync(ct);
         var gatewayResponse = new HealthCheckRes
         {
-            ServiceName = nameof(Gateway),
+            ServiceName = AppDomain.CurrentDomain.FriendlyName,
             Status = gatewayReport.Status.ToString(),
             Checks = gatewayReport.Entries.Select(x => new HealthCheckDto
             {
@@ -33,6 +32,10 @@ public static class HealthEndpoint
             Duration = gatewayReport.TotalDuration
         };
         
+        var notificationChannel = GrpcChannel.ForAddress("https://localhost:7204");
+        var notificationClient = new NotificationAPI.NotificationAPIClient(notificationChannel);
+        var notificationReport = await notificationClient.HealthAsync(new Empty());
+        
         // TODO: retreive this from IOptions
         var productChannel = GrpcChannel.ForAddress("https://localhost:7100");
         var productClient = new ProductAPI.ProductAPIClient(productChannel);
@@ -41,6 +44,7 @@ public static class HealthEndpoint
         var response = new []
         {
             gatewayResponse,
+            notificationReport.ToHealthCheckRes(),
             productReport.ToHealthCheckRes(),
         };
 

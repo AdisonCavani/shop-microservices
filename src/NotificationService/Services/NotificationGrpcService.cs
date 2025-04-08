@@ -1,10 +1,11 @@
-﻿using Google.Protobuf.WellKnownTypes;
+﻿using Common;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace ProductService.Endpoints;
+namespace NotificationService.Services;
 
-public class ProductService(HealthCheckService service) : ProductAPI.ProductAPIBase
+public class NotificationGrpcService(HealthCheckService service) : NotificationAPI.NotificationAPIBase
 {
     public override async Task<HealthResponse> Health(Empty request, ServerCallContext context)
     {
@@ -12,7 +13,7 @@ public class ProductService(HealthCheckService service) : ProductAPI.ProductAPIB
         
         var response = new HealthResponse
         {
-            ServiceName = nameof(ProductService),
+            ServiceName = AppDomain.CurrentDomain.FriendlyName,
             Status = report.Status.ToString(),
             Duration = report.TotalDuration.ToString()
         };
@@ -21,7 +22,7 @@ public class ProductService(HealthCheckService service) : ProductAPI.ProductAPIB
         {
             Component = x.Key,
             Status = x.Value.Status.ToString(),
-            Description = x.Value.Description
+            Description = x.Value.Description ?? string.Empty
         }));
         
         return response;

@@ -17,7 +17,7 @@ public static class Mapper
     
     public static void MapEndpoints(this WebApplication app)
     {
-        app.MapGrpcService<ProductService>();
+        app.MapGrpcService<ProductGrpcService>();
         
         app.MapGroup(ApiRoutes.Product.BasePath).MapProductApi();
     }

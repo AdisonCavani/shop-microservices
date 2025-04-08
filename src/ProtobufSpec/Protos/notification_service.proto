@@ -1,11 +1,11 @@
 ﻿syntax = "proto3";
-option csharp_namespace = "ProductService";
+option csharp_namespace = "NotificationService";
 
 import "google/protobuf/empty.proto";
 import "health.proto";
 
-package product.v1.product;
+package notification.v1.notification;
 
-service ProductAPI {
+service NotificationAPI {
   rpc Health (google.protobuf.Empty) returns (common.HealthResponse);
 }
