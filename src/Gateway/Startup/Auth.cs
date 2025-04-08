@@ -3,6 +3,7 @@ using Gateway.Contracts;
 using Gateway.Database.Entities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using ProtobufSpec;
 
 namespace Gateway.Startup;
 

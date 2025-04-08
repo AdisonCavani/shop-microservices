@@ -1,7 +1,9 @@
-// using Microsoft.EntityFrameworkCore;
-// using ProductService.Database;
+using CoreShared.Settings;
+using FluentValidation;
 using ProductService.Endpoints;
 using ProductService.Startup;
+// using Microsoft.EntityFrameworkCore;
+// using ProductService.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,8 @@ var appSettings = builder.Configuration.GetRequiredSection("Settings").Get<AppSe
 // Add services to the container.
 builder.Services.AddSwagger();
 builder.Services.AddInfrastructure(appSettings);
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddGrpc();
 
 var app = builder.Build();
 

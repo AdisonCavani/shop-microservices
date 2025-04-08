@@ -7,6 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+      <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.15" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
       <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
     </ItemGroup>

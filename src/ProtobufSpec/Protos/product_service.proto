@@ -1,0 +1,23 @@
+﻿syntax = "proto3";
+option csharp_namespace = "ProductService";
+
+import "google/protobuf/empty.proto";
+
+package product.v1.product;
+
+service ProductAPI {
+  rpc Health (google.protobuf.Empty) returns (HealthResponse);
+}
+
+message HealthCheck {
+  string status = 1;
+  string component = 2;
+  string description = 3;
+}
+
+message HealthResponse {
+  string service_name = 1;
+  string status = 2;
+  repeated HealthCheck checks = 3;
+  string duration = 4;
+}

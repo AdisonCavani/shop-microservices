@@ -1,9 +1,12 @@
-﻿using Gateway.Contracts.Dtos;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using ProtobufSpec.Dtos;
 
-namespace Gateway.Contracts.Responses;
+namespace ProtobufSpec.Responses;
 
 public class HealthCheckRes
 {
+    public required string ServiceName { get; set; }
+    
     public required string Status { get; set; }
 
     public IEnumerable<HealthCheckDto> Checks { get; set; } = Enumerable.Empty<HealthCheckDto>();

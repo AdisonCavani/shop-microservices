@@ -1,4 +1,5 @@
 using CoreShared.Settings;
+using FluentValidation;
 using Gateway.Database;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ var appSettings = builder.Configuration.GetRequiredSection("Settings").Get<AppSe
 builder.Services.AddSwagger();
 builder.Services.AddInfrastructure(appSettings);
 builder.Services.AddAuth();
-builder.Services.AddValidators();
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddServices();
 
 builder.Services

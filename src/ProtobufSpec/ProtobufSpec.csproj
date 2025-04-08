@@ -7,7 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Grpc.AspNetCore" Version="2.70.0" />
       <PackageReference Include="protobuf-net" Version="3.2.46" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Protobuf Include="Protos\product_service.proto" GrpcServices="Server" />
     </ItemGroup>
 
 </Project>

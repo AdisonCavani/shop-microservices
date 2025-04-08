@@ -1,4 +1,4 @@
-﻿namespace Gateway.Contracts.Dtos;
+﻿namespace ProtobufSpec.Dtos;
 
 public class HealthCheckDto
 {

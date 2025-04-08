@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Gateway.Validators;
+namespace CoreShared;
 
 public class ValidationFilter<TRequest> : IEndpointFilter
 {

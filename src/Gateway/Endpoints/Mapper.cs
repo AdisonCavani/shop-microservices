@@ -1,7 +1,9 @@
-﻿using Gateway.Contracts;
+﻿using CoreShared;
+using Gateway.Contracts;
 using Gateway.Contracts.Requests;
 using Gateway.Validators;
 using Gateway.Startup;
+using ProtobufSpec;
 
 namespace Gateway.Endpoints;
 
@@ -34,9 +36,9 @@ public static class Mapper
     
     public static void MapEndpoints(this WebApplication app)
     {
-        app.MapGet(ApiRoutes.Health, Health.HandleAsync)
+        app.MapGet(ApiRoutes.Health, HealthEndpoint.HandleAsync)
             .WithTags("Health Endpoint")
-            .WithOpenApi(Health.OpenApi);
+            .WithOpenApi(HealthEndpoint.OpenApi);
         
         app.MapGroup(ApiRoutes.User.BasePath).MapUserApi();
 

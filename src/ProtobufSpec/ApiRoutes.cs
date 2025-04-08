@@ -1,4 +1,4 @@
-﻿namespace Gateway.Contracts;
+﻿namespace ProtobufSpec;
 
 public class ApiRoutes
 {
@@ -14,5 +14,10 @@ public class ApiRoutes
         public const string Login = "/login";
         public const string VerifyEmail = "/verify-email";
         public const string Logout = "/logout";
+    }
+
+    public class Product
+    {
+        public const string BasePath = $"{ApiRoutes.BasePath}/product";
     }
 }
