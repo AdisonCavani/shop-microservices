@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using NotificationService.Mappers;
 using ProtobufSpec.Events;
 using NotificationService.Templates;
 
@@ -6,12 +6,10 @@ namespace NotificationService.Services;
 
 public class EmailHandler
 {
-    private readonly IMapper _mapper;
     private readonly EmailService _emailService;
 
-    public EmailHandler(IMapper mapper, EmailService emailService)
+    public EmailHandler(EmailService emailService)
     {
-        _mapper = mapper;
         _emailService = emailService;
     }
 
@@ -23,7 +21,7 @@ public class EmailHandler
             $"{eventModel.FirstName} {eventModel.LastName}",
             eventModel.Email,
             VerifyEmail.Subject,
-            _mapper.Map<VerifyEmail>(eventModel),
+            eventModel.ToVerifyEmail(),
             cancellationToken);
     }
 }

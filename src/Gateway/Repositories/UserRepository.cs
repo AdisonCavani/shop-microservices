@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using AutoMapper;
 using Gateway.Auth;
 using Gateway.Contracts.Dtos;
 using Gateway.Contracts.Requests;
@@ -12,25 +11,23 @@ using Microsoft.EntityFrameworkCore;
 using ProtobufSpec.Events;
 using StackExchange.Redis;
 using CoreShared.Transit;
+using Gateway.Mappers;
 
 namespace Gateway.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    private readonly IMapper _mapper;
     private readonly AppDbContext _context;
     private readonly Publisher<ConfirmEmailEvent> _publisher;
     private readonly IPasswordHasher<UserEntity> _hasher;
     private readonly IConnectionMultiplexer _connectionMultiplexer;
 
     public UserRepository(
-        IMapper mapper,
         AppDbContext context,
         IPasswordHasher<UserEntity> hasher,
         Publisher<ConfirmEmailEvent> publisher,
         IConnectionMultiplexer connectionMultiplexer)
     {
-        _mapper = mapper;
         _context = context;
         _hasher = hasher;
         _publisher = publisher;
@@ -40,18 +37,18 @@ public class UserRepository : IUserRepository
     public async Task<UserDto?> FindUserByIdAsync(Guid id)
     {
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-        return user is null ? null : _mapper.Map<UserDto>(user);
+        return user?.ToUserDto();
     }
 
     public async Task<UserDto> GetUserByIdAsync(Guid id)
     {
         var user = await _context.Users.FirstAsync(x => x.Id == id);
-        return _mapper.Map<UserDto>(user);
+        return user.ToUserDto();
     }
 
     public async Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> RegisterAsync(RegisterReq req)
     {
-        var user = _mapper.Map<UserEntity>(req);
+        var user = req.ToUserEntity();
 
         var hashedPassword = _hasher.HashPassword(user, req.Password);
         user.Password = hashedPassword;
@@ -62,7 +59,7 @@ public class UserRepository : IUserRepository
         if (result <= 0)
             throw new Exception(ExceptionMessages.DatabaseProblem);
 
-        SendEmailVerify(user);
+        await SendEmailVerifyAsync(user);
 
         var claims = new List<Claim>
         {
@@ -75,7 +72,7 @@ public class UserRepository : IUserRepository
             IsPersistent = true
         };
 
-        return Tuple.Create(claims, authProperties, _mapper.Map<UserDto>(user));
+        return Tuple.Create(claims, authProperties, user.ToUserDto());
     }
 
     public async Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> LoginAsync(LoginReq req)
@@ -104,7 +101,7 @@ public class UserRepository : IUserRepository
             IsPersistent = req.Persistent
         };
 
-        return Tuple.Create(claims, authProperties, _mapper.Map<UserDto>(user));
+        return Tuple.Create(claims, authProperties, user.ToUserDto());
     }
 
     public async Task VerifyEmailAsync(VerifyEmailReq req)
@@ -140,16 +137,16 @@ public class UserRepository : IUserRepository
         if (user is null)
             throw new Exception();
         
-        SendEmailVerify(user);
+        await SendEmailVerifyAsync(user);
     }
     
-    private void SendEmailVerify(UserEntity user)
+    private async Task SendEmailVerifyAsync(UserEntity user)
     {
-        var eventMessage = _mapper.Map<ConfirmEmailEvent>(user);
+        var eventMessage = user.ToConfirmEmailEvent();
 
         var db = _connectionMultiplexer.GetDatabase();
         db.StringSet(AuthSchema.VerifyEmailKeyPrefix + eventMessage.Token, user.Id.ToString(), TimeSpan.FromHours(12));
 
-        _publisher.PublishEvent(eventMessage);
+        await _publisher.PublishEventAsync(eventMessage);
     }
 }

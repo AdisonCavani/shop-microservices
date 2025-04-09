@@ -25,7 +25,7 @@ public class Publisher<TEventType>(IConnection connection, ILogger<Publisher<TEv
         };
     }
     
-    public async Task PublishEvent(TEventType eventModel)
+    public async Task PublishEventAsync(TEventType eventModel)
     {
         if (_channel is null || !_channel.IsOpen)
             await InitializeAsync();

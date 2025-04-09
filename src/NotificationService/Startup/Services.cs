@@ -8,8 +8,6 @@ public static class Services
 {
     public static void AddServices(this IServiceCollection services, IWebHostEnvironment environment)
     {
-        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-        
         services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Path.Combine(environment.ContentRootPath, "Templates")));
         services.AddSingleton<FluidParser>();
 
