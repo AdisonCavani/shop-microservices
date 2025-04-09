@@ -6,57 +6,57 @@ using RabbitMQ.Client.Events;
 
 namespace CoreShared.Transit;
 
-public abstract class Consumer<TEventType> : BackgroundService
+public abstract class Consumer<TEventType>(IConnection connection, IServiceProvider serviceProvider, ILogger<Consumer<TEventType>> logger) : BackgroundService
 {
-    private readonly IServiceProvider _serviceProvider;
+    private IChannel _channel = null!;
+    private string _queueName = null!;
 
-    private readonly IConnection _connection;
-    private readonly IModel _channel;
-    private readonly string _queueName;
-
-    protected Consumer(IServiceProvider serviceProvider, ILogger<Consumer<TEventType>> logger, IConnection connection)
+    public override async Task StartAsync(CancellationToken ct)
     {
-        var exchangeName = typeof(TEventType).Name + "Exchange";
+        _channel = await connection.CreateChannelAsync(cancellationToken: ct);
         
-        _serviceProvider = serviceProvider;
-        _connection = connection;
-        _channel = _connection.CreateModel();
+        var exchangeName = typeof(TEventType).Name + "Exchange";
+        await _channel.ExchangeDeclareAsync(exchangeName, ExchangeType.Fanout, cancellationToken: ct);
 
-        _channel.ExchangeDeclare(exchangeName, ExchangeType.Fanout);
-        _queueName = _channel.QueueDeclare().QueueName;
-        _channel.QueueBind(_queueName, exchangeName, string.Empty);
+        var queue = await _channel.QueueDeclareAsync(cancellationToken: ct);
+        _queueName = queue.QueueName;
+        await _channel.QueueBindAsync(_queueName, exchangeName, string.Empty, cancellationToken: ct);
 
         logger.LogInformation($"{nameof(Consumer<TEventType>)} initialized");
         
-        _connection.ConnectionShutdown += (_, _) =>
-            logger.LogInformation($"{nameof(Consumer<TEventType>)}: connection shutdown");
-    }
-    
-    protected abstract Task Consume(TEventType message, IServiceProvider serviceProvider, CancellationToken cancellationToken);
-
-    protected override Task ExecuteAsync(CancellationToken cancellationToken)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var consumer = new EventingBasicConsumer(_channel);
-        consumer.Received += async (_, ea) =>
+        connection.ConnectionShutdownAsync += (_, _) =>
         {
-            var message = Serializer.Deserialize<TEventType>(ea.Body);
-            await Consume(message, _serviceProvider, cancellationToken);
+            logger.LogInformation($"{nameof(Consumer<TEventType>)}: connection shutdown");
+            return Task.CompletedTask;
         };
 
-        _channel.BasicConsume(_queueName, true, consumer);
-        return Task.CompletedTask;
+        await base.StartAsync(ct);
     }
 
-    public override void Dispose()
+    protected abstract Task Consume(TEventType message, IServiceProvider serviceProvider, CancellationToken ct);
+
+    protected override async Task ExecuteAsync(CancellationToken ct)
+    {
+        ct.ThrowIfCancellationRequested();
+
+        var consumer = new AsyncEventingBasicConsumer(_channel);
+        consumer.ReceivedAsync += async (_, ea) =>
+        {
+            var message = Serializer.Deserialize<TEventType>(ea.Body);
+            await Consume(message, serviceProvider, ct);
+        };
+
+        await _channel.BasicConsumeAsync(_queueName, true, consumer, ct);
+    }
+
+    public override async Task StopAsync(CancellationToken ct)
     {
         if (_channel.IsOpen)
         {
-            _channel.Close();
-            _connection.Close();
+            await _channel.CloseAsync(ct);
+            await connection.CloseAsync(ct);
         }
 
-        base.Dispose();
+        await base.StopAsync(ct);
     }
 }

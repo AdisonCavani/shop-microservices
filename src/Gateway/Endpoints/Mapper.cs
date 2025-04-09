@@ -1,7 +1,5 @@
 ﻿using CoreShared;
-using Gateway.Contracts;
 using Gateway.Contracts.Requests;
-using Gateway.Validators;
 using Gateway.Startup;
 using ProtobufSpec;
 

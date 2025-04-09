@@ -6,7 +6,10 @@ namespace NotificationService.Services;
 
 public class ConfirmEmailEventConsumer : Consumer<ConfirmEmailEvent>
 {
-    public ConfirmEmailEventConsumer(IServiceProvider serviceProvider, ILogger<Consumer<ConfirmEmailEvent>> logger, IConnection connection) : base(serviceProvider, logger, connection)
+    public ConfirmEmailEventConsumer(
+        IConnection connection,
+        IServiceProvider serviceProvider,
+        ILogger<Consumer<ConfirmEmailEvent>> logger) : base(connection, serviceProvider, logger)
     {
     }
     

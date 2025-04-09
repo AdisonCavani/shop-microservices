@@ -1,17 +1,9 @@
-﻿using RabbitMQ.Client;
-
-namespace NotificationService.Startup;
+﻿namespace NotificationService.Startup;
 
 public static class Infrastructure
 {
-    public static void AddInfrastructure(this IServiceCollection services)
+    public static void AddInfrastructure(this WebApplicationBuilder builder)
     {
-        services.AddSingleton<IConnection>(_ => new ConnectionFactory 
-        { 
-            HostName = "localhost", 
-            Port = 5672
-        }.CreateConnection());
-        
-        services.AddHealthChecks().AddRabbitMQ();
+        builder.AddRabbitMQClient("rabbitmq");
     }
 }

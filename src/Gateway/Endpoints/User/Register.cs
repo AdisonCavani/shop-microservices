@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
-using Gateway.Contracts;
 using Gateway.Contracts.Dtos;
 using Gateway.Contracts.Requests;
 using Gateway.Repositories;

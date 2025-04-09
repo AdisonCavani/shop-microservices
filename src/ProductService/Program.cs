@@ -1,4 +1,3 @@
-using CoreShared.Settings;
 using FluentValidation;
 using ProductService.Endpoints;
 using ProductService.Startup;
@@ -7,20 +6,22 @@ using ProductService.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddUserSecrets<Program>();
-builder.Services.Configure<AppSettings>(builder.Configuration.GetRequiredSection("Settings"));
+builder.AddServiceDefaults();
+builder.Services.AddProblemDetails();
 
-var appSettings = builder.Configuration.GetRequiredSection("Settings").Get<AppSettings>()?.Validate()!;
+builder.Configuration.AddUserSecrets<Program>();
 
 // Add services to the container.
 builder.Services.AddSwagger();
-builder.Services.AddInfrastructure(appSettings);
+builder.AddInfrastructure();
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddGrpc();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseExceptionHandler();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -37,5 +38,6 @@ app.UseHsts();
 app.UseHttpsRedirection();
 
 app.MapEndpoints();
+app.MapDefaultEndpoints();
 
 app.Run();

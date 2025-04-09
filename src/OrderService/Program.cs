@@ -5,6 +5,9 @@ using Stripe.Checkout;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+builder.Services.AddProblemDetails();
+
 builder.Configuration.AddUserSecrets<Program>();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("Settings"));
 
@@ -19,12 +22,14 @@ StripeConfiguration.ApiKey = appSettings.Stripe.StripeSecretKey;
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseExceptionHandler();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
 }
 
+app.UseHsts();
 app.UseHttpsRedirection();
 
 var summaries = new[]
@@ -67,5 +72,7 @@ app.MapGet("/api/order", async () =>
     })
     .WithName("GetWeatherForecast")
     .WithOpenApi();
+
+app.MapDefaultEndpoints();
 
 app.Run();

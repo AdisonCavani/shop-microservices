@@ -4,44 +4,45 @@ using RabbitMQ.Client;
 
 namespace CoreShared.Transit;
 
-public class Publisher<TEventType> : IDisposable
+public class Publisher<TEventType>(IConnection connection, ILogger<Publisher<TEventType>> logger) : IAsyncDisposable
 {
-    private readonly IConnection _connection;
-    private readonly IModel _channel;
-    private readonly string _exchangeName;
+    private IChannel? _channel;
+    private string? _exchangeName;
 
-    public Publisher(ILogger<Publisher<TEventType>> logger, IConnection connection)
+    private async Task InitializeAsync()
     {
-        _exchangeName = typeof(TEventType).Name + "Exchange";
-        _connection = connection;
-        _channel = _connection.CreateModel();
+        _channel = await connection.CreateChannelAsync();
 
-        _channel.ExchangeDeclare(_exchangeName, ExchangeType.Fanout);
+        _exchangeName = typeof(TEventType).Name + "Exchange";
+        await _channel.ExchangeDeclareAsync(_exchangeName, ExchangeType.Fanout);
 
         logger.LogInformation($"{nameof(Publisher<TEventType>)} initialized");
-        
-        _connection.ConnectionShutdown += (_, _) =>
+
+        connection.ConnectionShutdownAsync += (_, _) =>
+        {
             logger.LogInformation($"{nameof(Publisher<TEventType>)}: connection shutdown");
+            return Task.CompletedTask;
+        };
     }
     
-    public void PublishEvent(TEventType eventModel)
+    public async Task PublishEvent(TEventType eventModel)
     {
-        if (!_connection.IsOpen)
-            return;
+        if (_channel is null || !_channel.IsOpen)
+            await InitializeAsync();
 
         using var stream = new MemoryStream();
         Serializer.Serialize(stream, eventModel);
         var body = stream.ToArray();
 
-        _channel.BasicPublish(_exchangeName, string.Empty, null, body);
+        await _channel!.BasicPublishAsync(_exchangeName!, string.Empty, body);
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        if (_connection.IsOpen)
-        {
-            _connection.Dispose();
-            _channel.Dispose();
-        }
+        if (connection.IsOpen)
+            await connection.DisposeAsync();
+        
+        if (_channel is not null && _channel.IsOpen)
+            await _channel.DisposeAsync();
     }
 }

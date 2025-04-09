@@ -1,15 +1,10 @@
 ﻿using CoreShared.Settings;
-using ProtoBuf;
 using Yarp.ReverseProxy.Configuration;
 
 namespace Gateway.Startup;
 
 public class AppSettings : BaseAppSettings
 {
-    public required string PostgresConnectionString { get; init; }
-    
-    public required string RedisConnectionString { get; init; }
-    
     public required ReverseProxySettings ReverseProxy { get; init; }
 }
 

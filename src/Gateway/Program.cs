@@ -1,4 +1,3 @@
-using CoreShared.Settings;
 using FluentValidation;
 using Gateway.Database;
 using Microsoft.AspNetCore.CookiePolicy;
@@ -8,14 +7,15 @@ using Gateway.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+builder.Services.AddProblemDetails();
+
 builder.Configuration.AddUserSecrets<Program>();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetRequiredSection("Settings"));
 
-var appSettings = builder.Configuration.GetRequiredSection("Settings").Get<AppSettings>()?.Validate()!;
-
 // Add services to the container.
 builder.Services.AddSwagger();
-builder.Services.AddInfrastructure(appSettings);
+builder.AddInfrastructure();
 builder.Services.AddAuth();
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddServices();
@@ -27,6 +27,8 @@ builder.Services
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseExceptionHandler();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -56,6 +58,7 @@ app.UseCookiePolicy(new()
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapEndpoints();
+app.MapDefaultEndpoints();
 app.MapReverseProxy();
 
 app.Run();

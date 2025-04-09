@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using ProtobufSpec.Dtos;
+﻿using ProtobufSpec.Dtos;
 
 namespace ProtobufSpec.Responses;
 
