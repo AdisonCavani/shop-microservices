@@ -16,6 +16,7 @@ builder.Services.AddSwagger();
 builder.AddInfrastructure();
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddGrpc();
+builder.Services.AddGrpcHealthChecks();
 
 var app = builder.Build();
 
@@ -38,6 +39,7 @@ app.UseHsts();
 app.UseHttpsRedirection();
 
 app.MapEndpoints();
+app.MapGrpcHealthChecksService();
 app.MapDefaultEndpoints();
 
 app.Run();

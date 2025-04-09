@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 using Gateway.Endpoints;
 using Gateway.Startup;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using NotificationService;
+using ProductService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,11 @@ builder.AddInfrastructure();
 builder.Services.AddAuth();
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddServices();
+
+var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";
+
+builder.Services.AddGrpcServiceReference<NotificationAPI.NotificationAPIClient>($"{(isHttps ? "https" : "http")}://notificationService", failureStatus: HealthStatus.Degraded);
+builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>($"{(isHttps ? "https" : "http")}://productService", failureStatus: HealthStatus.Degraded);
 
 builder.Services
     .AddReverseProxy()

@@ -9,6 +9,7 @@ builder.Services.AddProblemDetails();
 builder.AddInfrastructure();
 builder.Services.AddServices(builder.Environment);
 builder.Services.AddGrpc();
+builder.Services.AddGrpcHealthChecks();
 
 var app = builder.Build();
 
@@ -16,6 +17,7 @@ var app = builder.Build();
 app.UseExceptionHandler();
 
 app.MapGrpcService<NotificationGrpcService>();
+app.MapGrpcHealthChecksService();
 app.MapDefaultEndpoints();
 
 app.Run();

@@ -17,6 +17,8 @@ public static class Health
 {
     public static async Task<Results<JsonHttpResult<HealthCheckRes[]>, Ok<HealthCheckRes[]>>> HandleAsync(
         [FromServices] HealthCheckService service,
+        [FromServices] NotificationAPI.NotificationAPIClient notificationClient,
+        [FromServices] ProductAPI.ProductAPIClient productClient,
         CancellationToken ct = default)
     {
         var gatewayReport = await service.CheckHealthAsync(ct);
@@ -36,8 +38,8 @@ public static class Health
         var response = new []
         {
             gatewayResponse,
-            await GetNotificationServiceHealthAsync(),
-            await GetProductServiceHealthAsync(),
+            await GetNotificationServiceHealthAsync(notificationClient),
+            await GetProductServiceHealthAsync(productClient),
         };
 
         var healthy = response.All(res => res.Status == HealthStatus.Healthy.ToString());
@@ -45,16 +47,13 @@ public static class Health
         return healthy ? TypedResults.Ok(response) : TypedResults.Json(response, statusCode: StatusCodes.Status503ServiceUnavailable);
     }
 
-    private static async Task<HealthCheckRes> GetNotificationServiceHealthAsync()
+    private static async Task<HealthCheckRes> GetNotificationServiceHealthAsync(NotificationAPI.NotificationAPIClient client)
     {
         var watch = Stopwatch.StartNew();
 
         try
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:7204");
-            var client = new NotificationAPI.NotificationAPIClient(channel);
             var report = await client.HealthAsync(new Empty());
-
             return report.ToHealthCheckRes();
         }
         catch (Exception ex)
@@ -79,14 +78,12 @@ public static class Health
         }
     }
 
-    private static async Task<HealthCheckRes> GetProductServiceHealthAsync()
+    private static async Task<HealthCheckRes> GetProductServiceHealthAsync(ProductAPI.ProductAPIClient client)
     {
         var watch = Stopwatch.StartNew();
 
         try
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:7100");
-            var client = new ProductAPI.ProductAPIClient(channel);
             var report = await client.HealthAsync(new Empty());
 
             return report.ToHealthCheckRes();
