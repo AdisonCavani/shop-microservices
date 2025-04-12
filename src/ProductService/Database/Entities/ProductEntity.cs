@@ -8,8 +8,7 @@ public class ProductEntity
     
     public required string Description { get; set; }
     
-    public required decimal Price { get; set; }
+    public required long PriceCents { get; set; }
     
-    public required Guid CategoryId { get; set; }
-    public required ProductCategoryEntity Category { get; set; }
+    public required string ActivationCode { get; set; }
 }

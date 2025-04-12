@@ -21,10 +21,9 @@ public class RegisterReqValidator : AbstractValidator<RegisterReq>
                 var taken = await dbContext.Users.FirstOrDefaultAsync(x => x.Email == value.ToLower(), cancellationToken);
 
                 if (taken is not null)
-                    context.AddFailure("Email", ExceptionMessages.EmailTaken);
+                    context.AddFailure(nameof(context.PropertyName), ExceptionMessages.EmailTaken);
             });
-
-        // TODO: add password validation
+        
         RuleFor(x => x.Password)
             .NotEmpty()
             .MinimumLength(8);

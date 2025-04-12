@@ -1,7 +1,14 @@
 using CoreShared.Settings;
+using CoreShared.Startup;
+using FluentValidation;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using OrderService.Database;
+using OrderService.Endpoints;
 using OrderService.Startup;
+using ProductService;
 using Stripe;
-using Stripe.Checkout;
+using Microsoft.EntityFrameworkCore;
+using OrderService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,14 +17,21 @@ builder.Services.AddProblemDetails();
 
 builder.Configuration.AddUserSecrets<Program>();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("Settings"));
-
 var appSettings = builder.Configuration.GetRequiredSection("Settings").Get<AppSettings>()?.Validate()!;
 
 // Add services to the container.
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwagger();
+builder.AddNpgsqlDbContext<AppDbContext>("Orders");
+builder.AddRabbitMQClient("rabbitmq");
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddHostedService<PaymentSucceededEventConsumer>();
+builder.Services.AddGrpc();
+builder.Services.AddGrpcHealthChecks();
 
-StripeConfiguration.ApiKey = appSettings.Stripe.StripeSecretKey;
+StripeConfiguration.ApiKey = appSettings.Stripe.SecretKey;
+
+var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";
+builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>($"{(isHttps ? "https" : "http")}://productService", failureStatus: HealthStatus.Degraded);
 
 var app = builder.Build();
 
@@ -27,52 +41,20 @@ app.UseExceptionHandler();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+using var scope = app.Services.CreateScope();
+var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+if (context.Database.IsRelational())
+    await context.Database.MigrateAsync();
 
 app.UseHsts();
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/api/order", async () =>
-    {
-        var options = new SessionCreateOptions
-        {
-            SuccessUrl = "",
-            CancelUrl = "",
-            LineItems = new(),
-            Mode = "payment",
-            CustomerEmail = "xd@gmail.com"
-        };
-
-        foreach (var item in Array.Empty<object>())
-        {
-            options.LineItems.Add(new SessionLineItemOptions
-            {
-                PriceData = new SessionLineItemPriceDataOptions
-                {
-                    UnitAmount = 1 * 1,
-                    Currency = "PLN",
-                    ProductData = new SessionLineItemPriceDataProductDataOptions
-                    {
-                        Name = "",
-                        Description = "",
-                    }
-                },
-                Quantity = 1
-            });
-        }
-        
-        var checkoutSession = await new SessionService().CreateAsync(options);
-
-        return TypedResults.Redirect(checkoutSession.Url, false);
-    })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
-
+app.MapEndpoints();
+app.MapGrpcHealthChecksService();
 app.MapDefaultEndpoints();
 
 app.Run();

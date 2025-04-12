@@ -30,7 +30,7 @@ public static class Login
     [ExcludeFromCodeCoverage]
     internal static OpenApiOperation OpenApi(OpenApiOperation operation)
     {
-        operation.Summary = "Login endpoint";
+        operation.Summary = "Login";
 
         return operation;
     }

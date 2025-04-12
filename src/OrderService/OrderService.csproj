@@ -9,8 +9,19 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.2.0" />
+        <PackageReference Include="Aspire.RabbitMQ.Client.v7" Version="9.2.0" />
+        <PackageReference Include="Grpc.AspNetCore.HealthChecks" Version="2.70.0" />
+        <PackageReference Include="Grpc.Net.ClientFactory" Version="2.70.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.71.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Stripe.net" Version="48.0.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -22,6 +33,12 @@
     <ItemGroup>
       <ProjectReference Include="..\CoreShared\CoreShared.csproj" />
       <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Protobuf Include="..\ProtobufSpec\Protos\product_service.proto" GrpcServices="Client">
+            <Link>Contracts\Protos\product_service.proto</Link>
+        </Protobuf>
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,11 @@
+﻿syntax = "proto3";
+option csharp_namespace = "OrderService";
+
+import "google/protobuf/empty.proto";
+import "health.proto";
+
+package order.v1.order;
+
+service OrderAPI {
+  rpc Health (google.protobuf.Empty) returns (common.HealthResponse);
+}

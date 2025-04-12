@@ -14,7 +14,6 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        // For generating UUID
         builder.HasPostgresExtension("uuid-ossp");
         
         builder.Entity<UserEntity>()
@@ -25,7 +24,7 @@ public class AppDbContext : DbContext
             .HasColumnType("uuid")
             .HasDefaultValueSql("uuid_generate_v4()")
             .IsRequired();
-
+        
         builder.Entity<UserEntity>()
             .Property(x => x.CreatedAt)
             .HasDefaultValueSql("current_timestamp at time zone 'utc'");

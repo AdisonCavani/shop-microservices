@@ -8,4 +8,16 @@ package product.v1.product;
 
 service ProductAPI {
   rpc Health (google.protobuf.Empty) returns (common.HealthResponse);
+  rpc GetProduct (GetProductReq) returns (ProductDto);
+}
+
+message GetProductReq {
+  string id = 1;
+}
+
+message ProductDto {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  int64 price_cents = 4;
 }

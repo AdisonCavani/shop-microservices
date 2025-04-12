@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
+// ReSharper disable once CheckNamespace
 namespace System.Net.Http;
 
 public static class ServiceReferenceExtensions
@@ -118,9 +119,11 @@ public static class ServiceReferenceExtensions
     /// The value to assign to the <see cref="Grpc.Net.ClientFactory.GrpcClientFactoryOptions.Address"/> property of the typed gRPC client's injected
     /// <see cref="Grpc.Net.ClientFactory.GrpcClientFactoryOptions"/> instance.
     /// </param>
+    /// <param name="healthCheckName">Name of health check</param>
     /// <param name="failureStatus">The <see cref="HealthStatus"/> that should be reported if the health check fails. Defaults to <see cref="HealthStatus.Unhealthy"/>.</param>
     /// <returns>An <see cref="IHttpClientBuilder"/> that can be used to configure the client.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="address"/> is not a valid URI value.</exception>
+    // ReSharper disable once MethodOverloadWithOptionalParameter
     public static IHttpClientBuilder AddGrpcServiceReference<TClient>(this IServiceCollection services, string address, string? healthCheckName = null, HealthStatus failureStatus = default)
         where TClient : class
     {

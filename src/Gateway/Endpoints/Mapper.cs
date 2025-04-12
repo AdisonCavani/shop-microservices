@@ -17,11 +17,10 @@ public static class Mapper
             .AddEndpointFilter<ValidationFilter<LoginReq>>()
             .WithOpenApi(User.Login.OpenApi);
         
-        group.MapPost(ApiRoutes.User.VerifyEmail, User.VerifyEmail.HandleAsync)
-            .AddEndpointFilter<ValidationFilter<VerifyEmailReq>>()
+        group.MapGet(ApiRoutes.User.VerifyEmail, User.VerifyEmail.HandleAsync)
             .WithOpenApi(User.VerifyEmail.OpenApi);
         
-        group.MapPost(ApiRoutes.User.Logout, User.Logout.HandleAsync)
+        group.MapGet(ApiRoutes.User.Logout, (Delegate)User.Logout.HandleAsync)
             .RequireAuthorization()
             .WithOpenApi(User.Logout.OpenApi);
 
@@ -29,16 +28,16 @@ public static class Mapper
             .RequireAuthorization()
             .WithOpenApi(User.Get.OpenApi);
 
-        group.WithTags("User endpoint");
+        group.WithTags("User endpoints");
     }
     
     public static void MapEndpoints(this WebApplication app)
     {
         app.MapGet(ApiRoutes.Health, Health.HandleAsync)
-            .WithTags("Health Endpoint")
+            .WithTags("Health endpoint")
             .WithOpenApi(Health.OpenApi);
         
-        app.MapGroup(ApiRoutes.User.BasePath).MapUserApi();
+        app.MapGroup(ApiRoutes.User.Path).MapUserApi();
 
         app.MapGetSwaggerForYarp();
     }

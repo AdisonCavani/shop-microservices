@@ -1,4 +1,4 @@
-# asp-identity
+# shop-microservices
 
 Shop microservices project
 
@@ -20,11 +20,10 @@ Shop microservices project
 http://localhost:5000
 ```
 
-### RabbitMQ management
+### Stripe webhook
 
-`login`: guest  
-`password`: guest
+Forward request via [`stripe-cli`](https://docs.stripe.com/stripe-cli)
 
 ```
-http://localhost:15672
+stripe listen --latest --forward-to https://localhost:7040/api/payment/webhook
 ```

@@ -62,6 +62,7 @@ public class EmailService
         if (!_fluidParser.TryParse(content, out var template, out var errors))
             throw new Exception(string.Join(Environment.NewLine, errors));
 
+        // TODO: upgrade fluid package
         return await template.RenderAsync(new(model));
     }
 }

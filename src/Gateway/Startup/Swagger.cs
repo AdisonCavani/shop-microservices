@@ -9,12 +9,6 @@ namespace Gateway.Startup;
 
 public static class Swagger
 {
-    public static void AddSwagger(this IServiceCollection services)
-    {
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-    }
-
     // https://github.com/dotnet/yarp/issues/1789#issuecomment-1263409031
     public static void MapGetSwaggerForYarp(this IEndpointRouteBuilder endpoints)
     {
@@ -63,7 +57,7 @@ public static class Swagger
 
                 // there is a catch all, all route are elligible 
                 // or there is a route that match without any operation methods filtering
-                if (hasCatchAll || routes.Match.Path.Equals(rewritedPath) && routes.Match.Methods == null)
+                if (hasCatchAll || routes.Match.Path!.Equals(rewritedPath) && routes.Match.Methods == null)
                     rewrite.Add(rewritedPath, path.Value);
                 else
                 {
@@ -76,8 +70,8 @@ public static class Swagger
                         foreach (var operation in path.Value.Operations)
                         {
                             // match route and method
-                            var hasRoute = routes.Match.Path.Equals(rewritedPath) &&
-                                           routes.Match.Methods.Contains(operation.Key.ToString().ToUpperInvariant());
+                            var hasRoute = routes.Match.Path!.Equals(rewritedPath) &&
+                                           routes.Match.Methods!.Contains(operation.Key.ToString().ToUpperInvariant());
 
                             if (!hasRoute)
                             {

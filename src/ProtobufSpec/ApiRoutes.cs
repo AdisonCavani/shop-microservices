@@ -8,16 +8,33 @@ public class ApiRoutes
 
     public class User
     {
-        public const string BasePath = $"{ApiRoutes.BasePath}/user";
+        public const string Path = $"{BasePath}/user";
         
         public const string Register = "/register";
         public const string Login = "/login";
-        public const string VerifyEmail = "/verify-email";
+        public const string VerifyEmail = "/verify-email/{token}";
         public const string Logout = "/logout";
     }
 
     public class Product
     {
-        public const string BasePath = $"{ApiRoutes.BasePath}/product";
+        public const string Path = $"{BasePath}/product";
+        
+        public const string Get = "/{productId}";
+    }
+
+    public class Order
+    {
+        public const string Path = $"{BasePath}/order";
+        
+        public const string Get = "/{orderId}";
+    }
+    
+    public class Payment
+    {
+        public const string Path = $"{BasePath}/payment";
+        
+        public const string Get = "/{orderId}";
+        public const string Webhook = "/webhook";
     }
 }

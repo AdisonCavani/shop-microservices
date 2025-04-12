@@ -1,11 +1,14 @@
 ﻿using Common;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using ProductService.Database;
+using ProductService.Mappers;
 
 namespace ProductService.Endpoints;
 
-public class ProductGrpcService(HealthCheckService service) : ProductAPI.ProductAPIBase
+public class ProductGrpcService(HealthCheckService service, AppDbContext dbContext) : ProductAPI.ProductAPIBase
 {
     public override async Task<HealthResponse> Health(Empty request, ServerCallContext context)
     {
@@ -26,5 +29,11 @@ public class ProductGrpcService(HealthCheckService service) : ProductAPI.Product
         }));
         
         return response;
+    }
+
+    public override async Task<ProductDto?> GetProduct(GetProductReq request, ServerCallContext context)
+    {
+        var productEntity = await dbContext.Products.FirstOrDefaultAsync(x => x.Id == Guid.Parse(request.Id));
+        return productEntity?.ToProductDto();
     }
 }

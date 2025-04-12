@@ -9,7 +9,9 @@ public class AppSettings : BaseAppSettings
 
 public class StripeSettings
 {
-    public required string StripePublishableKey { get; init; }
+    public required string PublishableKey { get; init; }
     
-    public required string StripeSecretKey { get; init; }
+    public required string SecretKey { get; init; }
+    
+    public required string WebhookSecret { get; init; }
 }

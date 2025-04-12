@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Gateway.Migrations
+namespace Gateway.Database.Migrations
 {
     public partial class Initial : Migration
     {

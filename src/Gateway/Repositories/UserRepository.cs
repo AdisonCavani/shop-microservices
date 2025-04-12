@@ -104,9 +104,9 @@ public class UserRepository : IUserRepository
         return Tuple.Create(claims, authProperties, user.ToUserDto());
     }
 
-    public async Task VerifyEmailAsync(VerifyEmailReq req)
+    public async Task VerifyEmailAsync(Guid token, Guid userId)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == req.Id);
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
 
         if (user is null)
             throw new Exception();
@@ -115,12 +115,12 @@ public class UserRepository : IUserRepository
             throw new Exception();
 
         var db = _connectionMultiplexer.GetDatabase();
-        var bytes = db.StringGet(AuthSchema.VerifyEmailKeyPrefix + req.Token);
+        var bytes = db.StringGet(AuthSchema.VerifyEmailKeyPrefix + token);
 
         if (!bytes.HasValue)
             throw new Exception();
 
-        if (req.Id != Guid.Parse(bytes!))
+        if (userId != Guid.Parse(bytes!))
             throw new Exception();
 
         user.EmailConfirmed = true;

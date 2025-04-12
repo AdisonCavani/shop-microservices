@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Gateway.Migrations
+namespace Gateway.Database.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20221109172345_UpdateUserSchema")]

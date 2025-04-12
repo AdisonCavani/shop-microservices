@@ -1,19 +1,17 @@
+using CoreShared.Startup;
 using FluentValidation;
+using ProductService.Database;
 using ProductService.Endpoints;
-using ProductService.Startup;
-// using Microsoft.EntityFrameworkCore;
-// using ProductService.Database;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.Services.AddProblemDetails();
 
-builder.Configuration.AddUserSecrets<Program>();
-
 // Add services to the container.
 builder.Services.AddSwagger();
-builder.AddInfrastructure();
+builder.AddNpgsqlDbContext<AppDbContext>("Products");
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddGrpc();
 builder.Services.AddGrpcHealthChecks();
@@ -29,11 +27,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// using var scope = app.Services.CreateScope();
-// var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-//
-// if (context.Database.IsRelational())
-//     context.Database.Migrate();
+using var scope = app.Services.CreateScope();
+var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+if (context.Database.IsRelational())
+    await context.Database.MigrateAsync();
 
 app.UseHsts();
 app.UseHttpsRedirection();

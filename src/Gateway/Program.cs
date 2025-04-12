@@ -1,3 +1,4 @@
+using CoreShared.Startup;
 using FluentValidation;
 using Gateway.Database;
 using Microsoft.AspNetCore.CookiePolicy;
@@ -6,6 +7,7 @@ using Gateway.Endpoints;
 using Gateway.Startup;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NotificationService;
+using OrderService;
 using ProductService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +28,7 @@ builder.Services.AddServices();
 var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";
 
 builder.Services.AddGrpcServiceReference<NotificationAPI.NotificationAPIClient>($"{(isHttps ? "https" : "http")}://notificationService", failureStatus: HealthStatus.Degraded);
+builder.Services.AddGrpcServiceReference<OrderAPI.OrderAPIClient>($"{(isHttps ? "https" : "http")}://orderService", failureStatus: HealthStatus.Degraded);
 builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>($"{(isHttps ? "https" : "http")}://productService", failureStatus: HealthStatus.Degraded);
 
 builder.Services
@@ -52,7 +55,7 @@ using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
 if (context.Database.IsRelational())
-    context.Database.Migrate();
+    await context.Database.MigrateAsync();
 
 app.UseHsts();
 app.UseHttpsRedirection();

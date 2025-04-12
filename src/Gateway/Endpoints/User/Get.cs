@@ -28,7 +28,7 @@ public static class Get
     [ExcludeFromCodeCoverage]
     internal static OpenApiOperation OpenApi(OpenApiOperation operation)
     {
-        operation.Summary = "Get user endpoint";
+        operation.Summary = "Get user data";
 
         return operation;
     }

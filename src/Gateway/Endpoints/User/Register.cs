@@ -25,13 +25,13 @@ public static class Register
             new(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)),
             authProperties);
 
-        return TypedResults.Created($"{ApiRoutes.User.BasePath}/{user.Id}", user);
+        return TypedResults.Created(ApiRoutes.User.Path, user);
     }
 
     [ExcludeFromCodeCoverage]
     internal static OpenApiOperation OpenApi(OpenApiOperation operation)
     {
-        operation.Summary = "Register endpoint";
+        operation.Summary = "Create new user";
 
         return operation;
     }

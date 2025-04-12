@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Gateway.Contracts.Requests;
 using Gateway.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -10,17 +9,18 @@ namespace Gateway.Endpoints.User;
 public static class VerifyEmail
 {
     internal static async Task<Results<StatusCodeHttpResult, Ok>> HandleAsync(
-        [FromBody] VerifyEmailReq req,
+        HttpContext httpContext,
+        [FromRoute] Guid token,
         [FromServices] IUserRepository repository)
     {
-        await repository.VerifyEmailAsync(req);
+        await repository.VerifyEmailAsync(token, Guid.NewGuid());
         return TypedResults.Ok();
     }
 
     [ExcludeFromCodeCoverage]
     internal static OpenApiOperation OpenApi(OpenApiOperation operation)
     {
-        operation.Summary = "Verify user's email endpoint";
+        operation.Summary = "Verify user's email";
 
         return operation;
     }

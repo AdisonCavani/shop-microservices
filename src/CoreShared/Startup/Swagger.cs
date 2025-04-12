@@ -1,4 +1,6 @@
-﻿namespace ProductService.Startup;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace CoreShared.Startup;
 
 public static class Swagger
 {

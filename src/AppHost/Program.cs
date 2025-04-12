@@ -10,6 +10,7 @@ var postgres = builder.AddPostgres("postgres")
 
 var productsDb = postgres.AddDatabase("Products");
 var usersDb = postgres.AddDatabase("Users");
+var ordersDb = postgres.AddDatabase("Orders");
 
 var redis = builder.AddRedis("redis")
     .WithRedisInsight()
@@ -19,11 +20,17 @@ var notificationService = builder.AddProject<Projects.NotificationService>("noti
     .WithReference(rabbitmq)
     .WaitFor(rabbitmq);
 
-var orderService = builder.AddProject<Projects.OrderService>("orderService");
-
 var productService = builder.AddProject<Projects.ProductService>("productService")
     .WithReference(productsDb)
     .WaitFor(productsDb);
+
+var orderService = builder.AddProject<Projects.OrderService>("orderService")
+    .WithReference(productService)
+    .WithReference(ordersDb)
+    .WithReference(rabbitmq)
+    .WaitFor(productService)
+    .WaitFor(ordersDb)
+    .WaitFor(rabbitmq);
 
 builder.AddProject<Projects.Gateway>("gateway")
     .WithReference(rabbitmq)

@@ -10,9 +10,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.1.0" />
-        <PackageReference Include="Aspire.RabbitMQ.Client.v7" Version="9.1.0" />
-        <PackageReference Include="Aspire.StackExchange.Redis" Version="9.1.0" />
+        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.2.0" />
+        <PackageReference Include="Aspire.RabbitMQ.Client.v7" Version="9.2.0" />
+        <PackageReference Include="Aspire.StackExchange.Redis" Version="9.2.0" />
         <PackageReference Include="Grpc.Net.ClientFactory" Version="2.70.0" />
         <PackageReference Include="Grpc.Tools" Version="2.71.0">
           <PrivateAssets>all</PrivateAssets>
@@ -23,7 +23,6 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.6.24" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
         <PackageReference Include="Yarp.ReverseProxy" Version="2.3.0" />
     </ItemGroup>
 
@@ -35,6 +34,9 @@
     <ItemGroup>
         <Protobuf Include="..\ProtobufSpec\Protos\notification_service.proto" GrpcServices="Client">
             <Link>Contracts\Protos\notification_service.proto</Link>
+        </Protobuf>
+        <Protobuf Include="..\ProtobufSpec\Protos\order_service.proto" GrpcServices="Client">
+            <Link>Contracts\Protos\order_service.proto</Link>
         </Protobuf>
         <Protobuf Include="..\ProtobufSpec\Protos\product_service.proto" GrpcServices="Client">
             <Link>Contracts\Protos\product_service.proto</Link>

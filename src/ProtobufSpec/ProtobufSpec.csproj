@@ -8,12 +8,13 @@
 
     <ItemGroup>
       <PackageReference Include="Grpc.AspNetCore" Version="2.70.0" />
-      <PackageReference Include="protobuf-net" Version="3.2.46" />
+      <PackageReference Include="protobuf-net" Version="3.2.52" />
     </ItemGroup>
 
     <ItemGroup>
         <Protobuf Include="Protos\health.proto" GrpcServices="None" />
         <Protobuf Include="Protos\notification_service.proto" GrpcServices="Server" AdditionalImportDirs="Protos" />
+        <Protobuf Include="Protos\order_service.proto" GrpcServices="Server" AdditionalImportDirs="Protos"/>
         <Protobuf Include="Protos\product_service.proto" GrpcServices="Server" AdditionalImportDirs="Protos" />
     </ItemGroup>
 

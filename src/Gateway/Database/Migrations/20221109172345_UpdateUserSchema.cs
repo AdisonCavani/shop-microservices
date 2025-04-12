@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Gateway.Migrations
+namespace Gateway.Database.Migrations
 {
     public partial class UpdateUserSchema : Migration
     {

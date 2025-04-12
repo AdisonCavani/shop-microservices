@@ -11,6 +11,6 @@ public interface IUserRepository
     Task<UserDto> GetUserByIdAsync(Guid id);
     Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> RegisterAsync(RegisterReq req);
     Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> LoginAsync(LoginReq req);
-    Task VerifyEmailAsync(VerifyEmailReq req);
+    Task VerifyEmailAsync(Guid token, Guid userId);
     Task ResendVerifyEmailAsync(ResendVerifyEmailReq req);
 }

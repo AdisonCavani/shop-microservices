@@ -5,8 +5,6 @@ namespace ProductService.Database;
 
 public class AppDbContext : DbContext
 {
-    public required DbSet<ProductCategoryEntity> ProductCategories { get; set; }
-    
     public required DbSet<ProductEntity> Products { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
@@ -19,15 +17,6 @@ public class AppDbContext : DbContext
         // For generating UUID
         builder.HasPostgresExtension("uuid-ossp");
         
-        builder.Entity<ProductCategoryEntity>()
-            .HasKey(x => x.Id);
-        
-        builder.Entity<ProductCategoryEntity>()
-            .Property(x => x.Id)
-            .HasColumnType("uuid")
-            .HasDefaultValueSql("uuid_generate_v4()")
-            .IsRequired();
-        
         builder.Entity<ProductEntity>()
             .HasKey(x => x.Id);
         
@@ -36,14 +25,9 @@ public class AppDbContext : DbContext
             .HasColumnType("uuid")
             .HasDefaultValueSql("uuid_generate_v4()")
             .IsRequired();
-
+        
         builder.Entity<ProductEntity>()
-            .HasOne(x => x.Category)
-            .WithMany(x => x.Products)
-            .HasForeignKey(x => x.CategoryId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Entity<ProductEntity>()
-            .HasIndex(x => x.CategoryId);
+            .HasIndex(x => x.ActivationCode)
+            .IsUnique();
     }
 }

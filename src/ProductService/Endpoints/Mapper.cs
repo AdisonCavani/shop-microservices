@@ -12,13 +12,19 @@ public static class Mapper
             .AddEndpointFilter<ValidationFilter<CreateProductReq>>()
             .WithOpenApi(Product.Create.OpenApi);
 
-        group.WithTags("Product endpoint");
+        group.MapGet(ApiRoutes.Product.Get, Product.Get.HandleAsync)
+            .WithOpenApi(Product.Get.OpenApi);
+        
+        group.MapGet("/", Product.List.HandleAsync)
+            .WithOpenApi(Product.List.OpenApi);
+
+        group.WithTags("Product endpoints");
     }
     
     public static void MapEndpoints(this WebApplication app)
     {
         app.MapGrpcService<ProductGrpcService>();
         
-        app.MapGroup(ApiRoutes.Product.BasePath).MapProductApi();
+        app.MapGroup(ApiRoutes.Product.Path).MapProductApi();
     }
 }
