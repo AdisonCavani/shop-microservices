@@ -12,30 +12,39 @@ namespace OrderService.Endpoints.Payment;
 
 public static class Webhook
 {
-    internal static async Task<Results<StatusCodeHttpResult, NoContent>> HandleAsync(
+    internal static async Task<Results<StatusCodeHttpResult, UnauthorizedHttpResult, NoContent>> HandleAsync(
         HttpRequest request,
         [FromServices] IOptions<AppSettings> appSettings,
-        Publisher<PaymentSucceededEvent> publisher)
+        [FromServices] Publisher<PaymentSucceededEvent> publisher)
     {
-        var payload = await new StreamReader(request.Body).ReadToEndAsync();
-        var signature = request.Headers["Stripe-Signature"];
-        
-        var stripeEvent = EventUtility.ConstructEvent(payload, signature, appSettings.Value.Stripe.WebhookSecret);
-
-        if (stripeEvent.Type != "charge.succeeded")
-            return TypedResults.NoContent();
-
-        var charge = stripeEvent.Data.Object as Charge;
-
-        if (charge is null || !charge.Paid)
-            return TypedResults.NoContent();
-
-        await publisher.PublishEventAsync(new PaymentSucceededEvent
+        try
         {
-            PaymentId = Guid.Parse(charge.Metadata["PaymentId"]),
-        });
+            var payload = await new StreamReader(request.Body).ReadToEndAsync();
+
+            if (!request.Headers.TryGetValue("Stripe-Signature", out var signature))
+                return TypedResults.Unauthorized();
         
-        return TypedResults.NoContent();
+            var stripeEvent = EventUtility.ConstructEvent(payload, signature, appSettings.Value.Stripe.WebhookSecret);
+
+            if (stripeEvent.Type != "charge.succeeded")
+                return TypedResults.NoContent();
+
+            var charge = stripeEvent.Data.Object as Charge;
+
+            if (charge is null || !charge.Paid)
+                return TypedResults.NoContent();
+
+            await publisher.PublishEventAsync(new PaymentSucceededEvent
+            {
+                PaymentId = Guid.Parse(charge.Metadata["PaymentId"]),
+            });
+        
+            return TypedResults.NoContent();
+        }
+        catch (StripeException)
+        {
+            return TypedResults.Unauthorized();
+        }
     }
 
     [ExcludeFromCodeCoverage]

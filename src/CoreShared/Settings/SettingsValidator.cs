@@ -12,6 +12,7 @@ public static class SettingsValidator
         return settings;
     }
 
+    // TODO: this is not working
     private static void ExecuteValidation(object settings)
     {
         foreach (PropertyInfo prop in settings.GetType().GetProperties())

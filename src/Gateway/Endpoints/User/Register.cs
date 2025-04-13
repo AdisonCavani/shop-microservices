@@ -1,10 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Security.Claims;
 using Gateway.Contracts.Dtos;
 using Gateway.Contracts.Requests;
 using Gateway.Repositories;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -19,11 +16,7 @@ public static class Register
         HttpContext context,
         [FromServices] IUserRepository repository)
     {
-        var (claims, authProperties, user) = await repository.RegisterAsync(req);
-
-        await context.SignInAsync(
-            new(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)),
-            authProperties);
+        var user = await repository.RegisterAsync(req);
 
         return TypedResults.Created(ApiRoutes.User.Path, user);
     }

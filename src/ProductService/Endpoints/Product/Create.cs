@@ -13,12 +13,12 @@ public static class Create
 {
     internal static async Task<Results<StatusCodeHttpResult, Created<ProductDto>>> HandleAsync(
         [FromBody] CreateProductReq req,
-        [FromServices] AppDbContext context)
+        [FromServices] AppDbContext dbContext)
     {
         var productEntity = req.ToProductEntity();
         
-        context.Products.Add(productEntity);
-        await context.SaveChangesAsync();
+        dbContext.Products.Add(productEntity);
+        await dbContext.SaveChangesAsync();
 
         return TypedResults.Created($"{ApiRoutes.Product.Path}/{productEntity.Id}", productEntity.ToProductDto());
     }

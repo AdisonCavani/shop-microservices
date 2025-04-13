@@ -13,7 +13,7 @@ public static class VerifyEmail
         [FromRoute] Guid token,
         [FromServices] IUserRepository repository)
     {
-        await repository.VerifyEmailAsync(token, Guid.NewGuid());
+        await repository.VerifyEmailAsync(token);
         return TypedResults.Ok();
     }
 

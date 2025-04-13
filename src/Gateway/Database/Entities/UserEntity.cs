@@ -15,4 +15,6 @@ public class UserEntity
     public bool EmailConfirmed { get; set; }
 
     public required string Password { get; set; }
+
+    public UserRoleEnum UserRole { get; set; } = UserRoleEnum.User;
 }

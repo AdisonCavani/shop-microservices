@@ -1,7 +1,7 @@
-﻿using FluentValidation;
+﻿using CoreShared;
+using FluentValidation;
 using Gateway.Contracts.Requests;
 using Gateway.Database;
-using Gateway.Endpoints;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gateway.Validators;

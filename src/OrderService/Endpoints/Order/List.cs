@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
+using CoreShared;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +14,18 @@ namespace OrderService.Endpoints.Order;
 public static class List
 {
     internal static async Task<Results<StatusCodeHttpResult, Ok<ListOrdersRes>>> HandleAsync(
+        HttpContext httpContext,
         [FromServices] AppDbContext dbContext)
     {
-        // TODO: use real userId
+        var userIdStr = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userIdStr is null)
+            throw new Exception(ExceptionMessages.NameIdentifierNull);
+        
+        var userId = Guid.Parse(userIdStr);
+        
         var orderEntities = await dbContext.Orders
-            .Where(x => x.UserId == Guid.NewGuid())
+            .Where(x => x.UserId == userId)
             .ToListAsync();
         
         var orders = orderEntities.Select(x => x.ToOrderDto());

@@ -1,7 +1,7 @@
+using CoreShared.Settings;
 using CoreShared.Startup;
 using FluentValidation;
 using Gateway.Database;
-using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 using Gateway.Endpoints;
 using Gateway.Startup;
@@ -17,11 +17,12 @@ builder.Services.AddProblemDetails();
 
 builder.Configuration.AddUserSecrets<Program>();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetRequiredSection("Settings"));
+var appSettings = builder.Configuration.GetRequiredSection("Settings").Get<AppSettings>()?.Validate()!;
 
 // Add services to the container.
 builder.Services.AddSwagger();
 builder.AddInfrastructure();
-builder.Services.AddAuth();
+builder.Services.AddAuth(appSettings);
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddServices();
 
@@ -59,12 +60,6 @@ if (context.Database.IsRelational())
 
 app.UseHsts();
 app.UseHttpsRedirection();
-
-app.UseCookiePolicy(new()
-{
-    MinimumSameSitePolicy = SameSiteMode.Lax,
-    HttpOnly = HttpOnlyPolicy.Always
-});
 
 app.UseAuthentication();
 app.UseAuthorization();

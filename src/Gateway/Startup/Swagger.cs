@@ -14,10 +14,10 @@ public static class Swagger
     {
         using var scope = endpoints.ServiceProvider.CreateScope();
         var appSettings = scope.ServiceProvider.GetRequiredService<IOptions<AppSettings>>();
-        
+
         var clusters = appSettings.Value.ReverseProxy.Clusters;
         var routes = appSettings.Value.ReverseProxy.Routes;
-        
+
         foreach (var (clusterId, _) in clusters)
         {
             appSettings.Value.ReverseProxy.Swagger.TryGetValue(clusterId, out var swagger);
@@ -31,7 +31,7 @@ public static class Swagger
     private static void MapSwaggerSpecs(
         this IEndpointRouteBuilder endpoints,
         Dictionary<string, RouteConfig> config,
-        string clusterId, 
+        string clusterId,
         GatewaySwaggerSpec swagger)
     {
         endpoints.Map(swagger.Endpoint, async context =>
@@ -42,54 +42,116 @@ public static class Swagger
             var document = new OpenApiStreamReader().Read(stream, out _);
             var rewrite = new OpenApiPaths();
 
-            // map existing path
-            config.TryGetValue(clusterId, out var routes);
+            var routeConfigs = config
+                .Where(kvp => kvp.Key == clusterId || kvp.Key.StartsWith($"{clusterId}_"))
+                .Select(kvp => kvp.Value)
+                .ToList();
 
-            if (routes is null)
+            if (!routeConfigs.Any())
                 return;
-            
-            var hasCatchAll = routes.Match.Path?.Contains("**catch-all") ?? false;
 
             foreach (var path in document.Paths)
             {
-
+                // Replace the target path with the origin path.
                 var rewritedPath = path.Key.Replace(swagger.TargetPath, swagger.OriginPath);
 
-                // there is a catch all, all route are elligible 
-                // or there is a route that match without any operation methods filtering
-                if (hasCatchAll || routes.Match.Path!.Equals(rewritedPath) && routes.Match.Methods == null)
+                // Try to get a matching route configuration for this rewritten path.
+                // This example takes the first route that matches.
+                var matchingRoute = routeConfigs.FirstOrDefault(rc =>
+                    rc.Match.Path != null &&
+                    rc.Match.Path.Equals(rewritedPath, StringComparison.OrdinalIgnoreCase));
+
+                // If no route config matches exactly, check if any route is using a catch-all pattern.
+                if (matchingRoute == null)
+                {
+                    matchingRoute = routeConfigs.FirstOrDefault(rc =>
+                        rc.Match.Path?.Contains("**catch-all", StringComparison.OrdinalIgnoreCase) == true);
+                }
+
+                if (matchingRoute is null)
+                {
+                    // If still no matching route config, skip this path.
+                    continue;
+                }
+
+                // Determine if the route configuration uses a catch-all.
+                var hasCatchAll =
+                    matchingRoute.Match.Path?.Contains("**catch-all", StringComparison.OrdinalIgnoreCase) ?? false;
+
+                if (hasCatchAll ||
+                    (matchingRoute.Match.Path!.Equals(rewritedPath, StringComparison.OrdinalIgnoreCase) &&
+                     matchingRoute.Match.Methods == null))
+                {
                     rewrite.Add(rewritedPath, path.Value);
+                }
                 else
                 {
-                    // there is a route that match
-                    var routeThatMatchPath = routes.Match.Path?.Equals(rewritedPath) ?? false;
+                    // Check for an exact match on the rewritten path
+                    var routeThatMatchPath =
+                        matchingRoute.Match.Path?.Equals(rewritedPath, StringComparison.OrdinalIgnoreCase) ?? false;
                     if (routeThatMatchPath)
                     {
-                        // filter operation based on yarp config
-                        var operationToRemoves = new List<OperationType>();
+                        // Filter operations based on the allowed HTTP methods from YARP config.
+                        var operationsToRemove = new List<OperationType>();
                         foreach (var operation in path.Value.Operations)
                         {
-                            // match route and method
-                            var hasRoute = routes.Match.Path!.Equals(rewritedPath) &&
-                                           routes.Match.Methods!.Contains(operation.Key.ToString().ToUpperInvariant());
-
+                            var hasRoute =
+                                matchingRoute.Match.Path!.Equals(rewritedPath, StringComparison.OrdinalIgnoreCase) &&
+                                matchingRoute.Match.Methods != null &&
+                                matchingRoute.Match.Methods.Contains(operation.Key.ToString().ToUpperInvariant());
                             if (!hasRoute)
                             {
-                                operationToRemoves.Add(operation.Key);
+                                operationsToRemove.Add(operation.Key);
                             }
                         }
 
-                        // remove operation routes
-                        foreach (var operationToRemove in operationToRemoves)
+                        // Remove non-matching operations.
+                        foreach (var operationToRemove in operationsToRemove)
                         {
                             path.Value.Operations.Remove(operationToRemove);
                         }
 
-                        // add path if there is any operation
+                        // Only add the path if there remains at least one valid operation.
                         if (path.Value.Operations.Any())
                         {
                             rewrite.Add(rewritedPath, path.Value);
                         }
+                    }
+                }
+                
+                bool requiresAuth = !string.Equals(
+                    matchingRoute.AuthorizationPolicy, "anonymous", StringComparison.OrdinalIgnoreCase);
+
+                if (requiresAuth)
+                {
+                    foreach (var operation in path.Value.Operations.Values)
+                    {
+                        operation.Responses.TryAdd(
+                            StatusCodes.Status401Unauthorized.ToString(),
+                            new OpenApiResponse { Description = "Unauthorized" }
+                        );
+                        operation.Responses.TryAdd(
+                            StatusCodes.Status403Forbidden.ToString(),
+                            new OpenApiResponse { Description = "Forbidden" }
+                        );
+
+                        operation.Security = new List<OpenApiSecurityRequirement>
+                        {
+                            new()
+                            {
+                                {
+                                    new OpenApiSecurityScheme
+                                    {
+                                        Reference = new OpenApiReference
+                                        {
+                                            Type = ReferenceType.SecurityScheme,
+                                            Id = "Bearer"
+                                        }
+                                    },
+                                    Array.Empty<string>()
+                                }
+                            }
+                        };
                     }
                 }
             }

@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
+using CoreShared;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -16,8 +18,9 @@ public static class Create
 {
     internal static async Task<Results<StatusCodeHttpResult, NotFound, Created<OrderDto>>> HandleAsync(
         [FromBody] CreateOrderReq req,
+        HttpContext httpContext,
         [FromServices] ProductAPI.ProductAPIClient client,
-        [FromServices] AppDbContext context)
+        [FromServices] AppDbContext dbContext)
     {
         var response = await client.GetProductAsync(new GetProductReq
         {
@@ -27,15 +30,22 @@ public static class Create
         if (response is null)
             return TypedResults.NotFound();
         
+        var userIdStr = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userIdStr is null)
+            throw new Exception(ExceptionMessages.NameIdentifierNull);
+        
+        var userId = Guid.Parse(userIdStr);
+        
         var orderEntity = new OrderEntity
         {
-            UserId = Guid.NewGuid(), // TODO: add auth
+            UserId = userId,
             ProductId = req.ProductId,
             Quantity = req.Quantity,
         };
         
-        context.Orders.Add(orderEntity);
-        await context.SaveChangesAsync();
+        dbContext.Orders.Add(orderEntity);
+        await dbContext.SaveChangesAsync();
 
         return TypedResults.Created($"{ApiRoutes.Product.Path}/{orderEntity.Id}", orderEntity.ToOrderDto());
     }

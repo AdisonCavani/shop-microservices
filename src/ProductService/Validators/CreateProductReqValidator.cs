@@ -11,7 +11,7 @@ public class CreateProductReqValidator : AbstractValidator<CreateProductReq>
     {
         RuleFor(x => x.Name).NotEmpty();
         RuleFor(x => x.Description).NotEmpty();
-        RuleFor(x => x.PriceCents).GreaterThan(200);
+        RuleFor(x => x.PriceCents).GreaterThanOrEqualTo(200);
         RuleFor(x => x.ActivationCode)
             .NotEmpty()
             .CustomAsync(async (value, context, cancellationToken) =>

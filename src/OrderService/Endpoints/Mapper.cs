@@ -16,7 +16,7 @@ public static class Mapper
             .WithOpenApi(Order.Get.OpenApi);
         
         group.MapGet("/", Order.List.HandleAsync)
-            .WithOpenApi(Order.Get.OpenApi);
+            .WithOpenApi(Order.List.OpenApi);
 
         group.WithTags("Order endpoints");
     }

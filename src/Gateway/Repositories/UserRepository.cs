@@ -1,11 +1,9 @@
-﻿using System.Security.Claims;
+﻿using CoreShared;
 using Gateway.Auth;
 using Gateway.Contracts.Dtos;
 using Gateway.Contracts.Requests;
 using Gateway.Database;
 using Gateway.Database.Entities;
-using Gateway.Endpoints;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProtobufSpec.Events;
@@ -17,67 +15,59 @@ namespace Gateway.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _dbContext;
     private readonly Publisher<ConfirmEmailEvent> _publisher;
     private readonly IPasswordHasher<UserEntity> _hasher;
+    private readonly JwtService _jwtService;
     private readonly IConnectionMultiplexer _connectionMultiplexer;
 
     public UserRepository(
-        AppDbContext context,
+        AppDbContext dbContext,
         IPasswordHasher<UserEntity> hasher,
         Publisher<ConfirmEmailEvent> publisher,
-        IConnectionMultiplexer connectionMultiplexer)
+        IConnectionMultiplexer connectionMultiplexer,
+        JwtService jwtService)
     {
-        _context = context;
+        _dbContext = dbContext;
         _hasher = hasher;
         _publisher = publisher;
+        _jwtService = jwtService;
         _connectionMultiplexer = connectionMultiplexer;
     }
 
     public async Task<UserDto?> FindUserByIdAsync(Guid id)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
         return user?.ToUserDto();
     }
 
     public async Task<UserDto> GetUserByIdAsync(Guid id)
     {
-        var user = await _context.Users.FirstAsync(x => x.Id == id);
+        var user = await _dbContext.Users.FirstAsync(x => x.Id == id);
         return user.ToUserDto();
     }
 
-    public async Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> RegisterAsync(RegisterReq req)
+    public async Task<UserDto> RegisterAsync(RegisterReq req)
     {
         var user = req.ToUserEntity();
 
         var hashedPassword = _hasher.HashPassword(user, req.Password);
         user.Password = hashedPassword;
 
-        _context.Users.Add(user);
-        var result = await _context.SaveChangesAsync();
+        _dbContext.Users.Add(user);
+        var result = await _dbContext.SaveChangesAsync();
 
         if (result <= 0)
             throw new Exception(ExceptionMessages.DatabaseProblem);
 
         await SendEmailVerifyAsync(user);
 
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, user.Id.ToString())
-        };
-
-        var authProperties = new AuthenticationProperties
-        {
-            ExpiresUtc = DateTime.UtcNow.AddYears(2),
-            IsPersistent = true
-        };
-
-        return Tuple.Create(claims, authProperties, user.ToUserDto());
+        return user.ToUserDto();
     }
 
-    public async Task<Tuple<List<Claim>, AuthenticationProperties, UserDto>> LoginAsync(LoginReq req)
+    public async Task<Tuple<JwtTokenDto, UserDto>> LoginAsync(LoginReq req)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == req.Email.ToLower());
+        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == req.Email.ToLower());
 
         if (user is null)
             throw new Exception(ExceptionMessages.EmailNotExist);
@@ -90,41 +80,31 @@ public class UserRepository : IUserRepository
         // TODO
         // if (valid == PasswordVerificationResult.SuccessRehashNeeded)
 
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, user.Id.ToString())
-        };
+        if (!user.EmailConfirmed)
+            throw new Exception(ExceptionMessages.EmailNotConfirmed);
+        
+        var token = _jwtService.GenerateToken(user);
 
-        var authProperties = new AuthenticationProperties
-        {
-            ExpiresUtc = DateTime.UtcNow.AddYears(2),
-            IsPersistent = req.Persistent
-        };
-
-        return Tuple.Create(claims, authProperties, user.ToUserDto());
+        return Tuple.Create(token, user.ToUserDto());
     }
 
-    public async Task VerifyEmailAsync(Guid token, Guid userId)
+    public async Task VerifyEmailAsync(Guid token)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
-
-        if (user is null)
-            throw new Exception();
-
-        if (user.EmailConfirmed)
-            throw new Exception();
-
         var db = _connectionMultiplexer.GetDatabase();
         var bytes = db.StringGet(AuthSchema.VerifyEmailKeyPrefix + token);
 
         if (!bytes.HasValue)
             throw new Exception();
 
-        if (userId != Guid.Parse(bytes!))
-            throw new Exception();
+        var userId = Guid.Parse(bytes!);
+        
+        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
+        
+        if (user is null)
+            throw new Exception(ExceptionMessages.MissingUserForVerificationToken);
 
         user.EmailConfirmed = true;
-        var result = await _context.SaveChangesAsync();
+        var result = await _dbContext.SaveChangesAsync();
         
         if (result <= 0)
             throw new Exception(ExceptionMessages.DatabaseProblem);
@@ -132,7 +112,7 @@ public class UserRepository : IUserRepository
 
     public async Task ResendVerifyEmailAsync(ResendVerifyEmailReq req)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == req.Id);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == req.Id);
 
         if (user is null)
             throw new Exception();

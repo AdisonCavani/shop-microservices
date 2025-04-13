@@ -1,3 +1,5 @@
+using CoreShared;
+using CoreShared.Settings;
 using CoreShared.Startup;
 using FluentValidation;
 using ProductService.Database;
@@ -9,8 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.Services.AddProblemDetails();
 
+builder.Configuration.AddUserSecrets<Program>();
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("Settings"));
+var appSettings = builder.Configuration.GetRequiredSection("Settings").Get<AppSettings>()?.Validate()!;
+
 // Add services to the container.
 builder.Services.AddSwagger();
+builder.Services.AddJwtBearerAuth(appSettings);
+builder.Services.AddAuthorization();
 builder.AddNpgsqlDbContext<AppDbContext>("Products");
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddGrpc();
@@ -36,8 +44,12 @@ if (context.Database.IsRelational())
 app.UseHsts();
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapEndpoints();
 app.MapGrpcHealthChecksService();
 app.MapDefaultEndpoints();
 
 app.Run();
+
+public class AppSettings : BaseAppSettings {}

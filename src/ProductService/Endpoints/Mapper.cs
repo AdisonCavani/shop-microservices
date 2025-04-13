@@ -9,6 +9,7 @@ public static class Mapper
     private static void MapProductApi(this RouteGroupBuilder group)
     {
         group.MapPost("/", Product.Create.HandleAsync)
+            .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<CreateProductReq>>()
             .WithOpenApi(Product.Create.OpenApi);
 

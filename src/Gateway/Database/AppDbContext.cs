@@ -32,5 +32,12 @@ public class AppDbContext : DbContext
         builder.Entity<UserEntity>()
             .HasIndex(x => x.Email)
             .IsUnique();
+        
+        builder.HasPostgresEnum<UserRoleEnum>(null, nameof(UserRoleEnum));
+
+        builder.Entity<UserEntity>()
+            .Property(x => x.UserRole)
+            .HasColumnType($"\"{nameof(UserRoleEnum)}\"")
+            .HasDefaultValueSql($"'{UserRoleEnum.User.ToString().ToLower()}'");
     }
 }

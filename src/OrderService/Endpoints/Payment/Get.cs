@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
+using CoreShared;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,12 +15,19 @@ public static class Get
 {
     internal static async Task<Results<StatusCodeHttpResult, NotFound, NoContent, Ok<PaymentDto>>> HandleAsync(
         [FromRoute] Guid orderId,
+        HttpContext httpContext,
         [FromServices] AppDbContext dbContext)
     {
-        // TODO: use real userId
+        var userIdStr = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userIdStr is null)
+            throw new Exception(ExceptionMessages.NameIdentifierNull);
+        
+        var userId = Guid.Parse(userIdStr);
+        
         var order = await dbContext.Orders
             .Include(orderEntity => orderEntity.Payments)
-            .FirstOrDefaultAsync(x => x.UserId == Guid.NewGuid() && x.Id == orderId);
+            .FirstOrDefaultAsync(x => x.UserId == userId && x.Id == orderId);
 
         if (order is null)
             return TypedResults.NotFound();

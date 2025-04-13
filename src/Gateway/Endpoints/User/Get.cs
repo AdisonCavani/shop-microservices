@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
+using CoreShared;
 using Gateway.Contracts.Dtos;
 using Gateway.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;

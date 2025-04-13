@@ -10,6 +10,7 @@ public static class Services
     {
         services.AddSingleton<Publisher<ConfirmEmailEvent>>();
         services.AddHttpContextAccessor();
+        services.AddScoped<JwtService>();
         services.AddScoped<IUserRepository, UserRepository>();
     }
 }
