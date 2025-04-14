@@ -1,5 +1,6 @@
 ﻿using CoreShared;
 using OrderService.Contracts.Requests;
+using OrderService.Services;
 using ProtobufSpec;
 
 namespace OrderService.Endpoints;

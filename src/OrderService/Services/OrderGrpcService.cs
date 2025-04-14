@@ -3,7 +3,7 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace OrderService.Endpoints;
+namespace OrderService.Services;
 
 public class OrderGrpcService(HealthCheckService service) : OrderAPI.OrderAPIBase
 {

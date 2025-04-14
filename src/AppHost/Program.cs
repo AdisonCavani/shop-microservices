@@ -6,7 +6,8 @@ var rabbitmq = builder.AddRabbitMQ("rabbitmq")
 
 var postgres = builder.AddPostgres("postgres")
     .WithLifetime(ContainerLifetime.Persistent)
-    .WithDataVolume();
+    .WithDataVolume()
+    .WithEndpoint(port: 5432, targetPort: 5432, name: "postgres");
 
 var productsDb = postgres.AddDatabase("Products");
 var usersDb = postgres.AddDatabase("Users");

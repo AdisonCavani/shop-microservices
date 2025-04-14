@@ -1,4 +1,5 @@
-﻿using CoreShared.Transit;
+﻿using CoreShared;
+using CoreShared.Transit;
 using Microsoft.EntityFrameworkCore;
 using OrderService.Database;
 using ProtobufSpec.Events;
@@ -21,7 +22,7 @@ public class PaymentSucceededEventConsumer : Consumer<PaymentSucceededEvent>
         var payment = await dbContext.Payments.FirstOrDefaultAsync(x => x.Id == message.PaymentId, ct);
 
         if (payment is null)
-            throw new Exception("Could not find payment");
+            throw new Exception(ExceptionMessages.PaymentLost);
 
         payment.Paid = true;
         await dbContext.SaveChangesAsync(ct);

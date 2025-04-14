@@ -12,7 +12,7 @@ namespace OrderService.Endpoints.Payment;
 
 public static class Webhook
 {
-    internal static async Task<Results<StatusCodeHttpResult, UnauthorizedHttpResult, NoContent>> HandleAsync(
+    internal static async Task<Results<StatusCodeHttpResult, UnauthorizedHttpResult, NoContent, Ok>> HandleAsync(
         HttpRequest request,
         [FromServices] IOptions<AppSettings> appSettings,
         [FromServices] Publisher<PaymentSucceededEvent> publisher)
@@ -36,10 +36,10 @@ public static class Webhook
 
             await publisher.PublishEventAsync(new PaymentSucceededEvent
             {
-                PaymentId = Guid.Parse(charge.Metadata["PaymentId"]),
+                PaymentId = Guid.Parse(charge.Metadata["PaymentId"])
             });
         
-            return TypedResults.NoContent();
+            return TypedResults.Ok();
         }
         catch (StripeException)
         {

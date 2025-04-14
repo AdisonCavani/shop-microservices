@@ -43,7 +43,7 @@ public class JwtService
 
         return new()
         {
-            Token = tokenHandler.WriteToken(token),
+            Token = tokenHandler.WriteToken(token)
         };
     }
 }

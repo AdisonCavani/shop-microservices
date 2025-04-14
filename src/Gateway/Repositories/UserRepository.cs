@@ -70,18 +70,18 @@ public class UserRepository : IUserRepository
         var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == req.Email.ToLower());
 
         if (user is null)
-            throw new Exception(ExceptionMessages.EmailNotExist);
+            throw new ProblemException(ExceptionMessages.EmailNotExist, "You need to register first");
 
         var valid = _hasher.VerifyHashedPassword(user, user.Password, req.Password);
 
         if (valid == PasswordVerificationResult.Failed)
-            throw new Exception(ExceptionMessages.PasswordInvalid);
+            throw new ProblemException(ExceptionMessages.PasswordInvalid, "Please enter a valid password");
 
         // TODO
         // if (valid == PasswordVerificationResult.SuccessRehashNeeded)
 
         if (!user.EmailConfirmed)
-            throw new Exception(ExceptionMessages.EmailNotConfirmed);
+            throw new ProblemException(ExceptionMessages.EmailNotConfirmed, "In order to login, you need to verify your email first");
         
         var token = _jwtService.GenerateToken(user);
 
@@ -94,7 +94,7 @@ public class UserRepository : IUserRepository
         var bytes = db.StringGet(AuthSchema.VerifyEmailKeyPrefix + token);
 
         if (!bytes.HasValue)
-            throw new Exception();
+            throw new ProblemException(ExceptionMessages.InvalidToken, "Please enter a valid email confirmation token");
 
         var userId = Guid.Parse(bytes!);
         
@@ -102,6 +102,9 @@ public class UserRepository : IUserRepository
         
         if (user is null)
             throw new Exception(ExceptionMessages.MissingUserForVerificationToken);
+        
+        if (user.EmailConfirmed)
+            throw new ProblemException(ExceptionMessages.EmailAlreadyVerified, "This email is already verified");
 
         user.EmailConfirmed = true;
         var result = await _dbContext.SaveChangesAsync();
@@ -115,7 +118,10 @@ public class UserRepository : IUserRepository
         var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == req.Id);
 
         if (user is null)
-            throw new Exception();
+            throw new Exception(ExceptionMessages.UserLost);
+
+        if (user.EmailConfirmed)
+            throw new ProblemException(ExceptionMessages.EmailAlreadyVerified, "This email is already verified");
         
         await SendEmailVerifyAsync(user);
     }

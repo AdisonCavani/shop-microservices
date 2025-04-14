@@ -15,9 +15,7 @@ public class ConfirmEmailEventConsumer : Consumer<ConfirmEmailEvent>
     
     protected override async Task Consume(ConfirmEmailEvent message, IServiceProvider serviceProvider, CancellationToken ct)
     {
-        using var scope = serviceProvider.CreateScope();
-        var emailHandler = scope.ServiceProvider.GetRequiredService<EmailHandler>();
-            
+        var emailHandler = serviceProvider.GetRequiredService<EmailHandler>();
         await emailHandler.VerificationMailAsync(message, ct);
     }
 }

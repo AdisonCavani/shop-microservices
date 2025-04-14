@@ -13,7 +13,6 @@ public class ApiRoutes
         public const string Register = "/register";
         public const string Login = "/login";
         public const string VerifyEmail = "/verify-email/{token}";
-        public const string Logout = "/logout";
     }
 
     public class Product

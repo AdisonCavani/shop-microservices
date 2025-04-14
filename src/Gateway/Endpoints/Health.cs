@@ -42,7 +42,7 @@ public static class Health
             gatewayResponse,
             await GetGrpcServiceHealthAsync(notificationClient, nameof(NotificationService), async method => await method.HealthAsync(new Empty())),
             await GetGrpcServiceHealthAsync(orderClient, nameof(OrderService), async method => await method.HealthAsync(new Empty())),
-            await GetGrpcServiceHealthAsync(productClient, nameof(ProductService), async method => await method.HealthAsync(new Empty())),
+            await GetGrpcServiceHealthAsync(productClient, nameof(ProductService), async method => await method.HealthAsync(new Empty()))
         };
 
         var healthy = response.All(res => res.Status == HealthStatus.Healthy.ToString());
@@ -76,7 +76,7 @@ public static class Health
                     {
                         Component = "GRPC",
                         Description = ex.Message,
-                        Status = HealthStatus.Unhealthy.ToString(),
+                        Status = HealthStatus.Unhealthy.ToString()
                     }
                 },
                 Duration = watch.Elapsed

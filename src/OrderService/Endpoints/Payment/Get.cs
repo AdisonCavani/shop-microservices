@@ -44,6 +44,10 @@ public static class Get
 
         if (paymentSession is null)
             return TypedResults.NotFound();
+
+        if ((!payment.Paid && paymentSession.PaymentStatus == "paid")
+            || (payment.Paid && paymentSession.PaymentStatus != "paid"))
+            throw new Exception(ExceptionMessages.PaymentMismatch);
         
         return TypedResults.Ok(new PaymentDto
         {

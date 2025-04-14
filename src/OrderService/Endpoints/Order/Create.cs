@@ -24,7 +24,7 @@ public static class Create
     {
         var response = await client.GetProductAsync(new GetProductReq
         {
-            Id = req.ProductId.ToString(),
+            Id = req.ProductId.ToString()
         });
 
         if (response is null)
@@ -41,7 +41,7 @@ public static class Create
         {
             UserId = userId,
             ProductId = req.ProductId,
-            Quantity = req.Quantity,
+            Quantity = req.Quantity
         };
         
         dbContext.Orders.Add(orderEntity);

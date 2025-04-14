@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.Services.AddProblemDetails();
+builder.Services.AddProblemDetailsHandling();
 
 builder.Configuration.AddUserSecrets<Program>();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("Settings"));

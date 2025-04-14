@@ -30,7 +30,6 @@ public static class JwtBearerAuth
         }).AddJwtBearer(options =>
         {
             options.SaveToken = true;
-            options.RequireHttpsMetadata = true;
             options.TokenValidationParameters = tokenValidationParameters;
         });
 

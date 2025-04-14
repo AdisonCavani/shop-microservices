@@ -1,10 +1,11 @@
+using CoreShared.Startup;
 using NotificationService.Services;
 using NotificationService.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.Services.AddProblemDetails();
+builder.Services.AddProblemDetailsHandling();
 
 builder.AddInfrastructure();
 builder.Services.AddServices(builder.Environment);

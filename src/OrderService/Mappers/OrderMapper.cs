@@ -11,7 +11,7 @@ public static class OrderMapper
         {
             Id = orderEntity.Id,
             ProductId = orderEntity.ProductId,
-            Quantity = orderEntity.Quantity,
+            Quantity = orderEntity.Quantity
         };
     }
 }

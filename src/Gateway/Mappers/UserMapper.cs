@@ -27,7 +27,7 @@ public static class UserMapper
             FirstName = userEntity.FirstName,
             LastName = userEntity.LastName,
             Email = userEntity.Email,
-            Token = Guid.NewGuid(),
+            Token = Guid.NewGuid()
         };
     }
 
@@ -38,7 +38,7 @@ public static class UserMapper
             FirstName = registerReq.FirstName,
             LastName = registerReq.LastName,
             Email = registerReq.Email.ToLower(),
-            Password = registerReq.Password,
+            Password = registerReq.Password
         };
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using CoreShared;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,7 @@ public static class Create
         });
 
         if (product is null)
-            throw new Exception($"Could not find product with id: {order.ProductId}");
+            throw new Exception(ExceptionMessages.ProductLost);
 
         var lineItems = new List<SessionLineItemOptions>
         {
@@ -56,7 +57,7 @@ public static class Create
                     ProductData = new SessionLineItemPriceDataProductDataOptions
                     {
                         Name = product.Name,
-                        Description = product.Description,
+                        Description = product.Description
                     }
                 },
                 Quantity = order.Quantity
@@ -88,7 +89,7 @@ public static class Create
             StripeCheckoutId = checkoutSession.Id,
             CreatedAt = checkoutSession.Created,
             ExpiresAt = checkoutSession.ExpiresAt,
-            OrderId = order.Id,
+            OrderId = order.Id
         });
         await dbContext.SaveChangesAsync();
 

@@ -10,7 +10,7 @@ public static class EmailMapper
         {
             Token = confirmEmailEvent.Token.ToString(),
             FirstName = confirmEmailEvent.FirstName,
-            LastName = confirmEmailEvent.LastName,
+            LastName = confirmEmailEvent.LastName
         };
     }
 }

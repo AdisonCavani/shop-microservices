@@ -19,10 +19,6 @@ public static class Mapper
         
         group.MapGet(ApiRoutes.User.VerifyEmail, User.VerifyEmail.HandleAsync)
             .WithOpenApi(User.VerifyEmail.OpenApi);
-        
-        group.MapGet(ApiRoutes.User.Logout, (Delegate)User.Logout.HandleAsync)
-            .RequireAuthorization()
-            .WithOpenApi(User.Logout.OpenApi);
 
         group.MapGet("/", User.Get.HandleAsync)
             .RequireAuthorization()
