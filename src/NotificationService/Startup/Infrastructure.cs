@@ -1,9 +1,14 @@
-﻿namespace NotificationService.Startup;
+﻿using NotificationService.Services;
+
+namespace NotificationService.Startup;
 
 public static class Infrastructure
 {
     public static void AddInfrastructure(this WebApplicationBuilder builder)
     {
-        builder.AddRabbitMQClient("rabbitmq");
+        builder.AddMassTransitRabbitMq("rabbitmq", _ => {}, configurator =>
+        {
+            configurator.AddConsumer<ConfirmEmailEventConsumer>();
+        });
     }
 }

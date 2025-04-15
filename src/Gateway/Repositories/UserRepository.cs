@@ -6,31 +6,30 @@ using Gateway.Database;
 using Gateway.Database.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ProtobufSpec.Events;
 using StackExchange.Redis;
-using CoreShared.Transit;
 using Gateway.Mappers;
+using MassTransit;
 
 namespace Gateway.Repositories;
 
 public class UserRepository : IUserRepository
 {
+    private readonly IBus _bus;
     private readonly AppDbContext _dbContext;
-    private readonly Publisher<ConfirmEmailEvent> _publisher;
     private readonly IPasswordHasher<UserEntity> _hasher;
     private readonly JwtService _jwtService;
     private readonly IConnectionMultiplexer _connectionMultiplexer;
 
     public UserRepository(
+        IBus bus,
         AppDbContext dbContext,
         IPasswordHasher<UserEntity> hasher,
-        Publisher<ConfirmEmailEvent> publisher,
         IConnectionMultiplexer connectionMultiplexer,
         JwtService jwtService)
     {
+        _bus = bus;
         _dbContext = dbContext;
         _hasher = hasher;
-        _publisher = publisher;
         _jwtService = jwtService;
         _connectionMultiplexer = connectionMultiplexer;
     }
@@ -133,6 +132,6 @@ public class UserRepository : IUserRepository
         var db = _connectionMultiplexer.GetDatabase();
         db.StringSet(AuthSchema.VerifyEmailKeyPrefix + eventMessage.Token, user.Id.ToString(), TimeSpan.FromHours(12));
 
-        await _publisher.PublishEventAsync(eventMessage);
+        await _bus.Publish(eventMessage);
     }
 }

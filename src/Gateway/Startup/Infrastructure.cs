@@ -13,7 +13,7 @@ public static class Infrastructure
             {
                 npgsqlOptions.MapEnum<UserRoleEnum>("UserRoleEnum");
             }));
-        builder.AddRabbitMQClient("rabbitmq");
         builder.AddRedisClient("redis");
+        builder.AddMassTransitRabbitMq("rabbitmq");
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using CoreShared.Transit;
+using MassTransit;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -14,8 +14,8 @@ public static class Webhook
 {
     internal static async Task<Results<StatusCodeHttpResult, UnauthorizedHttpResult, NoContent, Ok>> HandleAsync(
         HttpRequest request,
-        [FromServices] IOptions<AppSettings> appSettings,
-        [FromServices] Publisher<PaymentSucceededEvent> publisher)
+        [FromServices] IBus bus,
+        [FromServices] IOptions<AppSettings> appSettings)
     {
         try
         {
@@ -34,7 +34,7 @@ public static class Webhook
             if (charge is null || !charge.Paid)
                 return TypedResults.NoContent();
 
-            await publisher.PublishEventAsync(new PaymentSucceededEvent
+            await bus.Publish(new PaymentSucceededEvent
             {
                 PaymentId = Guid.Parse(charge.Metadata["PaymentId"])
             });

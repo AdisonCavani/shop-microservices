@@ -13,7 +13,5 @@ public static class Services
 
         services.AddScoped<EmailService>();
         services.AddScoped<EmailHandler>();
-        
-        services.AddHostedService<ConfirmEmailEventConsumer>();
     }
 }

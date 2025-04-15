@@ -1,7 +1,6 @@
 using CoreShared;
 using CoreShared.Settings;
 using CoreShared.Startup;
-using CoreShared.Transit;
 using FluentValidation;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using OrderService.Database;
@@ -11,7 +10,6 @@ using ProductService;
 using Stripe;
 using Microsoft.EntityFrameworkCore;
 using OrderService.Services;
-using ProtobufSpec.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,10 +25,11 @@ builder.Services.AddSwagger();
 builder.Services.AddJwtBearerAuth(appSettings);
 builder.Services.AddAuthorization();
 builder.AddNpgsqlDbContext<AppDbContext>("Orders");
-builder.AddRabbitMQClient("rabbitmq");
+builder.AddMassTransitRabbitMq("rabbitmq", _ => { }, configurator =>
+{
+    configurator.AddConsumer<PaymentSucceededEventConsumer>();
+});
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddSingleton<Publisher<PaymentSucceededEvent>>();
-builder.Services.AddHostedService<PaymentSucceededEventConsumer>();
 builder.Services.AddGrpc();
 builder.Services.AddGrpcHealthChecks();
 

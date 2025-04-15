@@ -1,30 +1,21 @@
 ﻿using CoreShared;
-using CoreShared.Transit;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using OrderService.Database;
 using ProtobufSpec.Events;
-using RabbitMQ.Client;
 
 namespace OrderService.Services;
 
-public class PaymentSucceededEventConsumer : Consumer<PaymentSucceededEvent>
+public class PaymentSucceededEventConsumer(AppDbContext dbContext) : IConsumer<PaymentSucceededEvent>
 {
-    public PaymentSucceededEventConsumer(
-        IConnection connection,
-        IServiceProvider serviceProvider,
-        ILogger<Consumer<PaymentSucceededEvent>> logger) : base(connection, serviceProvider, logger)
+    public async Task Consume(ConsumeContext<PaymentSucceededEvent> context)
     {
-    }
-
-    protected override async Task Consume(PaymentSucceededEvent message, IServiceProvider serviceProvider, CancellationToken ct)
-    {
-        var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
-        var payment = await dbContext.Payments.FirstOrDefaultAsync(x => x.Id == message.PaymentId, ct);
+        var payment = await dbContext.Payments.FirstOrDefaultAsync(x => x.Id == context.Message.PaymentId);
 
         if (payment is null)
             throw new Exception(ExceptionMessages.PaymentLost);
 
         payment.Paid = true;
-        await dbContext.SaveChangesAsync(ct);
+        await dbContext.SaveChangesAsync();
     }
 }
