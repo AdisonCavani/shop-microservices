@@ -9,6 +9,7 @@ public static class Infrastructure
         builder.AddMassTransitRabbitMq("rabbitmq", _ => {}, configurator =>
         {
             configurator.AddConsumer<ConfirmEmailEventConsumer>();
+            configurator.AddConsumer<OrderCompletedEmailEventConsumer>();
         });
     }
 }

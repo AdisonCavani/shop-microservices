@@ -3,11 +3,11 @@
 namespace ProtobufSpec.Events;
 
 [ProtoContract]
-public class ConfirmEmailEvent
+public class OrderCompletedEmailEvent
 {
     [ProtoMember(1)]
     public required Guid UserId { get; set; }
     
     [ProtoMember(2)]
-    public required Guid Token { get; set; }
+    public required string ActivationCode { get; set; }
 }

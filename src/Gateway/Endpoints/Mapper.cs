@@ -29,6 +29,8 @@ public static class Mapper
     
     public static void MapEndpoints(this WebApplication app)
     {
+        app.MapGrpcService<IdentityGrpcService>();
+        
         app.MapGet(ApiRoutes.Health, Health.HandleAsync)
             .WithTags("Health endpoint")
             .WithOpenApi(Health.OpenApi);

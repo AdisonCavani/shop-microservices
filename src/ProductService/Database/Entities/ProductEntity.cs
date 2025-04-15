@@ -11,4 +11,6 @@ public class ProductEntity
     public required long PriceCents { get; set; }
     
     public required string ActivationCode { get; set; }
+    
+    public Guid? CompletedOrderId { get; set; }
 }

@@ -13,7 +13,8 @@ public static class Get
         [FromRoute] Guid productId,
         [FromServices] AppDbContext dbContext)
     {
-        var productEntity = await dbContext.Products.FirstOrDefaultAsync(x => x.Id == productId);
+        var productEntity = await dbContext.Products
+            .FirstOrDefaultAsync(x => x.CompletedOrderId == null && x.Id == productId);
 
         if (productEntity is null)
             return TypedResults.NotFound();

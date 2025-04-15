@@ -15,4 +15,5 @@ public static class ExceptionMessages
     public const string InvalidToken = "Invalid token";
     public const string EmailAlreadyVerified = "Email already verified";
     public const string PaymentMismatch = "Payment is mismatched (probably lost)";
+    public const string ProductSold = "Product sold";
 }

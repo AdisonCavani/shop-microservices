@@ -17,36 +17,27 @@ public class EmailService
         _fileProvider = fileProvider;
     }
 
-    public async Task<bool> SendEmailAsync(
+    public async Task SendEmailAsync(
         string receiverName,
         string receiverEmail,
         string subject,
         object model,
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            MimeMessage message = new();
-            message.From.Add(new MailboxAddress("Papercut", "mail@papercut.com"));
-            message.To.Add(new MailboxAddress(receiverName, receiverEmail));
-            message.Subject = subject;
+        MimeMessage message = new();
+        message.From.Add(new MailboxAddress("Papercut", "mail@papercut.com"));
+        message.To.Add(new MailboxAddress(receiverName, receiverEmail));
+        message.Subject = subject;
 
-            message.Body = new TextPart(TextFormat.Html)
-            {
-                Text = await TemplateFromFileAsync(model.GetType().Name, model, cancellationToken)
-            };
-
-            var client = new SmtpClient();
-            await client.ConnectAsync("localhost", 25, false, cancellationToken);
-            await client.SendAsync(message, cancellationToken);
-            await client.DisconnectAsync(true, cancellationToken);
-            
-            return true;
-        }
-        catch
+        message.Body = new TextPart(TextFormat.Html)
         {
-            return false;
-        }
+            Text = await TemplateFromFileAsync(model.GetType().Name, model, cancellationToken)
+        };
+
+        var client = new SmtpClient();
+        await client.ConnectAsync("localhost", 25, false, cancellationToken);
+        await client.SendAsync(message, cancellationToken);
+        await client.DisconnectAsync(true, cancellationToken);
     }
 
     private async Task<string> TemplateFromFileAsync(

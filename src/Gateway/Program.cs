@@ -32,6 +32,9 @@ builder.Services.AddGrpcServiceReference<NotificationAPI.NotificationAPIClient>(
 builder.Services.AddGrpcServiceReference<OrderAPI.OrderAPIClient>($"{(isHttps ? "https" : "http")}://orderService", failureStatus: HealthStatus.Degraded);
 builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>($"{(isHttps ? "https" : "http")}://productService", failureStatus: HealthStatus.Degraded);
 
+builder.Services.AddGrpc();
+builder.Services.AddGrpcHealthChecks();
+
 builder.Services
     .AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetRequiredSection("Settings:ReverseProxy"));
@@ -65,6 +68,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapEndpoints();
 app.MapDefaultEndpoints();
+app.MapGrpcHealthChecksService();
 app.MapReverseProxy();
 
 app.Run();

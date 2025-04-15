@@ -3,6 +3,7 @@ using System.Security.Claims;
 using CoreShared;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using OrderService.Contracts.Dtos;
 using OrderService.Contracts.Requests;
@@ -22,6 +23,11 @@ public static class Create
         [FromServices] ProductAPI.ProductAPIClient client,
         [FromServices] AppDbContext dbContext)
     {
+        var orderExists = await dbContext.Orders.AnyAsync(x => x.ProductId == req.ProductId);
+
+        if (orderExists)
+            throw new ProblemException(ExceptionMessages.ProductSold, "This product is already sold");
+        
         var response = await client.GetProductAsync(new GetProductReq
         {
             Id = req.ProductId.ToString()
@@ -40,8 +46,7 @@ public static class Create
         var orderEntity = new OrderEntity
         {
             UserId = userId,
-            ProductId = req.ProductId,
-            Quantity = req.Quantity
+            ProductId = req.ProductId
         };
         
         dbContext.Orders.Add(orderEntity);

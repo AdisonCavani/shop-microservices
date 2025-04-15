@@ -10,8 +10,7 @@ public static class OrderMapper
         return new OrderDto
         {
             Id = orderEntity.Id,
-            ProductId = orderEntity.ProductId,
-            Quantity = orderEntity.Quantity
+            ProductId = orderEntity.ProductId
         };
     }
 }

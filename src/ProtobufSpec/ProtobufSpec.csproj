@@ -13,6 +13,15 @@
 
     <ItemGroup>
         <Protobuf Include="Protos\health.proto" GrpcServices="None" />
+        <Protobuf Include="Protos\identity_service.proto">
+          <GrpcServices>Server</GrpcServices>
+          <Access>Public</Access>
+          <ProtoCompile>True</ProtoCompile>
+          <CompileOutputs>True</CompileOutputs>
+          <OutputDir>obj\Debug\net9.0\</OutputDir>
+          <Generator>MSBuild:Compile</Generator>
+          <AdditionalImportDirs>Protos</AdditionalImportDirs>
+        </Protobuf>
         <Protobuf Include="Protos\notification_service.proto" GrpcServices="Server" AdditionalImportDirs="Protos" />
         <Protobuf Include="Protos\order_service.proto" GrpcServices="Server" AdditionalImportDirs="Protos"/>
         <Protobuf Include="Protos\product_service.proto" GrpcServices="Server" AdditionalImportDirs="Protos" />

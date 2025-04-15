@@ -60,7 +60,7 @@ public static class Create
                         Description = product.Description
                     }
                 },
-                Quantity = order.Quantity
+                Quantity = 1
             }
         };
         
@@ -85,7 +85,7 @@ public static class Create
 
         dbContext.Payments.Add(new PaymentEntity
         {
-            Id = order.Id,
+            Id = paymentId,
             StripeCheckoutId = checkoutSession.Id,
             CreatedAt = checkoutSession.Created,
             ExpiresAt = checkoutSession.ExpiresAt,

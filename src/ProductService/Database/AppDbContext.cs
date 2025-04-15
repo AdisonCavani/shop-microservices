@@ -29,5 +29,9 @@ public class AppDbContext : DbContext
         builder.Entity<ProductEntity>()
             .HasIndex(x => x.ActivationCode)
             .IsUnique();
+
+        builder.Entity<ProductEntity>()
+            .Property(x => x.CompletedOrderId)
+            .HasColumnType("uuid");
     }
 }

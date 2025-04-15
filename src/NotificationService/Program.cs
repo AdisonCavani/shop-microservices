@@ -1,4 +1,6 @@
 using CoreShared.Startup;
+using Gateway;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NotificationService.Services;
 using NotificationService.Startup;
 
@@ -11,6 +13,10 @@ builder.AddInfrastructure();
 builder.Services.AddServices(builder.Environment);
 builder.Services.AddGrpc();
 builder.Services.AddGrpcHealthChecks();
+
+var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";
+
+builder.Services.AddGrpcServiceReference<IdentityAPI.IdentityAPIClient>($"{(isHttps ? "https" : "http")}://identityService", failureStatus: HealthStatus.Degraded);
 
 var app = builder.Build();
 

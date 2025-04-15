@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.2.0" />
+        <PackageReference Include="CommunityToolkit.Aspire.MassTransit.RabbitMQ" Version="9.3.1-beta.265" />
         <PackageReference Include="Grpc.AspNetCore.HealthChecks" Version="2.70.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
           <PrivateAssets>all</PrivateAssets>

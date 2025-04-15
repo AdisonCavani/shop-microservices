@@ -1,0 +1,20 @@
+﻿syntax = "proto3";
+option csharp_namespace = "Gateway";
+
+package identity.v1.identity;
+
+service IdentityAPI {
+  rpc GetUser (GetUserReq) returns (UserDto);
+}
+
+message GetUserReq {
+  string id = 1;
+}
+
+message UserDto {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  bool email_confirmed = 5;
+}

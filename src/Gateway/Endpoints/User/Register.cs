@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Gateway.Contracts.Dtos;
 using Gateway.Contracts.Requests;
 using Gateway.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;

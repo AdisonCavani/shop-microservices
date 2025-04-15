@@ -11,8 +11,7 @@ public static class UserMapper
     {
         return new UserDto
         {
-            Id = userEntity.Id,
-            CreatedAt = userEntity.CreatedAt,
+            Id = userEntity.Id.ToString(),
             FirstName = userEntity.FirstName,
             LastName = userEntity.LastName,
             Email = userEntity.Email,
@@ -24,9 +23,7 @@ public static class UserMapper
     {
         return new ConfirmEmailEvent
         {
-            FirstName = userEntity.FirstName,
-            LastName = userEntity.LastName,
-            Email = userEntity.Email,
+            UserId = userEntity.Id,
             Token = Guid.NewGuid()
         };
     }

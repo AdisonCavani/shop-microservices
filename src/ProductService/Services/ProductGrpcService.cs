@@ -6,7 +6,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using ProductService.Database;
 using ProductService.Mappers;
 
-namespace ProductService.Endpoints;
+namespace ProductService.Services;
 
 public class ProductGrpcService(HealthCheckService service, AppDbContext dbContext) : ProductAPI.ProductAPIBase
 {
