@@ -3,11 +3,9 @@ using System.Security.Claims;
 using CoreShared;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using OrderService.Contracts.Dtos;
-using OrderService.Database;
-using OrderService.Mappers;
+using OrderService.Services;
 
 namespace OrderService.Endpoints.Order;
 
@@ -16,7 +14,7 @@ public static class Get
     internal static async Task<Results<StatusCodeHttpResult, NotFound, Ok<OrderDto>>> HandleAsync(
         [FromRoute] Guid orderId,
         HttpContext httpContext,
-        [FromServices] AppDbContext dbContext)
+        [FromServices] IOrderService orderService)
     {
         var userIdStr = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -24,17 +22,13 @@ public static class Get
             throw new Exception(ExceptionMessages.NameIdentifierNull);
         
         var userId = Guid.Parse(userIdStr);
-        
-        var orderEntity = await dbContext.Orders
-            .Include(x => x.Payments)
-            .FirstOrDefaultAsync(x => x.UserId == userId && x.Id == orderId);
 
-        if (orderEntity is null)
+        var orderDto = await orderService.GetOrderAsync(orderId, userId);
+
+        if (orderDto is null)
             return TypedResults.NotFound();
 
-        var payment = orderEntity.Payments.FirstOrDefault(x => x.OrderId == orderId && (x.Paid || (!x.Paid && x.ExpiresAt > DateTime.UtcNow)));
-
-        return TypedResults.Ok(orderEntity.ToOrderDto(payment));
+        return TypedResults.Ok(orderDto);
     }
     
     [ExcludeFromCodeCoverage]

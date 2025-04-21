@@ -5,14 +5,9 @@ namespace OrderService.Database;
 
 public class AppDbContext : DbContext
 {
-    public required DbSet<OrderEntity> Orders { get; set; }
+    public virtual required DbSet<OrderEntity> Orders { get; set; }
     
-    public required DbSet<PaymentEntity> Payments { get; set; }
-    
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    {
-        
-    }
+    public virtual required DbSet<PaymentEntity> Payments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

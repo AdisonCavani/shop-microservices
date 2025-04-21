@@ -2,5 +2,9 @@
 
 public class PaymentDto
 {
-    public required string PaymentUrl { get; set; }
+    public string? PaymentUrl { get; set; }
+    
+    public bool Paid { get; set; }
+    
+    public DateTime? ExpirationDate { get; set; }
 }

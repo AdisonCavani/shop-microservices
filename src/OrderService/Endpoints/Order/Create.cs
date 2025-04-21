@@ -3,14 +3,10 @@ using System.Security.Claims;
 using CoreShared;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using OrderService.Contracts.Dtos;
 using OrderService.Contracts.Requests;
-using OrderService.Database;
-using OrderService.Database.Entities;
-using OrderService.Mappers;
-using ProductService;
+using OrderService.Services;
 using ProtobufSpec;
 
 namespace OrderService.Endpoints.Order;
@@ -20,39 +16,21 @@ public static class Create
     internal static async Task<Results<StatusCodeHttpResult, NotFound, Created<OrderDto>>> HandleAsync(
         [FromBody] CreateOrderReq req,
         HttpContext httpContext,
-        [FromServices] ProductAPI.ProductAPIClient client,
-        [FromServices] AppDbContext dbContext)
+        [FromServices] IOrderService orderService)
     {
-        var orderExists = await dbContext.Orders.AnyAsync(x => x.ProductId == req.ProductId);
-
-        if (orderExists)
-            throw new ProblemException(ExceptionMessages.ProductSold, "This product is already sold");
-        
-        var response = await client.GetProductAsync(new GetProductReq
-        {
-            Id = req.ProductId.ToString()
-        });
-
-        if (response is null)
-            return TypedResults.NotFound();
-        
         var userIdStr = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userIdStr is null)
             throw new Exception(ExceptionMessages.NameIdentifierNull);
         
         var userId = Guid.Parse(userIdStr);
-        
-        var orderEntity = new OrderEntity
-        {
-            UserId = userId,
-            ProductId = req.ProductId
-        };
-        
-        dbContext.Orders.Add(orderEntity);
-        await dbContext.SaveChangesAsync();
 
-        return TypedResults.Created($"{ApiRoutes.Product.Path}/{orderEntity.Id}", orderEntity.ToOrderDto());
+        var orderDto = await orderService.CreateOrderAsync(req.ProductId, userId);
+        
+        if (orderDto is null)
+            return TypedResults.NotFound();
+        
+        return TypedResults.Created($"{ApiRoutes.Order.Path}/{orderDto.Id}", orderDto);
     }
 
     [ExcludeFromCodeCoverage]

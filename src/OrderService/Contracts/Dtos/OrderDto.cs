@@ -6,9 +6,7 @@ public class OrderDto
     
     public required Guid ProductId { get; set; }
     
-    public required bool Paid { get; set; }
-    
-    public Guid? PaymentId { get; set; }
+    public bool Paid { get; set; }
     
     public DateTime? PaymentExpirationDate { get; set; }
 }

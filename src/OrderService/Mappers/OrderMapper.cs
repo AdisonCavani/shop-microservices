@@ -12,7 +12,6 @@ public static class OrderMapper
             Id = orderEntity.Id,
             ProductId = orderEntity.ProductId,
             Paid = paymentEntity?.Paid ?? false,
-            PaymentId = paymentEntity?.Id,
             PaymentExpirationDate = paymentEntity?.Paid ?? true ? null : paymentEntity.ExpiresAt 
         };
     }

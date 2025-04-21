@@ -3,11 +3,9 @@ using System.Security.Claims;
 using CoreShared;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using OrderService.Contracts.Responses;
-using OrderService.Database;
-using OrderService.Mappers;
+using OrderService.Services;
 
 namespace OrderService.Endpoints.Order;
 
@@ -15,7 +13,7 @@ public static class List
 {
     internal static async Task<Results<StatusCodeHttpResult, Ok<ListOrdersRes>>> HandleAsync(
         HttpContext httpContext,
-        [FromServices] AppDbContext dbContext)
+        [FromServices] IOrderService orderService)
     {
         var userIdStr = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -24,14 +22,7 @@ public static class List
         
         var userId = Guid.Parse(userIdStr);
         
-        var orderEntities = await dbContext.Orders
-            .Where(x => x.UserId == userId)
-            .Include(x => x.Payments)
-            .ToListAsync();
-        
-        var orders = orderEntities
-            .Select(x => x.ToOrderDto(x.Payments
-                .FirstOrDefault(y => y.Paid || (!y.Paid && y.ExpiresAt > DateTime.UtcNow))));
+        var orders = await orderService.GetOrdersAsync(userId);
         
         return TypedResults.Ok(new ListOrdersRes { Orders = orders });
     }

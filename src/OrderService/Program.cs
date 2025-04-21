@@ -29,6 +29,8 @@ builder.AddMassTransitRabbitMq("rabbitmq", _ => { }, configurator =>
 {
     configurator.AddConsumer<PaymentSucceededEventConsumer>();
 });
+builder.Services.AddScoped<IOrderService, OrderService.Services.OrderService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddGrpc();
 builder.Services.AddGrpcHealthChecks();
