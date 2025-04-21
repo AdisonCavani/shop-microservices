@@ -27,12 +27,12 @@ public class PaymentService(
         var alreadyPaid = order.Payments.Any(x => x.Paid);
         
         if (alreadyPaid)
-            throw new ProblemException("Order is already paid", "");
+            throw new ProblemException(ExceptionMessages.OrderAlreadyPaid, "You cannot pay twice for the same order");
 
         var validPaymentExists = order.Payments.Any(x => x.ExpiresAt > DateTime.UtcNow);
         
         if (validPaymentExists)
-            throw new ProblemException("Pending payment already exists", "");
+            throw new ProblemException(ExceptionMessages.PaymentAlreadyCreated, "Only one non-expired payment is allowed");
 
         var product = await client.GetProductAsync(new GetProductReq
         {

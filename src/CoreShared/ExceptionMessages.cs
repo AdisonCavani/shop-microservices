@@ -17,4 +17,6 @@ public static class ExceptionMessages
     public const string EmailAlreadyVerified = "Email already verified";
     public const string PaymentMismatch = "Payment is mismatched (probably lost)";
     public const string ProductSold = "Product sold";
+    public const string OrderAlreadyPaid = "Order is already paid";
+    public const string PaymentAlreadyCreated = "Pending payment already exists";
 }
