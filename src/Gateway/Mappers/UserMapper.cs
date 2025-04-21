@@ -1,5 +1,4 @@
-﻿using Gateway.Contracts.Dtos;
-using Gateway.Contracts.Requests;
+﻿using Gateway.Contracts.Requests;
 using Gateway.Database.Entities;
 using ProtobufSpec.Events;
 

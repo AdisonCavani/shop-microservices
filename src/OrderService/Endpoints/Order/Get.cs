@@ -26,12 +26,15 @@ public static class Get
         var userId = Guid.Parse(userIdStr);
         
         var orderEntity = await dbContext.Orders
+            .Include(x => x.Payments)
             .FirstOrDefaultAsync(x => x.UserId == userId && x.Id == orderId);
 
         if (orderEntity is null)
             return TypedResults.NotFound();
 
-        return TypedResults.Ok(orderEntity.ToOrderDto());
+        var payment = orderEntity.Payments.FirstOrDefault(x => x.OrderId == orderId && (x.Paid || (!x.Paid && x.ExpiresAt > DateTime.UtcNow)));
+
+        return TypedResults.Ok(orderEntity.ToOrderDto(payment));
     }
     
     [ExcludeFromCodeCoverage]

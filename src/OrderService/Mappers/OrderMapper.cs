@@ -5,12 +5,15 @@ namespace OrderService.Mappers;
 
 public static class OrderMapper
 {
-    public static OrderDto ToOrderDto(this OrderEntity orderEntity)
+    public static OrderDto ToOrderDto(this OrderEntity orderEntity, PaymentEntity? paymentEntity = null)
     {
         return new OrderDto
         {
             Id = orderEntity.Id,
-            ProductId = orderEntity.ProductId
+            ProductId = orderEntity.ProductId,
+            Paid = paymentEntity?.Paid ?? false,
+            PaymentId = paymentEntity?.Id,
+            PaymentExpirationDate = paymentEntity?.Paid ?? true ? null : paymentEntity.ExpiresAt 
         };
     }
 }

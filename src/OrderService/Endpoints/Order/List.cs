@@ -26,9 +26,12 @@ public static class List
         
         var orderEntities = await dbContext.Orders
             .Where(x => x.UserId == userId)
+            .Include(x => x.Payments)
             .ToListAsync();
         
-        var orders = orderEntities.Select(x => x.ToOrderDto());
+        var orders = orderEntities
+            .Select(x => x.ToOrderDto(x.Payments
+                .FirstOrDefault(y => y.Paid || (!y.Paid && y.ExpiresAt > DateTime.UtcNow))));
         
         return TypedResults.Ok(new ListOrdersRes { Orders = orders });
     }
