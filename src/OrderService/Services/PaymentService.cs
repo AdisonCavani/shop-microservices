@@ -109,7 +109,7 @@ public class PaymentService(
         if (order is null)
             return null;
 
-        var payment = order.Payments.FirstOrDefault(x => x.ExpiresAt > DateTime.Now);
+        var payment = order.Payments.FirstOrDefault(x => x.Paid || x.ExpiresAt > DateTime.UtcNow);
 
         if (payment is null)
             return null;
