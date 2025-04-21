@@ -1,7 +1,4 @@
-﻿using CoreShared;
-using MassTransit;
-using Microsoft.EntityFrameworkCore;
-using OrderService.Database;
+﻿using MassTransit;
 using ProtobufSpec.Events;
 
 namespace OrderService.Services;
