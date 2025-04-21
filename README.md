@@ -8,11 +8,10 @@ Shop microservices project
 - Database - PostgreSQL
 - ORM - Entity Framework
 - Email handling - MailKit (smtp4dev), liquid templates (fluid)
-- Message bus - RabbitMQ with protobuf
-- Auth - cookies with Redis ticket store
-- Mapper - AutoMapper
+- Message bus - RabbitMQ via MassTransit
+- Auth - JWT Bearer
 - Validation - FluentValidation
-- API - MinimalEndpoints
+- API - Minimal API
 
 ### smtp4dev UI
 
