@@ -20,67 +20,10 @@ public sealed class OrderServiceTests
     
     private readonly AppDbContext _dbContext;
     private readonly Mock<AppDbContext> _dbContextMock;
-
-    private Tuple<List<OrderEntity>, List<PaymentEntity>> GetDbEntities()
-    {
-        var sharedUser = Guid.NewGuid();
-        
-        var orderIdWithPendingPayment = Guid.NewGuid();
-        var orderIdWithFinishedPayment = Guid.NewGuid();
-        
-        var payments = new List<PaymentEntity>
-        {
-            new()
-            {
-                Id = Guid.NewGuid(),
-                StripeCheckoutId = Guid.NewGuid().ToString(),
-                CreatedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddDays(1),
-                OrderId = orderIdWithPendingPayment
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                StripeCheckoutId = Guid.NewGuid().ToString(),
-                CreatedAt = DateTime.UtcNow.AddDays(-2),
-                ExpiresAt = DateTime.UtcNow.AddDays(-1),
-                OrderId = orderIdWithFinishedPayment
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                StripeCheckoutId = Guid.NewGuid().ToString(),
-                CreatedAt = DateTime.UtcNow.AddDays(-1),
-                ExpiresAt = DateTime.UtcNow,
-                Paid = true,
-                OrderId = orderIdWithFinishedPayment
-            }
-        };
-        
-        var orders = new List<OrderEntity>()
-        {
-            new()
-            {
-                Id = orderIdWithPendingPayment,
-                UserId = sharedUser,
-                ProductId = Guid.NewGuid(),
-                Payments = payments.Where(x => x.OrderId == orderIdWithPendingPayment).ToList()
-            },
-            new()
-            {
-                Id = orderIdWithFinishedPayment,
-                UserId = sharedUser,
-                ProductId = Guid.NewGuid(),
-                Payments = payments.Where(x => x.OrderId == orderIdWithFinishedPayment).ToList()
-            }
-        };
-
-        return new(orders, payments);
-    }
     
     public OrderServiceTests()
     {
-        (_orderEntities, _paymentEntities) = GetDbEntities();
+        (_orderEntities, _paymentEntities) = Helpers.GetDbEntities();
         
         _dbContextMock = new Mock<AppDbContext>();
 
