@@ -9,6 +9,16 @@ public class AppDbContext : DbContext
     
     public virtual required DbSet<PaymentEntity> Payments { get; set; }
 
+    public AppDbContext()
+    {
+        
+    }
+
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+        
+    }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.HasPostgresExtension("uuid-ossp");

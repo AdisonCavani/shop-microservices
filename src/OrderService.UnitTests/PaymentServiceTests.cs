@@ -5,7 +5,6 @@ using CoreShared;
 using MassTransit;
 using MockQueryable.Moq;
 using Moq;
-using ordersvc::OrderService.Contracts.Dtos;
 using ordersvc::OrderService.Database;
 using ordersvc::OrderService.Database.Entities;
 using ordersvc::ProductService;

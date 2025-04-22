@@ -96,7 +96,8 @@ public class PaymentService(
 
         return new(order.ProductId, new()
         {
-            PaymentUrl = checkoutSession.Url
+            PaymentUrl = checkoutSession.Url,
+            ExpirationDate = checkoutSession.ExpiresAt
         });
     }
 

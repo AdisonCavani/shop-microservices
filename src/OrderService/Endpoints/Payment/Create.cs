@@ -14,8 +14,8 @@ namespace OrderService.Endpoints.Payment;
 public static class Create
 {
     internal static async Task<Results<StatusCodeHttpResult, NotFound, Created<PaymentDto>>> HandleAsync(
-        HttpContext httpContext,
         [FromBody] CreatePaymentReq req,
+        HttpContext httpContext,
         [FromServices] IPaymentService paymentService)
     {
         var userIdStr = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
