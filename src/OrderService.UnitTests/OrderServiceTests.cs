@@ -48,7 +48,7 @@ public sealed class OrderServiceTests
         var userId = order.UserId;
         
         // Arrange
-        var exception = await Assert.ThrowsExceptionAsync<ProblemException>(async () => await orderService.CreateOrderAsync(productId, userId));
+        var exception = await Assert.ThrowsAsync<ProblemException>(async () => await orderService.CreateOrderAsync(productId, userId));
 
         // Assert
         Assert.AreEqual(ExceptionMessages.ProductSold, exception.Error);

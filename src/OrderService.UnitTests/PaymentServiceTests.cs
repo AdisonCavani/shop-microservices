@@ -73,7 +73,7 @@ public sealed class PaymentServiceTests
         var userEmail = new Faker().Person.Email;
         
         // Arrange
-        var exception = await Assert.ThrowsExceptionAsync<ProblemException>(async () => await paymentService.CreatePaymentAsync(orderId, userId, userEmail));
+        var exception = await Assert.ThrowsAsync<ProblemException>(async () => await paymentService.CreatePaymentAsync(orderId, userId, userEmail));
 
         // Assert
         Assert.AreEqual(ExceptionMessages.OrderAlreadyPaid, exception.Error);
@@ -92,7 +92,7 @@ public sealed class PaymentServiceTests
         var userEmail = new Faker().Person.Email;
         
         // Arrange
-        var exception = await Assert.ThrowsExceptionAsync<ProblemException>(async () => await paymentService.CreatePaymentAsync(orderId, userId, userEmail));
+        var exception = await Assert.ThrowsAsync<ProblemException>(async () => await paymentService.CreatePaymentAsync(orderId, userId, userEmail));
 
         // Assert
         Assert.AreEqual(ExceptionMessages.PaymentAlreadyCreated, exception.Error);
@@ -123,7 +123,7 @@ public sealed class PaymentServiceTests
         var userEmail = new Faker().Person.Email;
         
         // Arrange
-        var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await paymentService.CreatePaymentAsync(orderId, userId, userEmail));
+        var exception = await Assert.ThrowsAsync<Exception>(async () => await paymentService.CreatePaymentAsync(orderId, userId, userEmail));
 
         // Assert
         Assert.AreEqual(ExceptionMessages.ProductLost, exception.Message);
@@ -234,7 +234,7 @@ public sealed class PaymentServiceTests
         };
         
         // Arrange
-        var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await paymentService.PaymentReceivedAsync(message));
+        var exception = await Assert.ThrowsAsync<Exception>(async () => await paymentService.PaymentReceivedAsync(message));
 
         // Assert
         Assert.AreEqual(ExceptionMessages.PaymentLost, exception.Message);
