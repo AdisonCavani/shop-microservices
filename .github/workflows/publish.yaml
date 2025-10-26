@@ -1,0 +1,105 @@
+name: Create and publish Docker images for microservices
+
+on:
+  workflow_dispatch:
+    inputs:
+      type:
+        type: choice
+        required: true
+        description: Release type
+        options:
+          - patch
+          - minor
+          - major
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 25
+          fetch-tags: true
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create new semver
+        id: version
+        run: |
+          LATEST_TAG_COMMIT=$(git rev-list --tags --max-count=1)
+
+          if [ -n "$LATEST_TAG_COMMIT" ]; then
+            LATEST_TAG=$(git describe --tags $LATEST_TAG_COMMIT)
+          fi
+
+          if [ -z "$LATEST_TAG" ]; then
+            LATEST_TAG="0.0.0"
+          fi
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "${LATEST_TAG#v}"
+
+          case "${{ github.event.inputs.type }}" in
+            patch)
+              PATCH=$((PATCH + 1))
+              ;;
+            minor)
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              ;;
+            major)
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              ;;
+          esac
+
+          echo "version=$MAJOR.$MINOR.$PATCH" >> $GITHUB_OUTPUT
+          echo "Next version: $MAJOR.$MINOR.$PATCH"
+
+      - name: Build and push microservices
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          for dir in src/*; do
+            if [ -f "$dir/Dockerfile" ]; then
+              SERVICE_NAME=$(basename $dir)
+              SERVICE_NAME=$(echo "$SERVICE_NAME" | sed -E 's/([a-z])([A-Z])/\1-\2/g')
+
+              IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$SERVICE_NAME:$VERSION"
+              IMAGE="${IMAGE,,}"
+
+              LATEST="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$SERVICE_NAME:latest"
+              LATEST="${LATEST,,}"
+
+              echo "Building $SERVICE_NAME -> $IMAGE"
+              docker build -f "$dir/Dockerfile" -t "$IMAGE" -t "$LATEST" src/
+              docker push "$IMAGE"
+              docker push "$LATEST"
+            fi
+          done
+
+      - name: Create git tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${{ steps.version.outputs.version }}`,
+              sha: context.sha
+            })

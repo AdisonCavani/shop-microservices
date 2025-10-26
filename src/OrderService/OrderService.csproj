@@ -25,12 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\CoreShared\CoreShared.csproj" />
       <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
     </ItemGroup>
@@ -39,6 +33,12 @@
         <Protobuf Include="..\ProtobufSpec\Protos\product_service.proto" GrpcServices="Client">
             <Link>Contracts\Protos\product_service.proto</Link>
         </Protobuf>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>
