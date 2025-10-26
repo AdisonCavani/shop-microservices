@@ -36,4 +36,11 @@ public class ApiRoutes
         public const string Get = "/{orderId}";
         public const string Webhook = "/webhook";
     }
+
+    public class Notification
+    {
+        public const string Path = $"{BasePath}/notification";
+        
+        public const string ById = "/{triggerName}";
+    }
 }

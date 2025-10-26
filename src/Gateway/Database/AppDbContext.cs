@@ -1,5 +1,6 @@
 ﻿using Gateway.Database.Entities;
 using Microsoft.EntityFrameworkCore;
+using ProtobufSpec;
 
 namespace Gateway.Database;
 

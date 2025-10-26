@@ -1,4 +1,4 @@
-﻿namespace Gateway.Database.Entities;
+﻿namespace ProtobufSpec;
 
 public enum UserRoleEnum
 {

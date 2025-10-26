@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using Gateway.Mappers;
 using MassTransit;
+using ProtobufSpec.Events;
 
 namespace Gateway.Repositories;
 
@@ -59,7 +60,7 @@ public class UserRepository : IUserRepository
         if (result <= 0)
             throw new Exception(ExceptionMessages.DatabaseProblem);
 
-        await SendEmailVerifyAsync(user);
+        await CreateUserVerificationAsync(user);
 
         return user.ToUserDto();
     }
@@ -95,7 +96,7 @@ public class UserRepository : IUserRepository
         if (!bytes.HasValue)
             throw new ProblemException(ExceptionMessages.InvalidToken, "Please enter a valid email confirmation token");
 
-        var userId = Guid.Parse(bytes!);
+        var userId = Guid.Parse(bytes.ToString());
         
         var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
         
@@ -112,7 +113,7 @@ public class UserRepository : IUserRepository
             throw new Exception(ExceptionMessages.DatabaseProblem);
     }
 
-    public async Task ResendVerifyEmailAsync(ResendVerifyEmailReq req)
+    public async Task RetryUserVerificationAsync(ResendVerifyEmailReq req)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == req.Id);
 
@@ -122,16 +123,20 @@ public class UserRepository : IUserRepository
         if (user.EmailConfirmed)
             throw new ProblemException(ExceptionMessages.EmailAlreadyVerified, "This email is already verified");
         
-        await SendEmailVerifyAsync(user);
+        await CreateUserVerificationAsync(user);
     }
     
-    private async Task SendEmailVerifyAsync(UserEntity user)
+    private async Task CreateUserVerificationAsync(UserEntity user)
     {
-        var eventMessage = user.ToConfirmEmailEvent();
+        var token = Guid.NewGuid().ToString();
 
         var db = _connectionMultiplexer.GetDatabase();
-        db.StringSet(AuthSchema.VerifyEmailKeyPrefix + eventMessage.Token, user.Id.ToString(), TimeSpan.FromHours(12));
+        db.StringSet(AuthSchema.VerifyEmailKeyPrefix + token, user.Id.ToString(), TimeSpan.FromHours(12));
 
-        await _bus.Publish(eventMessage);
+        await _bus.Publish(new UserVerificationCreatedEvent
+        {
+            UserId = user.Id,
+            Token = token
+        });
     }
 }

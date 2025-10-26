@@ -1,4 +1,6 @@
-﻿namespace Gateway.Database.Entities;
+﻿using ProtobufSpec;
+
+namespace Gateway.Database.Entities;
 
 public class UserEntity
 {

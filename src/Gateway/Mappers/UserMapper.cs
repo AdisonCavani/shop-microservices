@@ -1,6 +1,5 @@
 ﻿using Gateway.Contracts.Requests;
 using Gateway.Database.Entities;
-using ProtobufSpec.Events;
 
 namespace Gateway.Mappers;
 
@@ -15,15 +14,6 @@ public static class UserMapper
             LastName = userEntity.LastName,
             Email = userEntity.Email,
             EmailConfirmed = userEntity.EmailConfirmed
-        };
-    }
-
-    public static ConfirmEmailEvent ToConfirmEmailEvent(this UserEntity userEntity)
-    {
-        return new ConfirmEmailEvent
-        {
-            UserId = userEntity.Id,
-            Token = Guid.NewGuid()
         };
     }
 

@@ -52,6 +52,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "API Gateway");
         options.SwaggerEndpoint("/swagger/product-service/v1/swagger.json", "ProductService");
         options.SwaggerEndpoint("/swagger/order-service/v1/swagger.json", "OrderService");
+        options.SwaggerEndpoint("/swagger/notification-service/v1/swagger.json", "NotificationService");
     });
 }
 

@@ -10,5 +10,5 @@ public interface IUserRepository
     Task<UserDto> RegisterAsync(RegisterReq req);
     Task<Tuple<JwtTokenDto, UserDto>> LoginAsync(LoginReq req);
     Task VerifyEmailAsync(Guid token);
-    Task ResendVerifyEmailAsync(ResendVerifyEmailReq req);
+    Task RetryUserVerificationAsync(ResendVerifyEmailReq req);
 }

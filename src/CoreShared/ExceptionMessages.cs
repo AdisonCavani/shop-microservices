@@ -19,4 +19,10 @@ public static class ExceptionMessages
     public const string ProductSold = "Product sold";
     public const string OrderAlreadyPaid = "Order is already paid";
     public const string PaymentAlreadyCreated = "Pending payment already exists";
+    public const string NotificationTriggerExists = "Notification trigger exists";
+    public const string InvalidLiquidTemplate = "Invalid liquid template";
+    public const string LiquidTemplateNotFound = "Could not find liquid template";
+    public const string ProblemWithRenderingLiquidTemplate = "The liquid template was not rendered properly (empty html). Aborting sending notification";
+    public const string MissingUserForNotification = "Notification was created, but received DomainEvent without userId";
+    public static string NotificationTriggerMissing = "This notification trigger cannot be added. Available trigger names: ";
 }

@@ -9,6 +9,7 @@ var postgres = builder.AddPostgres("postgres")
     .WithDataVolume()
     .WithEndpoint(port: 5432, targetPort: 5432, name: "postgres");
 
+var notificationsDb = postgres.AddDatabase("Notifications");
 var productsDb = postgres.AddDatabase("Products");
 var usersDb = postgres.AddDatabase("Users");
 var ordersDb = postgres.AddDatabase("Orders");
@@ -27,8 +28,10 @@ var identityService = builder.AddProject<Projects.Gateway>("identityService")
 
 var notificationService = builder.AddProject<Projects.NotificationService>("notificationService")
     .WithReference(rabbitmq)
+    .WithReference(notificationsDb)
     .WithReference(identityService)
     .WaitFor(rabbitmq)
+    .WaitFor(notificationsDb)
     .WaitFor(identityService);
 
 var productService = builder.AddProject<Projects.ProductService>("productService")

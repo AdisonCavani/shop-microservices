@@ -1,6 +1,4 @@
-﻿using Fluid;
-using MailKit.Net.Smtp;
-using Microsoft.Extensions.FileProviders;
+﻿using MailKit.Net.Smtp;
 using MimeKit;
 using MimeKit.Text;
 
@@ -8,20 +6,11 @@ namespace NotificationService.Services;
 
 public class EmailService
 {
-    private readonly FluidParser _fluidParser;
-    private readonly IFileProvider _fileProvider;
-
-    public EmailService(FluidParser fluidParser, IFileProvider fileProvider)
-    {
-        _fluidParser = fluidParser;
-        _fileProvider = fileProvider;
-    }
-
     public async Task SendEmailAsync(
         string receiverName,
         string receiverEmail,
         string subject,
-        object model,
+        string bodyHtml,
         CancellationToken cancellationToken = default)
     {
         MimeMessage message = new();
@@ -31,29 +20,12 @@ public class EmailService
 
         message.Body = new TextPart(TextFormat.Html)
         {
-            Text = await TemplateFromFileAsync(model.GetType().Name, model, cancellationToken)
+            Text = bodyHtml
         };
 
         var client = new SmtpClient();
         await client.ConnectAsync("localhost", 25, false, cancellationToken);
         await client.SendAsync(message, cancellationToken);
         await client.DisconnectAsync(true, cancellationToken);
-    }
-
-    private async Task<string> TemplateFromFileAsync(
-        string templateName,
-        object model,
-        CancellationToken cancellationToken = default)
-    {
-        var fileInfo = _fileProvider.GetFileInfo($"{templateName}.liquid");
-        await using var stream = fileInfo.CreateReadStream();
-        using var sr = new StreamReader(stream);
-        var content = await sr.ReadToEndAsync(cancellationToken);
-
-        if (!_fluidParser.TryParse(content, out var template, out var errors))
-            throw new Exception(string.Join(Environment.NewLine, errors));
-
-        // TODO: upgrade fluid package
-        return await template.RenderAsync(new(model));
     }
 }

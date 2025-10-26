@@ -19,10 +19,10 @@ public class OrderCompletedEventConsumer(IBus bus, AppDbContext dbContext) : ICo
         product.CompletedOrderId = context.Message.OrderId;
         await dbContext.SaveChangesAsync();
 
-        await bus.Publish(new OrderCompletedEmailEvent
+        await bus.Publish(new ProductOrderCompletedEvent
         {
-            ActivationCode = product.ActivationCode,
-            UserId = context.Message.UserId
+            UserId = context.Message.UserId,
+            ActivationCode = product.ActivationCode
         });
     }
 }

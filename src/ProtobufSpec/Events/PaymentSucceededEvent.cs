@@ -1,10 +1,6 @@
-﻿using ProtoBuf;
+﻿namespace ProtobufSpec.Events;
 
-namespace ProtobufSpec.Events;
-
-[ProtoContract]
-public class PaymentSucceededEvent
+public class PaymentSucceededEvent : DomainEvent
 {
-    [ProtoMember(1)]
     public required Guid PaymentId { get; set; }
 }

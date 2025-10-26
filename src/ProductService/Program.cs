@@ -1,11 +1,10 @@
-using CoreShared;
 using CoreShared.Settings;
 using CoreShared.Startup;
 using FluentValidation;
 using ProductService.Database;
 using ProductService.Endpoints;
 using Microsoft.EntityFrameworkCore;
-using ProductService.Services;
+using ProductService.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,18 +12,13 @@ builder.AddServiceDefaults();
 builder.Services.AddProblemDetailsHandling();
 
 builder.Configuration.AddUserSecrets<Program>();
-builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("Settings"));
+builder.Services.Configure<AppSettings>(builder.Configuration.GetRequiredSection("Settings"));
 var appSettings = builder.Configuration.GetRequiredSection("Settings").Get<AppSettings>()?.Validate()!;
 
 // Add services to the container.
 builder.Services.AddSwagger();
-builder.Services.AddJwtBearerAuth(appSettings);
-builder.Services.AddAuthorization();
-builder.AddNpgsqlDbContext<AppDbContext>("Products");
-builder.AddMassTransitRabbitMq("rabbitmq", _ => {}, configurator =>
-{
-    configurator.AddConsumer<OrderCompletedEventConsumer>();
-});
+builder.AddInfrastructure();
+builder.Services.AddAuth(appSettings);
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddGrpc();
 builder.Services.AddGrpcHealthChecks();
@@ -56,5 +50,3 @@ app.MapGrpcHealthChecksService();
 app.MapDefaultEndpoints();
 
 app.Run();
-
-public class AppSettings : BaseAppSettings {}

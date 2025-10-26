@@ -1,6 +1,7 @@
 ﻿using CoreShared;
 using Gateway.Database.Entities;
 using Microsoft.AspNetCore.Identity;
+using ProtobufSpec;
 
 namespace Gateway.Startup;
 
