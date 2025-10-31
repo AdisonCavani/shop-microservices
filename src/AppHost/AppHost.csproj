@@ -12,11 +12,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.AppHost" Version="9.5.2" />
-        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.5.2" />
-        <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="9.5.2" />
-        <PackageReference Include="Aspire.Hosting.Redis" Version="9.5.2" />
-        <PackageReference Include="Grpc.Tools" Version="2.76.0">
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="9.1.0" />
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.1.0" />
+        <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="9.1.0" />
+        <PackageReference Include="Aspire.Hosting.Redis" Version="9.1.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.68.1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
