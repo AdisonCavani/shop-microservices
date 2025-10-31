@@ -16,6 +16,10 @@
         <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.5.2" />
         <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="9.5.2" />
         <PackageReference Include="Aspire.Hosting.Redis" Version="9.5.2" />
+        <PackageReference Include="Grpc.Tools" Version="2.76.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
