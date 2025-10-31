@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: shop-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: ghcr.io/adisoncavani/shop-microservices/gateway:latest
+          imagePullPolicy: Always
+          env:
+            - name: Users
+              valueFrom:
+                secretKeyRef:
+                  name: gateway
+                  key: postgres
+            - name: rabbitmq
+              valueFrom:
+                secretKeyRef:
+                  name: gateway
+                  key: rabbitmq
+            - name: identityService
+              value: "http://identity-service:80"
