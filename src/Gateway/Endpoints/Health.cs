@@ -40,9 +40,9 @@ public static class Health
         var response = new []
         {
             gatewayResponse,
-            await GetGrpcServiceHealthAsync(notificationClient, nameof(NotificationService), async method => await method.HealthAsync(new Empty())),
-            await GetGrpcServiceHealthAsync(orderClient, nameof(OrderService), async method => await method.HealthAsync(new Empty())),
-            await GetGrpcServiceHealthAsync(productClient, nameof(ProductService), async method => await method.HealthAsync(new Empty()))
+            await GetGrpcServiceHealthAsync(notificationClient, "notification-service", async method => await method.HealthAsync(new Empty())),
+            await GetGrpcServiceHealthAsync(orderClient, "order-service", async method => await method.HealthAsync(new Empty())),
+            await GetGrpcServiceHealthAsync(productClient, "product-service", async method => await method.HealthAsync(new Empty()))
         };
 
         var healthy = response.All(res => res.Status == HealthStatus.Healthy.ToString());
