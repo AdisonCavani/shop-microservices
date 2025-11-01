@@ -136,8 +136,6 @@ kubectl create secret generic identity-service \
   --from-literal=Settings__Auth__Audience= \
   --from-literal=Settings__Auth__Secret="" \
   --from-literal=Settings__Auth__ExpireMinutes= \
-  --from-literal=Kestrel__EndpointDefaults__Protocols='' \
-  --from-literal=OTEL_EXPORTER_OTLP_ENDPOINT='' \
   --namespace shop-prod
 
 # notification-service
@@ -150,8 +148,6 @@ kubectl create secret generic notification-service \
   --from-literal=Settings__Auth__Audience=backend \
   --from-literal=Settings__Auth__Secret="" \
   --from-literal=Settings__Auth__ExpireMinutes= \
-  --from-literal=Kestrel__EndpointDefaults__Protocols='' \
-  --from-literal=OTEL_EXPORTER_OTLP_ENDPOINT='' \
   --namespace shop-prod
 
 # order-service
@@ -167,8 +163,6 @@ kubectl create secret generic order-service \
   --from-literal=Settings__Auth__Audience= \
   --from-literal=Settings__Auth__Secret="" \
   --from-literal=Settings__Auth__ExpireMinutes= \
-  --from-literal=Kestrel__EndpointDefaults__Protocols='' \
-  --from-literal=OTEL_EXPORTER_OTLP_ENDPOINT='' \
   --namespace shop-prod
 
 # product-service
@@ -181,7 +175,5 @@ kubectl create secret generic product-service \
   --from-literal=Settings__Auth__Audience= \
   --from-literal=Settings__Auth__Secret="" \
   --from-literal=Settings__Auth__ExpireMinutes= \
-  --from-literal=Kestrel__EndpointDefaults__Protocols='' \
-  --from-literal=OTEL_EXPORTER_OTLP_ENDPOINT='' \
   --namespace shop-prod
 ```

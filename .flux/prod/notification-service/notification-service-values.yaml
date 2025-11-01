@@ -20,6 +20,15 @@ spec:
           envFrom:
             - secretRef:
                 name: notification-service
+          env:
+            - name: Kestrel__EndpointDefaults__Protocols
+              value: "Http2"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://aspire-dashboard:18889"
+            - name: OTEL_SERVICE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
 ---
 apiVersion: v1
 kind: Service
