@@ -9,6 +9,7 @@
         <Nullable>enable</Nullable>
         <IsAspireHost>true</IsAspireHost>
         <UserSecretsId>be57305e-5d58-475e-94a1-056760019ae9</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -27,6 +28,12 @@
       <ProjectReference Include="..\NotificationService\NotificationService.csproj" />
       <ProjectReference Include="..\OrderService\OrderService.csproj" />
       <ProjectReference Include="..\ProductService\ProductService.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>
