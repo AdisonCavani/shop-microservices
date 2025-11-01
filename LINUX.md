@@ -14,6 +14,7 @@ microk8s enable ha-cluster
 microk8s enable helm
 microk8s enable helm3
 microk8s enable host-access
+microk8s enable hostpath-storage
 microk8s enable ingress
 microk8s enable metrics-server
 ```
