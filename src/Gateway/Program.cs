@@ -28,9 +28,9 @@ builder.Services.AddServices();
 
 var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";
 
-builder.Services.AddGrpcServiceReference<NotificationAPI.NotificationAPIClient>($"{(isHttps ? "https" : "http")}://notificationService", failureStatus: HealthStatus.Degraded);
-builder.Services.AddGrpcServiceReference<OrderAPI.OrderAPIClient>($"{(isHttps ? "https" : "http")}://orderService", failureStatus: HealthStatus.Degraded);
-builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>($"{(isHttps ? "https" : "http")}://productService", failureStatus: HealthStatus.Degraded);
+builder.Services.AddGrpcServiceReference<NotificationAPI.NotificationAPIClient>($"{(isHttps ? "https" : "http")}://notification-service", failureStatus: HealthStatus.Degraded);
+builder.Services.AddGrpcServiceReference<OrderAPI.OrderAPIClient>($"{(isHttps ? "https" : "http")}://order-service", failureStatus: HealthStatus.Degraded);
+builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>($"{(isHttps ? "https" : "http")}://product-service", failureStatus: HealthStatus.Degraded);
 
 builder.Services.AddGrpc();
 builder.Services.AddGrpcHealthChecks();
