@@ -20,3 +20,16 @@ spec:
           envFrom:
             - secretRef:
                 name: order-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+  namespace: shop-prod
+spec:
+  selector:
+    app: order-service
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
