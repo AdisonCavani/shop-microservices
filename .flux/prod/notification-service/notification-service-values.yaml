@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: notification-service
-          image: ghcr.io/adisoncavani/shop-microservices/notification-service:0.0.3
+          image: ghcr.io/adisoncavani/shop-microservices/notification-service:0.0.4
           imagePullPolicy: Always
           envFrom:
             - secretRef:
