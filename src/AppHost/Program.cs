@@ -18,7 +18,7 @@ var redis = builder.AddRedis("redis")
     .WithRedisInsight()
     .WithLifetime(ContainerLifetime.Persistent);
 
-var identityService = builder.AddProject<Projects.Gateway>("identityService")
+var identityService = builder.AddProject<Projects.Gateway>("identity-service")
     .WithReference(rabbitmq)
     .WithReference(usersDb)
     .WithReference(redis)
@@ -26,7 +26,7 @@ var identityService = builder.AddProject<Projects.Gateway>("identityService")
     .WaitFor(usersDb)
     .WaitFor(redis);
 
-var notificationService = builder.AddProject<Projects.NotificationService>("notificationService")
+var notificationService = builder.AddProject<Projects.NotificationService>("notification-service")
     .WithReference(rabbitmq)
     .WithReference(notificationsDb)
     .WithReference(identityService)
@@ -34,13 +34,13 @@ var notificationService = builder.AddProject<Projects.NotificationService>("noti
     .WaitFor(notificationsDb)
     .WaitFor(identityService);
 
-var productService = builder.AddProject<Projects.ProductService>("productService")
+var productService = builder.AddProject<Projects.ProductService>("product-service")
     .WithReference(rabbitmq)
     .WithReference(productsDb)
     .WaitFor(rabbitmq)
     .WaitFor(productsDb);
 
-var orderService = builder.AddProject<Projects.OrderService>("orderService")
+var orderService = builder.AddProject<Projects.OrderService>("order-service")
     .WithReference(rabbitmq)
     .WithReference(productService)
     .WithReference(ordersDb)

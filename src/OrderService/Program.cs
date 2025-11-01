@@ -38,7 +38,7 @@ builder.Services.AddGrpcHealthChecks();
 StripeConfiguration.ApiKey = appSettings.Stripe.SecretKey;
 
 var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";
-builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>($"{(isHttps ? "https" : "http")}://productService", failureStatus: HealthStatus.Degraded);
+builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>($"{(isHttps ? "https" : "http")}://product-service", failureStatus: HealthStatus.Degraded);
 
 var app = builder.Build();
 

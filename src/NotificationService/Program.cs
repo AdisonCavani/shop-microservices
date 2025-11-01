@@ -28,7 +28,7 @@ builder.Services.AddGrpcHealthChecks();
 
 var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";
 
-builder.Services.AddGrpcServiceReference<IdentityAPI.IdentityAPIClient>($"{(isHttps ? "https" : "http")}://identityService", failureStatus: HealthStatus.Degraded);
+builder.Services.AddGrpcServiceReference<IdentityAPI.IdentityAPIClient>($"{(isHttps ? "https" : "http")}://identity-service", failureStatus: HealthStatus.Degraded);
 
 var app = builder.Build();
 
