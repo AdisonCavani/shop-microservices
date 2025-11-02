@@ -25,11 +25,16 @@ spec:
               containerPort: 18888
             - name: otlp
               containerPort: 18889
+          envFrom:
+            - secretRef:
+                name: aspire-dashboard
           env:
             - name: DASHBOARD__OTLP__ENDPOINT
               value: "http://0.0.0.0:18889"
             - name: DASHBOARD__FRONTEND__ENDPOINT
               value: "http://0.0.0.0:18888"
+            - name: DASHBOARD__OTLP__AUTHMODE
+              value: "ApiKey"
           readinessProbe:
             httpGet:
               path: /
