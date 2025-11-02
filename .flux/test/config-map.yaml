@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: env-shared
-  namespace: prod-shop
+  namespace: test-shop
 data:
   Kestrel__EndpointDefaults__Protocols: "Http2"
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"

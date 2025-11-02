@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: notification-service
-  namespace: shop-prod
+  namespace: prod-shop
 spec:
   selector:
     app: notification-service

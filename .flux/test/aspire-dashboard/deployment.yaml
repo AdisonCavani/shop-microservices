@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: aspire-dashboard
-  namespace: prod-shop
+  namespace: test-shop
   labels:
     app: aspire-dashboard
 spec:

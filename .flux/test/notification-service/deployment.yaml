@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: identity-service
-  namespace: prod-shop
+  name: notification-service
+  namespace: test-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: identity-service
+      app: notification-service
   template:
     metadata:
       labels:
-        app: identity-service
+        app: notification-service
     spec:
       containers:
-        - name: identity-service
-          image: ghcr.io/adisoncavani/shop-microservices/gateway:0.0.7
+        - name: notification-service
+          image: ghcr.io/adisoncavani/shop-microservices/notification-service:0.0.8
           imagePullPolicy: Always
           envFrom:
             - configMapRef:
@@ -23,10 +23,10 @@ spec:
             - secretRef:
                 name: shared-secrets
             - secretRef:
-                name: identity-service
+                name: notification-service
           env:
             - name: OTEL_SERVICE_NAME
-              value: identity-service
+              value: notification-service
             - name: OTEL_RESOURCE_ATTRIBUTES
               valueFrom:
                 fieldRef:

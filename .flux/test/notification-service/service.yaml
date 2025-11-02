@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: product-service
-  namespace: prod-shop
+  name: notification-service
+  namespace: test-shop
 spec:
   selector:
-    app: product-service
+    app: notification-service
   ports:
     - name: http
       port: 80

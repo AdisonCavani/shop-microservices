@@ -126,7 +126,7 @@ Fill with values:
 
 ```bash
 # shared-secrets
-kubectl delete secret shared-secrets --namespace shop-prod
+kubectl delete secret shared-secrets --namespace prod-shop
 
 kubectl create secret generic shared-secrets \
   --from-literal=OTEL_EXPORTER_OTLP_HEADERS='' \
@@ -134,34 +134,34 @@ kubectl create secret generic shared-secrets \
   --from-literal=Settings__Auth__Audience='' \
   --from-literal=Settings__Auth__Secret='' \
   --from-literal=Settings__Auth__ExpireMinutes='' \
-  --namespace shop-prod
+  --namespace prod-shop
 
 # aspire-dashboard
-kubectl delete secret aspire-dashboard --namespace shop-prod
+kubectl delete secret aspire-dashboard --namespace prod-shop
 
 kubectl create secret generic aspire-dashboard \
   --from-literal=DASHBOARD__OTLP__PRIMARYAPIKEY='' \
-  --namespace shop-prod
+  --namespace prod-shop
 
 # identity-service
-kubectl delete secret identity-service --namespace shop-prod
+kubectl delete secret identity-service --namespace prod-shop
 
 kubectl create secret generic identity-service \
   --from-literal=ConnectionStrings__Users='' \
   --from-literal=ConnectionStrings__rabbitmq='' \
   --from-literal=ConnectionStrings__redis='' \
-  --namespace shop-prod
+  --namespace prod-shop
 
 # notification-service
-kubectl delete secret notification-service --namespace shop-prod
+kubectl delete secret notification-service --namespace prod-shop
 
 kubectl create secret generic notification-service \
   --from-literal=ConnectionStrings__Notifications='' \
   --from-literal=ConnectionStrings__rabbitmq='' \
-  --namespace shop-prod
+  --namespace prod-shop
 
 # order-service
-kubectl delete secret order-service --namespace shop-prod
+kubectl delete secret order-service --namespace prod-shop
 
 kubectl create secret generic order-service \
   --from-literal=ConnectionStrings__Orders='' \
@@ -169,13 +169,13 @@ kubectl create secret generic order-service \
   --from-literal=Settings__Stripe__PublishableKey='' \
   --from-literal=Settings__Stripe__SecretKey='' \
   --from-literal=Settings__Stripe__WebhookSecret='' \
-  --namespace shop-prod
+  --namespace prod-shop
 
 # product-service
-kubectl delete secret product-service --namespace shop-prod
+kubectl delete secret product-service --namespace prod-shop
 
 kubectl create secret generic product-service \
   --from-literal=ConnectionStrings__Products='' \
   --from-literal=ConnectionStrings__rabbitmq='' \
-  --namespace shop-prod
+  --namespace prod-shop
 ```
