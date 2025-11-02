@@ -66,7 +66,9 @@ public static class Extensions
                     .AddGrpcClientInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddEntityFrameworkCoreInstrumentation()
-                    .AddNpgsql();
+                    .AddNpgsql()
+                    .AddMassTransitInstrumentation()
+                    .AddRedisInstrumentation();
             });
 
         builder.AddOpenTelemetryExporters();
