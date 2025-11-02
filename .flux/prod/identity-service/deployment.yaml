@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: product-service
+  name: identity-service
   namespace: shop-prod
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: product-service
+      app: identity-service
   template:
     metadata:
       labels:
-        app: product-service
+        app: identity-service
     spec:
       containers:
-        - name: product-service
-          image: ghcr.io/adisoncavani/shop-microservices/product-service:0.0.7
+        - name: identity-service
+          image: ghcr.io/adisoncavani/shop-microservices/gateway:0.0.7
           imagePullPolicy: Always
           envFrom:
             - configMapRef:
@@ -23,24 +23,11 @@ spec:
             - secretRef:
                 name: shared-secrets
             - secretRef:
-                name: product-service
+                name: identity-service
           env:
             - name: OTEL_SERVICE_NAME
-              value: product-service
+              value: identity-service
             - name: OTEL_RESOURCE_ATTRIBUTES
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: product-service
-  namespace: shop-prod
-spec:
-  selector:
-    app: product-service
-  ports:
-    - name: http
-      port: 80
-      targetPort: 8080
