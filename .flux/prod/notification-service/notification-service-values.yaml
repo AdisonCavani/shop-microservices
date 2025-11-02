@@ -26,6 +26,8 @@ spec:
                 name: notification-service
           env:
             - name: OTEL_SERVICE_NAME
+              value: notification-service
+            - name: OTEL_RESOURCE_ATTRIBUTES
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name

@@ -26,6 +26,8 @@ spec:
                 name: identity-service
           env:
             - name: OTEL_SERVICE_NAME
+              value: identity-service
+            - name: OTEL_RESOURCE_ATTRIBUTES
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name

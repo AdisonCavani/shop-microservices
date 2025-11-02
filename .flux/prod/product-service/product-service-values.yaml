@@ -26,6 +26,8 @@ spec:
                 name: product-service
           env:
             - name: OTEL_SERVICE_NAME
+              value: product-service
+            - name: OTEL_RESOURCE_ATTRIBUTES
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
