@@ -11,6 +11,7 @@ using OrderService;
 using ProtobufSpec.Dtos;
 using ProtobufSpec.Responses;
 using ProductService;
+using ProtobufSpec;
 
 namespace Gateway.Endpoints;
 
@@ -40,12 +41,12 @@ public static class Health
         var response = new []
         {
             gatewayResponse,
-            await GetGrpcServiceHealthAsync(notificationClient, "notification-service", async method => await method.HealthAsync(new Empty())),
-            await GetGrpcServiceHealthAsync(orderClient, "order-service", async method => await method.HealthAsync(new Empty())),
-            await GetGrpcServiceHealthAsync(productClient, "product-service", async method => await method.HealthAsync(new Empty()))
+            await GetGrpcServiceHealthAsync(notificationClient, ServiceDefinitions.Notification.Name, async method => await method.HealthAsync(new Empty())),
+            await GetGrpcServiceHealthAsync(orderClient, ServiceDefinitions.Order.Name, async method => await method.HealthAsync(new Empty())),
+            await GetGrpcServiceHealthAsync(productClient, ServiceDefinitions.Product.Name, async method => await method.HealthAsync(new Empty()))
         };
 
-        var healthy = response.All(res => res.Status == HealthStatus.Healthy.ToString());
+        var healthy = response.All(res => res.Status == nameof(HealthStatus.Healthy));
         
         return healthy ? TypedResults.Ok(response) : TypedResults.Json(response, statusCode: StatusCodes.Status503ServiceUnavailable);
     }
@@ -69,14 +70,14 @@ public static class Health
             return new HealthCheckRes
             {
                 ServiceName = serviceName,
-                Status = HealthStatus.Unhealthy.ToString(),
+                Status = nameof(HealthStatus.Unhealthy),
                 Checks = new[]
                 {
                     new HealthCheckDto
                     {
                         Component = "GRPC",
                         Description = ex.Message,
-                        Status = HealthStatus.Unhealthy.ToString()
+                        Status = nameof(HealthStatus.Unhealthy)
                     }
                 },
                 Duration = watch.Elapsed

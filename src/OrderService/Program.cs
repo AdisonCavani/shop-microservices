@@ -1,4 +1,3 @@
-using CoreShared;
 using CoreShared.Settings;
 using CoreShared.Startup;
 using FluentValidation;
@@ -9,7 +8,7 @@ using OrderService.Startup;
 using ProductService;
 using Stripe;
 using Microsoft.EntityFrameworkCore;
-using OrderService.Services;
+using ProtobufSpec;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,23 +21,17 @@ var appSettings = builder.Configuration.GetRequiredSection("Settings").Get<AppSe
 
 // Add services to the container.
 builder.Services.AddSwagger();
-builder.Services.AddJwtBearerAuth(appSettings);
-builder.Services.AddAuthorization();
-builder.AddNpgsqlDbContext<AppDbContext>("Orders");
-builder.AddMassTransitRabbitMq("rabbitmq", _ => { }, configurator =>
-{
-    configurator.AddConsumer<PaymentSucceededEventConsumer>();
-});
-builder.Services.AddScoped<IOrderService, OrderService.Services.OrderService>();
-builder.Services.AddScoped<IPaymentService, PaymentService>();
-builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+builder.AddInfrastructure();
+builder.Services.AddAuth(appSettings);
+builder.Services.AddServices();
 builder.Services.AddGrpc();
 builder.Services.AddGrpcHealthChecks();
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
 StripeConfiguration.ApiKey = appSettings.Stripe.SecretKey;
 
 var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";
-builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>($"{(isHttps ? "https" : "http")}://product-service", failureStatus: HealthStatus.Degraded);
+builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>($"{(isHttps ? "https" : "http")}://{ServiceDefinitions.Product.Name}", failureStatus: HealthStatus.Degraded);
 
 var app = builder.Build();
 

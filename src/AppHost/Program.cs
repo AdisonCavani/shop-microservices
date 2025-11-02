@@ -1,6 +1,8 @@
+using ProtobufSpec;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
-var rabbitmq = builder.AddRabbitMQ("rabbitmq")
+var rabbitmq = builder.AddRabbitMQ(ServiceDefinitions.RabbitMQ)
     .WithLifetime(ContainerLifetime.Persistent)
     .WithManagementPlugin();
 
@@ -9,24 +11,24 @@ var postgres = builder.AddPostgres("postgres")
     .WithDataVolume()
     .WithEndpoint(port: 5432, targetPort: 5432, name: "postgres");
 
-var notificationsDb = postgres.AddDatabase("Notifications");
-var productsDb = postgres.AddDatabase("Products");
-var usersDb = postgres.AddDatabase("Users");
-var ordersDb = postgres.AddDatabase("Orders");
+var identityDb = postgres.AddDatabase(ServiceDefinitions.Identity.Database);
+var notificationsDb = postgres.AddDatabase(ServiceDefinitions.Notification.Database);
+var productsDb = postgres.AddDatabase(ServiceDefinitions.Product.Database);
+var ordersDb = postgres.AddDatabase(ServiceDefinitions.Order.Database);
 
-var redis = builder.AddRedis("redis")
+var identityRedis = builder.AddRedis(ServiceDefinitions.Redis)
     .WithRedisInsight()
     .WithLifetime(ContainerLifetime.Persistent);
 
-var identityService = builder.AddProject<Projects.Gateway>("identity-service")
+var identityService = builder.AddProject<Projects.Gateway>(ServiceDefinitions.Identity.Name)
     .WithReference(rabbitmq)
-    .WithReference(usersDb)
-    .WithReference(redis)
+    .WithReference(identityDb)
+    .WithReference(identityRedis)
     .WaitFor(rabbitmq)
-    .WaitFor(usersDb)
-    .WaitFor(redis);
+    .WaitFor(identityDb)
+    .WaitFor(identityRedis);
 
-var notificationService = builder.AddProject<Projects.NotificationService>("notification-service")
+var notificationService = builder.AddProject<Projects.NotificationService>(ServiceDefinitions.Notification.Name)
     .WithReference(rabbitmq)
     .WithReference(notificationsDb)
     .WithReference(identityService)
@@ -34,13 +36,13 @@ var notificationService = builder.AddProject<Projects.NotificationService>("noti
     .WaitFor(notificationsDb)
     .WaitFor(identityService);
 
-var productService = builder.AddProject<Projects.ProductService>("product-service")
+var productService = builder.AddProject<Projects.ProductService>(ServiceDefinitions.Product.Name)
     .WithReference(rabbitmq)
     .WithReference(productsDb)
     .WaitFor(rabbitmq)
     .WaitFor(productsDb);
 
-var orderService = builder.AddProject<Projects.OrderService>("order-service")
+var orderService = builder.AddProject<Projects.OrderService>(ServiceDefinitions.Order.Name)
     .WithReference(rabbitmq)
     .WithReference(productService)
     .WithReference(ordersDb)

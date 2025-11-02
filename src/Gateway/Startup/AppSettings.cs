@@ -19,10 +19,6 @@ public class ReverseProxySettings
 
 public class GatewaySwaggerSpec
 {
-    public required string Endpoint { get; init; }
-    
-    public required string Spec { get; init; }
-    
     public required string OriginPath { get; init; }
     
     public required string TargetPath { get; init; }

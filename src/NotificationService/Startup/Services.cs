@@ -5,7 +5,7 @@ namespace NotificationService.Startup;
 
 public static class Services
 {
-    public static void AddServices(this IServiceCollection services, IWebHostEnvironment environment)
+    public static void AddServices(this IServiceCollection services)
     {
         services.AddSingleton<FluidParser>();
         services.AddScoped<EmailService>();

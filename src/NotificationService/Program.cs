@@ -7,6 +7,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NotificationService.Database;
 using NotificationService.Endpoints;
 using NotificationService.Startup;
+using ProtobufSpec;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,14 +22,14 @@ var appSettings = builder.Configuration.GetRequiredSection("Settings").Get<AppSe
 builder.Services.AddSwagger();
 builder.AddInfrastructure();
 builder.Services.AddAuth(appSettings);
-builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddServices(builder.Environment);
+builder.Services.AddServices();
 builder.Services.AddGrpc();
 builder.Services.AddGrpcHealthChecks();
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
 var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";
 
-builder.Services.AddGrpcServiceReference<IdentityAPI.IdentityAPIClient>($"{(isHttps ? "https" : "http")}://identity-service", failureStatus: HealthStatus.Degraded);
+builder.Services.AddGrpcServiceReference<IdentityAPI.IdentityAPIClient>($"{(isHttps ? "https" : "http")}://{ServiceDefinitions.Identity.Name}", failureStatus: HealthStatus.Degraded);
 
 var app = builder.Build();
 

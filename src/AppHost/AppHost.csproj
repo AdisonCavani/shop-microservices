@@ -28,6 +28,7 @@
       <ProjectReference Include="..\NotificationService\NotificationService.csproj" />
       <ProjectReference Include="..\OrderService\OrderService.csproj" />
       <ProjectReference Include="..\ProductService\ProductService.csproj" />
+      <ProjectReference Include="..\ProtobufSpec\ProtobufSpec.csproj" IsAspireProjectResource="false" />
     </ItemGroup>
 
     <ItemGroup>

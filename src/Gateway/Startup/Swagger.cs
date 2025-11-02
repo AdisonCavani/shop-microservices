@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Gateway.Repositories;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
@@ -34,12 +35,12 @@ public static class Swagger
         string clusterId,
         GatewaySwaggerSpec swagger)
     {
-        endpoints.Map(swagger.Endpoint, async context =>
+        endpoints.Map($"/swagger/{clusterId}/v1/swagger.json", async context =>
         {
-            var client = new HttpClient();
-            var stream = await client.GetStreamAsync(swagger.Spec);
+            var clientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
+            var client = new SwaggerHttpClient(clientFactory.CreateClient(clusterId));
 
-            var document = new OpenApiStreamReader().Read(stream, out _);
+            var document = await client.GetSwaggerDocumentAsync();
             var rewrite = new OpenApiPaths();
 
             var routeConfigs = config

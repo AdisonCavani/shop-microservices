@@ -4,11 +4,13 @@ using FluentValidation;
 using Gateway.Database;
 using Microsoft.EntityFrameworkCore;
 using Gateway.Endpoints;
+using Gateway.Repositories;
 using Gateway.Startup;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NotificationService;
 using OrderService;
 using ProductService;
+using ProtobufSpec;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,14 +25,33 @@ var appSettings = builder.Configuration.GetRequiredSection("Settings").Get<AppSe
 builder.Services.AddSwagger();
 builder.AddInfrastructure();
 builder.Services.AddAuth(appSettings);
-builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddServices();
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
 var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";
 
-builder.Services.AddGrpcServiceReference<NotificationAPI.NotificationAPIClient>($"{(isHttps ? "https" : "http")}://notification-service", failureStatus: HealthStatus.Degraded);
-builder.Services.AddGrpcServiceReference<OrderAPI.OrderAPIClient>($"{(isHttps ? "https" : "http")}://order-service", failureStatus: HealthStatus.Degraded);
-builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>($"{(isHttps ? "https" : "http")}://product-service", failureStatus: HealthStatus.Degraded);
+builder.Services.AddHttpClient<SwaggerHttpClient>(ServiceDefinitions.Notification.Name, x =>
+{
+    x.BaseAddress = new Uri($"{(isHttps ? "https" : "http")}://{ServiceDefinitions.Notification.Name}");
+});
+builder.Services.AddHttpClient<SwaggerHttpClient>(ServiceDefinitions.Order.Name, x =>
+{
+    x.BaseAddress = new Uri($"{(isHttps ? "https" : "http")}://{ServiceDefinitions.Order.Name}");
+});
+builder.Services.AddHttpClient<SwaggerHttpClient>(ServiceDefinitions.Product.Name, x =>
+{
+    x.BaseAddress = new Uri($"{(isHttps ? "https" : "http")}://{ServiceDefinitions.Product.Name}");
+});
+
+builder.Services.AddGrpcServiceReference<NotificationAPI.NotificationAPIClient>(
+    $"{(isHttps ? "https" : "http")}://{ServiceDefinitions.Notification.Name}",
+    failureStatus: HealthStatus.Degraded);
+builder.Services.AddGrpcServiceReference<OrderAPI.OrderAPIClient>(
+    $"{(isHttps ? "https" : "http")}://{ServiceDefinitions.Order.Name}",
+    failureStatus: HealthStatus.Degraded);
+builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>(
+    $"{(isHttps ? "https" : "http")}://{ServiceDefinitions.Product.Name}",
+    failureStatus: HealthStatus.Degraded);
 
 builder.Services.AddGrpc();
 builder.Services.AddGrpcHealthChecks();
@@ -49,10 +70,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "API Gateway");
-        options.SwaggerEndpoint("/swagger/product-service/v1/swagger.json", "ProductService");
-        options.SwaggerEndpoint("/swagger/order-service/v1/swagger.json", "OrderService");
-        options.SwaggerEndpoint("/swagger/notification-service/v1/swagger.json", "NotificationService");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", ServiceDefinitions.Identity.Name);
+        options.SwaggerEndpoint($"/swagger/{ServiceDefinitions.Product.Name}/v1/swagger.json", ServiceDefinitions.Product.Name);
+        options.SwaggerEndpoint($"/swagger/{ServiceDefinitions.Order.Name}/v1/swagger.json", ServiceDefinitions.Order.Name);
+        options.SwaggerEndpoint($"/swagger/{ServiceDefinitions.Notification.Name}/v1/swagger.json", ServiceDefinitions.Notification.Name);
     });
 }
 
