@@ -18,13 +18,13 @@ spec:
           image: ghcr.io/adisoncavani/shop-microservices/order-service:0.0.5
           imagePullPolicy: Always
           envFrom:
+            - configMapRef:
+                name: env-shared
+            - secretRef:
+                name: shared-secrets
             - secretRef:
                 name: order-service
           env:
-            - name: Kestrel__EndpointDefaults__Protocols
-              value: "Http2"
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://aspire-dashboard:18889"
             - name: OTEL_SERVICE_NAME
               valueFrom:
                 fieldRef:

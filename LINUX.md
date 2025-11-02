@@ -125,6 +125,24 @@ sudo systemctl restart postgresql
 Fill with values:
 
 ```bash
+# shared-secrets
+kubectl delete secret shared-secrets --namespace shop-prod
+
+kubectl create secret generic shared-secrets \
+  --from-literal=OTEL_EXPORTER_OTLP_HEADERS='' \
+  --from-literal=Settings__Auth__Issuer='' \
+  --from-literal=Settings__Auth__Audience='' \
+  --from-literal=Settings__Auth__Secret='' \
+  --from-literal=Settings__Auth__ExpireMinutes='' \
+  --namespace shop-prod
+
+# aspire-dashboard
+kubectl delete secret aspire-dashboard --namespace shop-prod
+
+kubectl create secret generic aspire-dashboard \
+  --from-literal=DASHBOARD__OTLP__PRIMARYAPIKEY='' \
+  --namespace shop-prod
+
 # identity-service
 kubectl delete secret identity-service --namespace shop-prod
 
@@ -132,10 +150,6 @@ kubectl create secret generic identity-service \
   --from-literal=ConnectionStrings__Users='' \
   --from-literal=ConnectionStrings__rabbitmq='' \
   --from-literal=ConnectionStrings__redis='' \
-  --from-literal=Settings__Auth__Issuer= \
-  --from-literal=Settings__Auth__Audience= \
-  --from-literal=Settings__Auth__Secret="" \
-  --from-literal=Settings__Auth__ExpireMinutes= \
   --namespace shop-prod
 
 # notification-service
@@ -144,10 +158,6 @@ kubectl delete secret notification-service --namespace shop-prod
 kubectl create secret generic notification-service \
   --from-literal=ConnectionStrings__Notifications='' \
   --from-literal=ConnectionStrings__rabbitmq='' \
-  --from-literal=Settings__Auth__Issuer=backend \
-  --from-literal=Settings__Auth__Audience=backend \
-  --from-literal=Settings__Auth__Secret="" \
-  --from-literal=Settings__Auth__ExpireMinutes= \
   --namespace shop-prod
 
 # order-service
@@ -159,10 +169,6 @@ kubectl create secret generic order-service \
   --from-literal=Settings__Stripe__PublishableKey='' \
   --from-literal=Settings__Stripe__SecretKey='' \
   --from-literal=Settings__Stripe__WebhookSecret='' \
-  --from-literal=Settings__Auth__Issuer= \
-  --from-literal=Settings__Auth__Audience= \
-  --from-literal=Settings__Auth__Secret="" \
-  --from-literal=Settings__Auth__ExpireMinutes= \
   --namespace shop-prod
 
 # product-service
@@ -171,9 +177,5 @@ kubectl delete secret product-service --namespace shop-prod
 kubectl create secret generic product-service \
   --from-literal=ConnectionStrings__Products='' \
   --from-literal=ConnectionStrings__rabbitmq='' \
-  --from-literal=Settings__Auth__Issuer= \
-  --from-literal=Settings__Auth__Audience= \
-  --from-literal=Settings__Auth__Secret="" \
-  --from-literal=Settings__Auth__ExpireMinutes= \
   --namespace shop-prod
 ```
