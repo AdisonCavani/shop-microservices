@@ -112,6 +112,66 @@ sudo -u postgres psql
 ALTER USER postgres WITH PASSWORD 'postgres';
 ```
 
+Configure users for microservices:
+
+```bash
+sudo -u postgres psql
+
+CREATE USER prod_notifications WITH PASSWORD 'postgres';
+CREATE USER prod_orders        WITH PASSWORD 'postgres';
+CREATE USER prod_products      WITH PASSWORD 'postgres';
+CREATE USER prod_users         WITH PASSWORD 'postgres';
+
+CREATE USER test_notifications WITH PASSWORD 'postgres';
+CREATE USER test_orders        WITH PASSWORD 'postgres';
+CREATE USER test_products      WITH PASSWORD 'postgres';
+CREATE USER test_users         WITH PASSWORD 'postgres';
+
+GRANT CONNECT ON DATABASE prod_notifications TO prod_notifications;
+GRANT CONNECT ON DATABASE prod_orders        TO prod_orders;
+GRANT CONNECT ON DATABASE prod_products      TO prod_products;
+GRANT CONNECT ON DATABASE prod_users         TO prod_users;
+
+GRANT CONNECT ON DATABASE test_notifications TO test_notifications;
+GRANT CONNECT ON DATABASE test_orders        TO test_orders;
+GRANT CONNECT ON DATABASE test_products      TO test_products;
+GRANT CONNECT ON DATABASE test_users         TO test_users;
+
+\c prod_notifications
+GRANT ALL ON SCHEMA public TO prod_notifications;
+
+\c prod_orders
+GRANT ALL ON SCHEMA public TO prod_orders;
+
+\c prod_products
+GRANT ALL ON SCHEMA public TO prod_products;
+
+\c prod_users
+GRANT ALL ON SCHEMA public TO prod_users;
+
+\c test_notifications
+GRANT ALL ON SCHEMA public TO test_notifications;
+
+\c test_orders
+GRANT ALL ON SCHEMA public TO test_orders;
+
+\c test_products
+GRANT ALL ON SCHEMA public TO test_products;
+
+\c test_users
+GRANT ALL ON SCHEMA public TO test_users;
+
+GRANT ALL PRIVILEGES ON DATABASE prod_notifications TO prod_notifications;
+GRANT ALL PRIVILEGES ON DATABASE prod_orders        TO prod_orders;
+GRANT ALL PRIVILEGES ON DATABASE test_products      TO test_products;
+GRANT ALL PRIVILEGES ON DATABASE prod_users         TO prod_users;
+
+GRANT ALL PRIVILEGES ON DATABASE test_notifications TO test_notifications;
+GRANT ALL PRIVILEGES ON DATABASE test_orders        TO test_orders;
+GRANT ALL PRIVILEGES ON DATABASE test_products      TO test_products;
+GRANT ALL PRIVILEGES ON DATABASE test_users         TO test_users;
+```
+
 Reload PostgreSQL:
 
 ```bash
