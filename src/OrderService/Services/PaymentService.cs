@@ -18,6 +18,7 @@ public class PaymentService(
     public async Task<Tuple<Guid, PaymentDto>?> CreatePaymentAsync(Guid orderId, Guid userId, string userEmail)
     {
         var order = await dbContext.Orders
+            .AsNoTracking()
             .Include(x => x.Payments)
             .FirstOrDefaultAsync(x => x.Id == orderId && x.UserId == userId);
 
@@ -104,6 +105,7 @@ public class PaymentService(
     public async Task<PaymentDto?> GetPaymentAsync(Guid orderId, Guid userId)
     {
         var order = await dbContext.Orders
+            .AsNoTracking()
             .Include(orderEntity => orderEntity.Payments)
             .FirstOrDefaultAsync(x => x.UserId == userId && x.Id == orderId);
 

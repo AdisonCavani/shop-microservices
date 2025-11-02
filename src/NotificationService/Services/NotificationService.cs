@@ -28,8 +28,9 @@ public class NotificationService(
         if (!supported)
             throw new ProblemException(ExceptionMessages.NotificationTriggerMissing, string.Join(", ", available.Select(t => t.Name).ToList()));
         
-        var notificationTriggerExists =
-            await dbContext.NotificationTriggers.AnyAsync(x => x.TriggerName == triggerName);
+        var notificationTriggerExists = await dbContext.NotificationTriggers
+            .AsNoTracking()
+            .AnyAsync(x => x.TriggerName == triggerName);
         
         if (notificationTriggerExists)
             throw new ProblemException(ExceptionMessages.NotificationTriggerExists, "Notification trigger already exists");
@@ -52,13 +53,16 @@ public class NotificationService(
 
     public async Task<NotificationTriggerDto?> GetNotificationTriggerAsync(string triggerName, CancellationToken ct = default)
     {
-        var entity = await dbContext.NotificationTriggers.FirstOrDefaultAsync(x => x.TriggerName == triggerName, ct);
+        var entity = await dbContext.NotificationTriggers
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.TriggerName == triggerName, ct);
+        
         return entity?.ToNotificationTriggerDto();
     }
 
     public async Task<List<NotificationTriggerDto>> GetNotificationTriggersAsync(CancellationToken ct = default)
     {
-        var entities = await dbContext.NotificationTriggers.ToListAsync(ct);
+        var entities = await dbContext.NotificationTriggers.AsNoTracking().ToListAsync(ct);
         return entities.Select(x => x.ToNotificationTriggerDto()).ToList();
     }
 

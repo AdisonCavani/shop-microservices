@@ -12,7 +12,9 @@ public class OrderService(AppDbContext dbContext, ProductAPI.ProductAPIClient cl
 {
     public async Task<OrderDto?> CreateOrderAsync(Guid productId, Guid userId)
     {
-        var orderExists = await dbContext.Orders.AnyAsync(x => x.ProductId == productId);
+        var orderExists = await dbContext.Orders
+            .AsNoTracking()
+            .AnyAsync(x => x.ProductId == productId);
 
         if (orderExists)
             throw new ProblemException(ExceptionMessages.ProductSold, "This product is already sold");
@@ -40,10 +42,12 @@ public class OrderService(AppDbContext dbContext, ProductAPI.ProductAPIClient cl
     public async Task<OrderDto?> GetOrderAsync(Guid orderId, Guid userId)
     {
         var orderEntity = await dbContext.Orders
+            .AsNoTracking()
             .Include(x => x.Payments)
             .FirstOrDefaultAsync(x => x.UserId == userId && x.Id == orderId);
 
-        var payment = orderEntity?.Payments.FirstOrDefault(x => x.OrderId == orderId && (x.Paid || (!x.Paid && x.ExpiresAt > DateTime.UtcNow)));
+        var payment = orderEntity?.Payments
+            .FirstOrDefault(x => x.OrderId == orderId && (x.Paid || (!x.Paid && x.ExpiresAt > DateTime.UtcNow)));
         
         return orderEntity?.ToOrderDto(payment);
     }
@@ -51,6 +55,7 @@ public class OrderService(AppDbContext dbContext, ProductAPI.ProductAPIClient cl
     public async Task<IEnumerable<OrderDto>> GetOrdersAsync(Guid userId)
     {
         var orderEntities = await dbContext.Orders
+            .AsNoTracking()
             .Where(x => x.UserId == userId)
             .Include(x => x.Payments)
             .ToListAsync();

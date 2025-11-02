@@ -14,6 +14,7 @@ public static class Get
         [FromServices] AppDbContext dbContext)
     {
         var productEntity = await dbContext.Products
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.CompletedOrderId == null && x.Id == productId);
 
         if (productEntity is null)

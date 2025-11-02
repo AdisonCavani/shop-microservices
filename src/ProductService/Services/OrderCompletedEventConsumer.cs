@@ -11,7 +11,9 @@ public class OrderCompletedEventConsumer(IBus bus, AppDbContext dbContext) : ICo
     public async Task Consume(ConsumeContext<OrderCompletedEvent> context)
     {
         var productId = context.Message.ProductId;
-        var product = await dbContext.Products.FirstOrDefaultAsync(x => x.Id == productId);
+        var product = await dbContext.Products
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == productId);
 
         if (product is null)
             throw new Exception(ExceptionMessages.ProductLost);

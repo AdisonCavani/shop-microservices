@@ -33,7 +33,10 @@ public class ProductGrpcService(HealthCheckService service, AppDbContext dbConte
 
     public override async Task<ProductDto?> GetProduct(GetProductReq request, ServerCallContext context)
     {
-        var productEntity = await dbContext.Products.FirstOrDefaultAsync(x => x.Id == Guid.Parse(request.Id));
+        var productEntity = await dbContext.Products
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == Guid.Parse(request.Id));
+        
         return productEntity?.ToProductDto();
     }
 }

@@ -37,13 +37,13 @@ public class UserRepository : IUserRepository
 
     public async Task<UserDto?> FindUserByIdAsync(Guid id)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+        var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         return user?.ToUserDto();
     }
 
     public async Task<UserDto> GetUserByIdAsync(Guid id)
     {
-        var user = await _dbContext.Users.FirstAsync(x => x.Id == id);
+        var user = await _dbContext.Users.AsNoTracking().FirstAsync(x => x.Id == id);
         return user.ToUserDto();
     }
 
@@ -67,7 +67,7 @@ public class UserRepository : IUserRepository
 
     public async Task<Tuple<JwtTokenDto, UserDto>> LoginAsync(LoginReq req)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == req.Email.ToLower());
+        var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == req.Email.ToLower());
 
         if (user is null)
             throw new ProblemException(ExceptionMessages.EmailNotExist, "You need to register first");
@@ -115,7 +115,7 @@ public class UserRepository : IUserRepository
 
     public async Task RetryUserVerificationAsync(ResendVerifyEmailReq req)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == req.Id);
+        var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == req.Id);
 
         if (user is null)
             throw new Exception(ExceptionMessages.UserLost);

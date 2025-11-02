@@ -14,6 +14,7 @@ public static class List
         [FromServices] AppDbContext dbContext)
     {
         var productsEntities = await dbContext.Products
+            .AsNoTracking()
             .Where(x => x.CompletedOrderId == null).ToListAsync();
         
         var products = productsEntities.Select(x => x.ToProductDto());

@@ -18,10 +18,12 @@ public class RegisterReqValidator : AbstractValidator<RegisterReq>
             .EmailAddress()
             .CustomAsync(async (value, context, cancellationToken) =>
             {
-                var taken = await dbContext.Users.FirstOrDefaultAsync(x => x.Email == value.ToLower(), cancellationToken);
+                var taken = await dbContext.Users
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Email == value.ToLower(), cancellationToken);
 
                 if (taken is not null)
-                    context.AddFailure(nameof(context.PropertyName), ExceptionMessages.EmailTaken);
+                    context.AddFailure(nameof(context.PropertyPath), ExceptionMessages.EmailTaken);
             });
         
         RuleFor(x => x.Password)

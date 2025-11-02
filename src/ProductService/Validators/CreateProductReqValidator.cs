@@ -16,10 +16,12 @@ public class CreateProductReqValidator : AbstractValidator<CreateProductReq>
             .NotEmpty()
             .CustomAsync(async (value, context, cancellationToken) =>
             {
-                var taken = await dbContext.Products.FirstOrDefaultAsync(x => x.ActivationCode == value, cancellationToken);
+                var taken = await dbContext.Products
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.ActivationCode == value, cancellationToken);
 
                 if (taken is not null)
-                    context.AddFailure(nameof(context.PropertyName), "Code already exists");
+                    context.AddFailure(nameof(context.PropertyPath), "Code already exists");
             });
     }
 }
