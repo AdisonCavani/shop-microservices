@@ -2,6 +2,7 @@ name: Build & test .NET Aspire
 
 on:
   workflow_call:
+  workflow_dispatch:
   push:
     paths:
       - src/**.cs
@@ -33,7 +34,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
         with:
-          global-json-file: global.json
+          global-json-file: src/global.json
 
       - name: Cache dependencies
         uses: actions/cache@v4
@@ -50,4 +51,4 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test --configuration Release --no-build --verbosity normal

@@ -18,12 +18,16 @@ env:
 
 jobs:
   build-and-test:
-    uses: ./.github/workflows/build.yml
+    name: Build & test
+    uses: ./.github/workflows/build.yaml
+    secrets: inherit
 
   build-and-push-image:
+    name: Publish images
+
     runs-on: ubuntu-24.04-arm
 
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: build-and-test
 
     permissions:
       contents: write
