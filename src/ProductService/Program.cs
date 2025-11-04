@@ -19,6 +19,7 @@ var appSettings = builder.Configuration.GetRequiredSection("Settings").Get<AppSe
 builder.Services.AddSwagger();
 builder.AddInfrastructure();
 builder.Services.AddAuth(appSettings);
+builder.Services.AddServices();
 builder.Services.AddGrpc();
 builder.Services.AddGrpcHealthChecks();
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());

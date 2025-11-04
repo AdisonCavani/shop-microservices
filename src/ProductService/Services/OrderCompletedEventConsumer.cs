@@ -1,30 +1,12 @@
-﻿using CoreShared;
-using MassTransit;
-using Microsoft.EntityFrameworkCore;
-using ProductService.Database;
+﻿using MassTransit;
 using ProtobufSpec.Events;
 
 namespace ProductService.Services;
 
-public class OrderCompletedEventConsumer(IBus bus, AppDbContext dbContext) : IConsumer<OrderCompletedEvent>
+public class OrderCompletedEventConsumer(IProductService productService) : IConsumer<OrderCompletedEvent>
 {
     public async Task Consume(ConsumeContext<OrderCompletedEvent> context)
     {
-        var productId = context.Message.ProductId;
-        var product = await dbContext.Products
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == productId);
-
-        if (product is null)
-            throw new Exception(ExceptionMessages.ProductLost);
-        
-        product.CompletedOrderId = context.Message.OrderId;
-        await dbContext.SaveChangesAsync();
-
-        await bus.Publish(new ProductOrderCompletedEvent
-        {
-            UserId = context.Message.UserId,
-            ActivationCode = product.ActivationCode
-        });
+        await productService.MaskAsCompletedAsync(context.Message.ProductId, context.Message.OrderId, context.Message.UserId!.Value);
     }
 }

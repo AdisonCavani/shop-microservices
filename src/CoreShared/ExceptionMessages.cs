@@ -12,6 +12,7 @@ public static class ExceptionMessages
     public const string MissingUserForVerificationToken = "Could not find user connected with this verification token";
     public const string PaymentLost = "Could not find payment";
     public const string ProductLost = "Could not find product";
+    public const string ProductActivationCodeTaken = "Product with this activation code already exists";
     public const string UserLost = "Could not find user";
     public const string InvalidToken = "Invalid token";
     public const string EmailAlreadyVerified = "Email already verified";

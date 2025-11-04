@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Readers;
 using Yarp.ReverseProxy.Configuration;
 
 namespace Gateway.Startup;

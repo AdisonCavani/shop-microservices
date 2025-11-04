@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using ProductService.Contracts.Requests;
-using ProductService.Database;
-using ProductService.Mappers;
+using ProductService.Services;
 using ProtobufSpec;
 
 namespace ProductService.Endpoints.Product;
@@ -13,14 +12,11 @@ public static class Create
 {
     internal static async Task<Results<StatusCodeHttpResult, Created<ProductDto>>> HandleAsync(
         [FromBody] CreateProductReq req,
-        [FromServices] AppDbContext dbContext)
+        [FromServices] IProductService productService)
     {
-        var productEntity = req.ToProductEntity();
-        
-        dbContext.Products.Add(productEntity);
-        await dbContext.SaveChangesAsync();
+        var product = await productService.CreateProductAsync(req.Name, req.Description, req.PriceCents, req.ActivationCode);
 
-        return TypedResults.Created($"{ApiRoutes.Product.Path}/{productEntity.Id}", productEntity.ToProductDto());
+        return TypedResults.Created($"{ApiRoutes.Product.Path}/{product.Id}", product);
     }
 
     [ExcludeFromCodeCoverage]

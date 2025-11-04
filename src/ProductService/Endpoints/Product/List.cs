@@ -1,23 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ProductService.Contracts.Responses;
-using ProductService.Database;
-using ProductService.Mappers;
+using ProductService.Services;
 
 namespace ProductService.Endpoints.Product;
 
 public static class List
 {
     internal static async Task<Results<StatusCodeHttpResult, Ok<ListProductsRes>>> HandleAsync(
-        [FromServices] AppDbContext dbContext)
+        [FromServices] IProductService productService)
     {
-        var productsEntities = await dbContext.Products
-            .AsNoTracking()
-            .Where(x => x.CompletedOrderId == null).ToListAsync();
-        
-        var products = productsEntities.Select(x => x.ToProductDto());
+        var products = await productService.GetProductsAsync();
 
         return TypedResults.Ok(new ListProductsRes { Products = products });
     }

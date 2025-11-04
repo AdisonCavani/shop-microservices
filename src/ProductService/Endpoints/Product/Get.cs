@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using ProductService.Database;
-using ProductService.Mappers;
+using ProductService.Services;
 
 namespace ProductService.Endpoints.Product;
 
@@ -11,16 +9,14 @@ public static class Get
 {
     internal static async Task<Results<StatusCodeHttpResult, NotFound, Ok<ProductDto>>> HandleAsync(
         [FromRoute] Guid productId,
-        [FromServices] AppDbContext dbContext)
+        [FromServices] IProductService productService)
     {
-        var productEntity = await dbContext.Products
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.CompletedOrderId == null && x.Id == productId);
+        var product = await productService.GetProductAsync(productId);
 
-        if (productEntity is null)
+        if (product is null)
             return TypedResults.NotFound();
 
-        return TypedResults.Ok(productEntity.ToProductDto());
+        return TypedResults.Ok(product);
     }
     
     internal static OpenApiOperation OpenApi(OpenApiOperation operation)

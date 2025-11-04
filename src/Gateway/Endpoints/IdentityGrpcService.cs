@@ -1,8 +1,5 @@
-﻿using Gateway.Database;
-using Gateway.Mappers;
-using Gateway.Repositories;
+﻿using Gateway.Repositories;
 using Grpc.Core;
-using Microsoft.EntityFrameworkCore;
 
 namespace Gateway.Endpoints;
 

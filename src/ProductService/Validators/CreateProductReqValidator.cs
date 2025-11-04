@@ -1,27 +1,15 @@
 ﻿using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using ProductService.Contracts.Requests;
-using ProductService.Database;
 
 namespace ProductService.Validators;
 
 public class CreateProductReqValidator : AbstractValidator<CreateProductReq>
 {
-    public CreateProductReqValidator(AppDbContext dbContext)
+    public CreateProductReqValidator()
     {
         RuleFor(x => x.Name).NotEmpty();
         RuleFor(x => x.Description).NotEmpty();
         RuleFor(x => x.PriceCents).GreaterThanOrEqualTo(200);
-        RuleFor(x => x.ActivationCode)
-            .NotEmpty()
-            .CustomAsync(async (value, context, cancellationToken) =>
-            {
-                var taken = await dbContext.Products
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.ActivationCode == value, cancellationToken);
-
-                if (taken is not null)
-                    context.AddFailure(nameof(context.PropertyPath), "Code already exists");
-            });
+        RuleFor(x => x.ActivationCode).NotEmpty();
     }
 }
