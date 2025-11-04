@@ -1,0 +1,53 @@
+name: Build & test .NET Aspire
+
+on:
+  workflow_call:
+  push:
+    paths:
+      - src/**.cs
+      - src/**.csproj
+      - src/**.sln
+      - src/**.json
+      - src/**.proto
+    branches:
+      - "**"
+  pull_request:
+    paths:
+      - src/**.cs
+      - src/**.csproj
+      - src/**.sln
+      - src/**.json
+      - src/**.proto
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04-arm
+    defaults:
+      run:
+        working-directory: src
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --no-build --verbosity normal

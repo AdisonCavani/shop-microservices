@@ -1,4 +1,4 @@
-name: Create and publish Docker images for microservices
+name: Publish images to ghcr.io
 
 on:
   workflow_dispatch:
@@ -17,8 +17,13 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  build-and-test:
+    uses: ./.github/workflows/build.yml
+
   build-and-push-image:
     runs-on: ubuntu-24.04-arm
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     permissions:
       contents: write
