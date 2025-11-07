@@ -1,0 +1,15 @@
+﻿### UserVerificationCreatedEvent
+POST {{baseUrl}}/api/notification
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+< ./Models/UserVerificationCreatedEvent.json
+
+### OrderCompletedEvent
+POST {{baseUrl}}/api/notification
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+< ./Models/OrderCompletedEvent.json

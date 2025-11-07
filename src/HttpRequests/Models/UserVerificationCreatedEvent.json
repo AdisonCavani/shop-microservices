@@ -1,0 +1,5 @@
+{
+  "triggerName": "UserVerificationCreatedEvent",
+  "subject": "Verify your email",
+  "liquidTemplate": "Dear {{ FirstName }} {{ LastName }}, please confirm your email.\nYour confirmation token is: {{ Token }}"
+}

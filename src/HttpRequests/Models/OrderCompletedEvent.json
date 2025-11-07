@@ -1,0 +1,5 @@
+{
+  "triggerName": "OrderCompletedEvent",
+  "subject": "Order completed",
+  "liquidTemplate": "Dear {{ FirstName }} {{ LastName }},\nHere is your activation code: {{ ActivationCode }}"
+}
