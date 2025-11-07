@@ -1,16 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using NotificationService.Database.Entities;
 
 namespace NotificationService.Database;
 
 public class AppDbContext : DbContext
 {
-    public virtual required DbSet<NotificationTriggerEntity> NotificationTriggers { get; set; }
-    
-    public AppDbContext()
-    {
-        
-    }
+    public virtual DbSet<NotificationTriggerEntity> NotificationTriggers { get; set; }
     
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -19,6 +15,12 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        base.OnModelCreating(builder);
+        
+        builder.AddInboxStateEntity();
+        builder.AddOutboxStateEntity();
+        builder.AddOutboxMessageEntity();
+        
         builder.Entity<NotificationTriggerEntity>()
             .HasKey(x => x.TriggerName);
 

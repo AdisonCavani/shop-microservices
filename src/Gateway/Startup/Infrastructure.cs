@@ -1,4 +1,5 @@
 ﻿using Gateway.Database;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using ProtobufSpec;
 
@@ -14,6 +15,20 @@ public static class Infrastructure
                 npgsqlOptions.MapEnum<UserRoleEnum>("UserRoleEnum");
             }));
         builder.AddRedisClient(ServiceDefinitions.Redis);
-        builder.AddMassTransitRabbitMq(ServiceDefinitions.RabbitMQ);
+        builder.Services.AddMassTransit(configurator =>
+        {
+            configurator.AddEntityFrameworkOutbox<AppDbContext>(o =>
+            {
+                o.DuplicateDetectionWindow = TimeSpan.FromMinutes(10);
+                o.QueryDelay = TimeSpan.FromSeconds(3);
+                o.UsePostgres().UseBusOutbox();
+            });
+            
+            configurator.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(builder.Configuration.GetConnectionString(ServiceDefinitions.RabbitMQ));
+                cfg.ConfigureEndpoints(context);
+            });
+        });
     }
 }

@@ -149,13 +149,14 @@ public class PaymentService(
             throw new Exception(ExceptionMessages.PaymentLost);
 
         payment.Paid = true;
-        await dbContext.SaveChangesAsync();
-
+        
         await bus.Publish(new OrderCompletedEvent
         {
             OrderId = payment.Order.Id,
             ProductId = payment.Order.ProductId,
             UserId = payment.Order.UserId
         });
+        
+        await dbContext.SaveChangesAsync();
     }
 }

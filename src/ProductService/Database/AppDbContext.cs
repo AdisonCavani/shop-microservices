@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using ProductService.Database.Entities;
 
 namespace ProductService.Database;
 
 public class AppDbContext : DbContext
 {
-    public required DbSet<ProductEntity> Products { get; set; }
+    public virtual DbSet<ProductEntity> Products { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -14,7 +15,12 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        // For generating UUID
+        base.OnModelCreating(builder);
+        
+        builder.AddInboxStateEntity();
+        builder.AddOutboxStateEntity();
+        builder.AddOutboxMessageEntity();
+        
         builder.HasPostgresExtension("uuid-ossp");
         
         builder.Entity<ProductEntity>()

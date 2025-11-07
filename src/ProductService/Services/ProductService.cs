@@ -61,12 +61,13 @@ public class ProductService(AppDbContext dbContext, IBus bus) : IProductService
             throw new Exception(ExceptionMessages.ProductLost);
         
         product.CompletedOrderId = orderId;
-        await dbContext.SaveChangesAsync();
-
+        
         await bus.Publish(new ProductOrderCompletedEvent
         {
             UserId = userId,
             ActivationCode = product.ActivationCode
         });
+        
+        await dbContext.SaveChangesAsync();
     }
 }

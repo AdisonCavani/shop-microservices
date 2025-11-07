@@ -1,4 +1,5 @@
 ﻿using Gateway.Database.Entities;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using ProtobufSpec;
 
@@ -6,7 +7,7 @@ namespace Gateway.Database;
 
 public class AppDbContext : DbContext
 {
-    public required DbSet<UserEntity> Users { get; set; }
+    public virtual DbSet<UserEntity> Users { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -15,6 +16,12 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        base.OnModelCreating(builder);
+        
+        builder.AddInboxStateEntity();
+        builder.AddOutboxStateEntity();
+        builder.AddOutboxMessageEntity();
+        
         builder.HasPostgresExtension("uuid-ossp");
         
         builder.Entity<UserEntity>()

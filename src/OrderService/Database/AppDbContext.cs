@@ -1,18 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using OrderService.Database.Entities;
 
 namespace OrderService.Database;
 
 public class AppDbContext : DbContext
 {
-    public virtual required DbSet<OrderEntity> Orders { get; set; }
+    public virtual DbSet<OrderEntity> Orders { get; set; }
     
-    public virtual required DbSet<PaymentEntity> Payments { get; set; }
-
-    public AppDbContext()
-    {
-        
-    }
+    public virtual DbSet<PaymentEntity> Payments { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -21,6 +17,12 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        base.OnModelCreating(builder);
+        
+        builder.AddInboxStateEntity();
+        builder.AddOutboxStateEntity();
+        builder.AddOutboxMessageEntity();
+        
         builder.HasPostgresExtension("uuid-ossp");
         
         builder.Entity<OrderEntity>()

@@ -58,7 +58,8 @@ builder.Services.AddGrpcHealthChecks();
 
 builder.Services
     .AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetRequiredSection("Settings:ReverseProxy"));
+    .LoadFromConfig(builder.Configuration.GetRequiredSection("Settings:ReverseProxy"))
+    .AddServiceDiscoveryDestinationResolver();
 
 var app = builder.Build();
 
@@ -82,9 +83,6 @@ var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
 if (context.Database.IsRelational())
     await context.Database.MigrateAsync();
-
-app.UseHsts();
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
