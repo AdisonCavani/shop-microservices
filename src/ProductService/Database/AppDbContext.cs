@@ -7,6 +7,11 @@ namespace ProductService.Database;
 public class AppDbContext : DbContext
 {
     public virtual DbSet<ProductEntity> Products { get; set; }
+    
+    public AppDbContext()
+    {
+        
+    }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {

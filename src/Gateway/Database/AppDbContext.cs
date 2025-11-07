@@ -8,6 +8,11 @@ namespace Gateway.Database;
 public class AppDbContext : DbContext
 {
     public virtual DbSet<UserEntity> Users { get; set; }
+    
+    public AppDbContext()
+    {
+        
+    }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
