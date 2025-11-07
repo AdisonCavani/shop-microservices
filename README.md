@@ -1,5 +1,7 @@
 # shop-microservices
 
+[![Build & test .NET Aspire](https://github.com/AdisonCavani/shop-microservices/actions/workflows/build.yaml/badge.svg)](https://github.com/AdisonCavani/shop-microservices/actions/workflows/build.yaml)
+
 Shop microservices project
 
 ## Tech stack
