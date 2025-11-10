@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seq
+  namespace: prod-shop
+  labels:
+    app: seq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seq
+  template:
+    metadata:
+      labels:
+        app: seq
+    spec:
+      containers:
+        - name: seq
+          image: datalust/seq:2025.2
+          imagePullPolicy: Always
+          ports:
+            - name: web
+              containerPort: 80
+            - name: ingest
+              containerPort: 5341
+            - name: oltp
+              containerPort: 4317
+          envFrom:
+            - secretRef:
+                name: seq
+          env:
+            - name: ACCEPT_EULA
+              value: "Y"
+          volumeMounts:
+            - name: seq-data
+              mountPath: /data
+      volumes:
+        - name: seq-data
+          persistentVolumeClaim:
+            claimName: seq-pvc
