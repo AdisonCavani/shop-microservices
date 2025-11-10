@@ -37,8 +37,7 @@ builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>($"{(isHttp
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseSerilogRequestLogging();
-app.UseExceptionHandler();
+app.UseServiceDefaults();
 
 if (app.Environment.IsDevelopment())
 {
