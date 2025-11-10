@@ -5,11 +5,8 @@ metadata:
   namespace: test-shop
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      if ($request_uri ~* "^/health" ) {
-        return 404;
-      }
-      if ($request_uri ~* "^/alive" ) {
+    nginx.ingress.kubernetes.io/server-snippet: |
+      location ~ ^/(health|alive|api/health) {
         return 404;
       }
 spec:
