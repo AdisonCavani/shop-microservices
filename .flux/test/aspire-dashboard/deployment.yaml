@@ -5,6 +5,8 @@ metadata:
   namespace: test-shop
   labels:
     app: aspire-dashboard
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   selector:
