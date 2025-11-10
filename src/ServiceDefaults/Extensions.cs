@@ -7,6 +7,9 @@ using Npgsql;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.Hosting;
@@ -16,8 +19,19 @@ namespace Microsoft.Extensions.Hosting;
 // To learn more about using this project, see https://aka.ms/dotnet/aspire/service-defaults
 public static class Extensions
 {
-    public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
+    public static WebApplicationBuilder AddServiceDefaults(this WebApplicationBuilder builder)
     {
+        builder.Host.UseSerilog((context, configuration) =>
+        {
+            configuration
+                .Enrich.FromLogContext()
+                .MinimumLevel.Information()
+                .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
+                .MinimumLevel.Override("Quartz", LogEventLevel.Information)
+                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+                .WriteTo.OpenTelemetry();
+        });
+        
         builder.ConfigureOpenTelemetry();
 
         builder.AddDefaultHealthChecks();

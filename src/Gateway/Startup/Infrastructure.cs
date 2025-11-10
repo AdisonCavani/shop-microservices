@@ -1,4 +1,5 @@
-﻿using Gateway.Database;
+﻿using CoreShared;
+using Gateway.Database;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using ProtobufSpec;
@@ -28,6 +29,12 @@ public static class Infrastructure
             {
                 cfg.Host(builder.Configuration.GetConnectionString(ServiceDefinitions.RabbitMQ));
                 cfg.ConfigureEndpoints(context);
+                
+                var consumeObserver = new LoggingConsumeObserver(context.GetRequiredService<ILogger<LoggingConsumeObserver>>());
+                var publishObserver = new LoggingPublishObserver(context.GetRequiredService<ILogger<LoggingPublishObserver>>());
+
+                cfg.ConnectConsumeObserver(consumeObserver);
+                cfg.ConnectPublishObserver(publishObserver);
             });
         });
     }

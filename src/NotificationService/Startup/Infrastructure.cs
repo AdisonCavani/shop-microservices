@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using CoreShared;
+using MassTransit;
 using NotificationService.Database;
 using NotificationService.Services;
 using ProtobufSpec;
@@ -24,6 +25,12 @@ public static class Infrastructure
             {
                 cfg.Host(builder.Configuration.GetConnectionString(ServiceDefinitions.RabbitMQ));
                 cfg.ConfigureEndpoints(context);
+
+                var consumeObserver = new LoggingConsumeObserver(context.GetRequiredService<ILogger<LoggingConsumeObserver>>());
+                var publishObserver = new LoggingPublishObserver(context.GetRequiredService<ILogger<LoggingPublishObserver>>());
+
+                cfg.ConnectConsumeObserver(consumeObserver);
+                cfg.ConnectPublishObserver(publishObserver);
             });
             
             var eventTypes = typeof(DomainEvent).Assembly

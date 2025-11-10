@@ -11,6 +11,7 @@ using NotificationService;
 using OrderService;
 using ProductService;
 using ProtobufSpec;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +65,7 @@ builder.Services
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())

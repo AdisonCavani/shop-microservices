@@ -9,6 +9,7 @@ using ProductService;
 using Stripe;
 using Microsoft.EntityFrameworkCore;
 using ProtobufSpec;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,7 @@ builder.Services.AddGrpcServiceReference<ProductAPI.ProductAPIClient>($"{(isHttp
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())

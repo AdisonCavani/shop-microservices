@@ -8,6 +8,7 @@ using NotificationService.Database;
 using NotificationService.Endpoints;
 using NotificationService.Startup;
 using ProtobufSpec;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,7 @@ builder.Services.AddGrpcServiceReference<IdentityAPI.IdentityAPIClient>($"{(isHt
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
