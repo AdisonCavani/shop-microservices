@@ -4,5 +4,6 @@ metadata:
   name: env-shared
   namespace: test-shop
 data:
+  ASPNETCORE_ENVIRONMENT: "Staging"
   Kestrel__EndpointDefaults__Protocols: "Http2"
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
