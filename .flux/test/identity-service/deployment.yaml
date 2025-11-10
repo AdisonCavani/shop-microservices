@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: identity-service
-          image: ghcr.io/adisoncavani/shop-microservices/gateway:0.0.13
+          image: ghcr.io/adisoncavani/shop-microservices/gateway:0.0.14
           imagePullPolicy: Always
           envFrom:
             - configMapRef:
