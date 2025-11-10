@@ -5,6 +5,5 @@ metadata:
   namespace: prod-shop
 data:
   ASPNETCORE_ENVIRONMENT: "Production"
-  Kestrel__EndpointDefaults__Protocols: "Http2"
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://seq:5341/ingest/otlp"
   OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
