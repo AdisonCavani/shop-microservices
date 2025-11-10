@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
@@ -21,6 +23,17 @@ public static class Extensions
 {
     public static WebApplicationBuilder AddServiceDefaults(this WebApplicationBuilder builder)
     {
+        if (!builder.Environment.IsDevelopment())
+        {
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(50051, listenOptions =>
+                {
+                    listenOptions.Protocols = HttpProtocols.Http2;
+                });
+            });
+        }
+        
         builder.Host.UseSerilog((context, configuration) =>
         {
             configuration

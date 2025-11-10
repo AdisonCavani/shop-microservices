@@ -1,6 +1,8 @@
-﻿using Grpc.Health.V1;
+﻿using System.Security.Authentication;
+using Grpc.Health.V1;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Hosting;
 
 // ReSharper disable once CheckNamespace
 namespace System.Net.Http;
@@ -135,6 +137,15 @@ public static class ServiceReferenceExtensions
         }
 
         var uri = new Uri(address);
+        
+        if (Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") != Environments.Development)
+        {
+            uri = new UriBuilder(uri)
+            {
+                Port = 50051
+            }.Uri;
+        }
+        
         var builder = services.AddGrpcClient<TClient>(o => o.Address = uri);
 
         AddGrpcHealthChecks(services, uri, healthCheckName ?? $"{typeof(TClient).Name}-health", failureStatus);
