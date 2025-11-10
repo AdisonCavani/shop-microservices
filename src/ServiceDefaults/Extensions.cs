@@ -28,6 +28,27 @@ public static class Extensions
                 .MinimumLevel.Information()
                 .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
                 .MinimumLevel.Override("Quartz", LogEventLevel.Information)
+                .Filter.ByExcluding(logEvent =>
+                {
+                    if (logEvent.Level > LogEventLevel.Information || context.HostingEnvironment.IsDevelopment())
+                        return false;
+                    
+                    if (logEvent.Properties.TryGetValue("RequestPath", out var path))
+                    {
+                        var pathValue = path.ToString().Trim('"');
+                        return pathValue.StartsWith("/health") || 
+                               pathValue.StartsWith("/alive") || 
+                               pathValue.StartsWith("/grpc.health.v1.Health/Check");
+                    }
+                    
+                    if (logEvent.Properties.TryGetValue("GrpcUri", out var grpcUri))
+                    {
+                        var grpcPath = grpcUri.ToString().Trim('"');
+                        return grpcPath.StartsWith("/grpc.health.v1.Health");
+                    }
+                    
+                    return false;
+                })
                 .WriteTo.Console(theme: AnsiConsoleTheme.Code)
                 .WriteTo.OpenTelemetry();
         });
