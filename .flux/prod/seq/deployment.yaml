@@ -24,8 +24,6 @@ spec:
               containerPort: 80
             - name: ingest
               containerPort: 5341
-            - name: oltp
-              containerPort: 4317
           envFrom:
             - secretRef:
                 name: seq

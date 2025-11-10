@@ -14,6 +14,3 @@ spec:
     - name: ingest
       port: 5341
       targetPort: 5341
-    - name: oltp
-      port: 4317
-      targetPort: 4317
