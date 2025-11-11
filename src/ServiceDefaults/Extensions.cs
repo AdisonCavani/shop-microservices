@@ -66,6 +66,16 @@ public static class Extensions
                         var grpcPath = grpcUri.ToString().Trim('"');
                         return grpcPath.StartsWith("/grpc.health.v1.Health");
                     }
+
+                    if (logEvent.Properties.TryGetValue("Uri", out var uri))
+                    {
+                        logEvent.Properties.TryGetValue("Result", out var result);
+                        var otlpExporter = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
+                        
+                        return otlpExporter is not null && 
+                               uri.ToString().StartsWith(otlpExporter, StringComparison.OrdinalIgnoreCase) && 
+                               (result is null || result.ToString() == "200");
+                    }
                     
                     return false;
                 })
