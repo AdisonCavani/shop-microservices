@@ -47,6 +47,7 @@ public static class Extensions
                 .MinimumLevel.Information()
                 .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
                 .MinimumLevel.Override("Quartz", LogEventLevel.Information)
+                .MinimumLevel.Override("System.Net.Http.HttpClient.OtlpTraceExporter", LogEventLevel.Warning)
                 .Filter.ByExcluding(logEvent =>
                 {
                     if (logEvent.Level > LogEventLevel.Information || context.HostingEnvironment.IsDevelopment())
