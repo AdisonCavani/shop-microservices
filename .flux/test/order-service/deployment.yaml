@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: ghcr.io/adisoncavani/shop-microservices/order-service:0.0.17
+          image: ghcr.io/adisoncavani/shop-microservices/order-service:0.0.18
           imagePullPolicy: Always
           envFrom:
             - configMapRef:
