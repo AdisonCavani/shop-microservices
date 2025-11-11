@@ -73,8 +73,8 @@ public static class Extensions
                         var otlpExporter = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
                         
                         return otlpExporter is not null && 
-                               uri.ToString().StartsWith(otlpExporter, StringComparison.OrdinalIgnoreCase) && 
-                               (result is null || result.ToString() == "200");
+                               uri.ToString().Trim('"').StartsWith(otlpExporter, StringComparison.OrdinalIgnoreCase) && 
+                               (result is null || result.ToString().Trim('"') == "200");
                     }
                     
                     return false;
