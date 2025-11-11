@@ -12,6 +12,7 @@ using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
+using ServiceDefaults;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.Hosting;
@@ -122,6 +123,8 @@ public static class Extensions
                     .AddNpgsql()
                     .AddMassTransitInstrumentation()
                     .AddRedisInstrumentation();
+
+                tracing.AddProcessor<OtelTracingProcessor>();
             });
 
         builder.AddOpenTelemetryExporters();
