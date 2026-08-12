@@ -7,9 +7,10 @@ var rabbitmq = builder.AddRabbitMQ(ServiceDefinitions.RabbitMQ)
     .WithManagementPlugin();
 
 var postgres = builder.AddPostgres("postgres")
+    .WithImageTag("17")
     .WithLifetime(ContainerLifetime.Persistent)
     .WithDataVolume()
-    .WithEndpoint(port: 5432, targetPort: 5432, name: "postgres");
+    .WithEndpoint(port: 5432, targetPort: 5432, name: "tcp");
 
 var identityDb = postgres.AddDatabase(ServiceDefinitions.Identity.Database);
 var notificationsDb = postgres.AddDatabase(ServiceDefinitions.Notification.Database);

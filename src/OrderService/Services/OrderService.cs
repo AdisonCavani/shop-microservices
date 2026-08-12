@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 using Microsoft.EntityFrameworkCore;
 using OrderService.Contracts.Dtos;
 using OrderService.Database;

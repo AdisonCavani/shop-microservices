@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using ProtobufSpec.Dtos;
 using ProtobufSpec.Responses;
 

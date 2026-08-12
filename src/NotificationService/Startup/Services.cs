@@ -1,4 +1,4 @@
-﻿using Fluid;
+using Fluid;
 using NotificationService.Services;
 
 namespace NotificationService.Startup;

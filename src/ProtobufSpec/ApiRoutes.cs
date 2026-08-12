@@ -1,4 +1,4 @@
-﻿namespace ProtobufSpec;
+namespace ProtobufSpec;
 
 public class ApiRoutes
 {

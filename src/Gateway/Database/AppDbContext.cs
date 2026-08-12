@@ -1,4 +1,4 @@
-﻿using Gateway.Database.Entities;
+using Gateway.Database.Entities;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using ProtobufSpec;

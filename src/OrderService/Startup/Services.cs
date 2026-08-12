@@ -1,4 +1,4 @@
-﻿using OrderService.Services;
+using OrderService.Services;
 
 namespace OrderService.Startup;
 

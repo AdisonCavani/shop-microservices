@@ -1,4 +1,4 @@
-﻿using System.Security.Authentication;
+using System.Security.Authentication;
 using Grpc.Health.V1;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;

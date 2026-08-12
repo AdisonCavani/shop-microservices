@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 using MassTransit;
 using OrderService.Database;
 using OrderService.Services;

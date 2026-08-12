@@ -1,4 +1,4 @@
-﻿namespace ProtobufSpec.Dtos;
+namespace ProtobufSpec.Dtos;
 
 public class HealthCheckDto
 {

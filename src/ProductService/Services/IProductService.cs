@@ -1,4 +1,4 @@
-﻿namespace ProductService.Services;
+namespace ProductService.Services;
 
 public interface IProductService
 {

@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using ProductService.Database;

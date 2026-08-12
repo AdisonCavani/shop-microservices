@@ -1,4 +1,4 @@
-﻿using CoreShared.Settings;
+using CoreShared.Settings;
 using Yarp.ReverseProxy.Configuration;
 
 namespace Gateway.Startup;

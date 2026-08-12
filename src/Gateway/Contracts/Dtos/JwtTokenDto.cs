@@ -1,4 +1,4 @@
-﻿namespace Gateway.Contracts.Dtos;
+namespace Gateway.Contracts.Dtos;
 
 public class JwtTokenDto
 {

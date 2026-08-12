@@ -1,4 +1,4 @@
-﻿using ProtobufSpec.Dtos;
+using ProtobufSpec.Dtos;
 
 namespace ProtobufSpec.Responses;
 

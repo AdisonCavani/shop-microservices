@@ -50,7 +50,7 @@ public static class Extensions
                 .MinimumLevel.Override("System.Net.Http.HttpClient.OtlpTraceExporter", LogEventLevel.Warning)
                 .Filter.ByExcluding(logEvent =>
                 {
-                    if (logEvent.Level > LogEventLevel.Information || context.HostingEnvironment.IsDevelopment())
+                    if (logEvent.Level > LogEventLevel.Information)
                         return false;
                     
                     if (logEvent.Properties.TryGetValue("RequestPath", out var path))

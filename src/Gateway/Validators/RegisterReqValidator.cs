@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 using FluentValidation;
 using Gateway.Contracts.Requests;
 using Gateway.Database;

@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 using MassTransit;
 using NotificationService.Database;
 using NotificationService.Services;

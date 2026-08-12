@@ -1,4 +1,4 @@
-﻿using MassTransit;
+using MassTransit;
 using ProtobufSpec.Events;
 
 namespace ProductService.Services;

@@ -1,4 +1,4 @@
-﻿using NotificationService.Contracts.Dtos;
+using NotificationService.Contracts.Dtos;
 using NotificationService.Database.Entities;
 
 namespace NotificationService.Mappers;

@@ -1,4 +1,4 @@
-﻿namespace Gateway.Contracts.Requests;
+namespace Gateway.Contracts.Requests;
 
 public class LoginReq
 {

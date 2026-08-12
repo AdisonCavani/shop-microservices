@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using ProductService.Contracts.Requests;
 
 namespace ProductService.Validators;

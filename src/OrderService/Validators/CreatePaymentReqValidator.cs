@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using OrderService.Contracts.Requests;
 
 namespace OrderService.Validators;

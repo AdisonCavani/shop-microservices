@@ -1,4 +1,4 @@
-﻿extern alias ordersvc;
+extern alias ordersvc;
 using ordersvc::OrderService.Database.Entities;
 
 namespace OrderService.UnitTests;

@@ -1,4 +1,4 @@
-﻿using OrderService.Contracts.Dtos;
+using OrderService.Contracts.Dtos;
 using ProtobufSpec.Events;
 
 namespace OrderService.Services;

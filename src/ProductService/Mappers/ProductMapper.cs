@@ -1,4 +1,4 @@
-﻿using ProductService.Contracts.Requests;
+using ProductService.Contracts.Requests;
 using ProductService.Database.Entities;
 
 namespace ProductService.Mappers;

@@ -10,23 +10,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.5.2" />
-        <PackageReference Include="Aspire.StackExchange.Redis" Version="9.5.2" />
-        <PackageReference Include="CommunityToolkit.Aspire.MassTransit.RabbitMQ" Version="9.8.0" />
-        <PackageReference Include="Grpc.AspNetCore.HealthChecks" Version="2.70.0" />
-        <PackageReference Include="Grpc.Net.ClientFactory" Version="2.71.0" />
-        <PackageReference Include="Grpc.Tools" Version="2.68.1">
+        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.4.6" />
+        <PackageReference Include="Aspire.StackExchange.Redis" Version="13.4.6" />
+        <PackageReference Include="CommunityToolkit.Aspire.MassTransit.RabbitMQ" Version="13.4.0" />
+        <PackageReference Include="Grpc.AspNetCore.HealthChecks" Version="2.83.0" />
+        <PackageReference Include="Grpc.Net.ClientFactory" Version="2.83.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.83.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="MassTransit.EntityFrameworkCore" Version="8.5.5" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
+        <PackageReference Include="MassTransit.EntityFrameworkCore" Version="9.2.0" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="9.2.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="9.5.2" />
-        <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.6.28" />
+        <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="10.8.0" />
+        <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.6.29" />
         <PackageReference Include="Yarp.ReverseProxy" Version="2.3.0" />
+
     </ItemGroup>
 
     <ItemGroup>
@@ -51,5 +53,11 @@
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
+
+    <Target Name="RemoveOpenApiSourceGenerators" BeforeTargets="CoreCompile">
+      <ItemGroup>
+        <Analyzer Remove="@(Analyzer)" Condition=" '%(FileName)' == 'Microsoft.AspNetCore.OpenApi.SourceGenerators' " />
+      </ItemGroup>
+    </Target>
 
 </Project>

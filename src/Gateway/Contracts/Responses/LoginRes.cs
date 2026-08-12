@@ -1,4 +1,4 @@
-﻿using Gateway.Contracts.Dtos;
+using Gateway.Contracts.Dtos;
 
 namespace Gateway.Contracts.Responses;
 

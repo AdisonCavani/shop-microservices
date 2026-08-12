@@ -23,7 +23,7 @@ builder.Services.AddAuth(appSettings);
 builder.Services.AddServices();
 builder.Services.AddGrpc();
 builder.Services.AddGrpcHealthChecks();
-builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 var app = builder.Build();
 

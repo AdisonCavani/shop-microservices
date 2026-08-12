@@ -1,7 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using ProductService.Contracts.Requests;
 using ProductService.Services;
 using ProtobufSpec;

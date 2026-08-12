@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using CoreShared.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;

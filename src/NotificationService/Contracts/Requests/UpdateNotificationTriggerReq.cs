@@ -1,4 +1,4 @@
-﻿namespace NotificationService.Contracts.Requests;
+namespace NotificationService.Contracts.Requests;
 
 public class UpdateNotificationTriggerReq
 {

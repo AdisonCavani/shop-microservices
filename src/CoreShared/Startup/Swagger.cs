@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace CoreShared.Startup;
 
@@ -11,7 +11,7 @@ public static class Swagger
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(x =>
         {
-            x.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new()
+            x.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
             {
                 Description = "JWT Authorization header using the bearer scheme",
                 Name = "Authorization",

@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using ProductService.Contracts.Responses;
 using ProductService.Services;
 

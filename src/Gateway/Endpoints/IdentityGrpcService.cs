@@ -1,4 +1,4 @@
-﻿using Gateway.Repositories;
+using Gateway.Repositories;
 using Grpc.Core;
 
 namespace Gateway.Endpoints;

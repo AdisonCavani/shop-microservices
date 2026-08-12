@@ -1,4 +1,4 @@
-﻿namespace ProductService.Contracts.Requests;
+namespace ProductService.Contracts.Requests;
 
 public class CreateProductReq
 {

@@ -1,4 +1,4 @@
-﻿using OrderService.Contracts.Dtos;
+using OrderService.Contracts.Dtos;
 
 namespace OrderService.Contracts.Responses;
 

@@ -1,4 +1,4 @@
-﻿namespace NotificationService.Database.Entities;
+namespace NotificationService.Database.Entities;
 
 public class NotificationTriggerEntity
 {

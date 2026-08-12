@@ -1,4 +1,4 @@
-﻿namespace OrderService.Database.Entities;
+namespace OrderService.Database.Entities;
 
 public class PaymentEntity
 {

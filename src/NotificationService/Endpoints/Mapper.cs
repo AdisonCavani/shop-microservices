@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 using NotificationService.Contracts.Requests;
 using NotificationService.Services;
 using ProtobufSpec;

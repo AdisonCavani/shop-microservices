@@ -27,19 +27,19 @@ builder.Services.AddSwagger();
 builder.AddInfrastructure();
 builder.Services.AddAuth(appSettings);
 builder.Services.AddServices();
-builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";
 
-builder.Services.AddHttpClient<SwaggerHttpClient>(ServiceDefinitions.Notification.Name, x =>
+builder.Services.AddHttpClient(ServiceDefinitions.Notification.Name, x =>
 {
     x.BaseAddress = new Uri($"{(isHttps ? "https" : "http")}://{ServiceDefinitions.Notification.Name}");
 });
-builder.Services.AddHttpClient<SwaggerHttpClient>(ServiceDefinitions.Order.Name, x =>
+builder.Services.AddHttpClient(ServiceDefinitions.Order.Name, x =>
 {
     x.BaseAddress = new Uri($"{(isHttps ? "https" : "http")}://{ServiceDefinitions.Order.Name}");
 });
-builder.Services.AddHttpClient<SwaggerHttpClient>(ServiceDefinitions.Product.Name, x =>
+builder.Services.AddHttpClient(ServiceDefinitions.Product.Name, x =>
 {
     x.BaseAddress = new Uri($"{(isHttps ? "https" : "http")}://{ServiceDefinitions.Product.Name}");
 });
@@ -70,13 +70,7 @@ app.UseServiceDefaults();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", ServiceDefinitions.Identity.Name);
-        options.SwaggerEndpoint($"/swagger/{ServiceDefinitions.Product.Name}/v1/swagger.json", ServiceDefinitions.Product.Name);
-        options.SwaggerEndpoint($"/swagger/{ServiceDefinitions.Order.Name}/v1/swagger.json", ServiceDefinitions.Order.Name);
-        options.SwaggerEndpoint($"/swagger/{ServiceDefinitions.Notification.Name}/v1/swagger.json", ServiceDefinitions.Notification.Name);
-    });
+    app.UseSwaggerUI();
 }
 
 using var scope = app.Services.CreateScope();

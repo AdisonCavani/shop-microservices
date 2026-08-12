@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 using ProductService.Contracts.Requests;
 using ProductService.Services;
 using ProtobufSpec;

@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace CoreShared;
@@ -11,7 +11,7 @@ public class AuthOperationFilter : IOperationFilter
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
         var endpointMetadata = context.ApiDescription.ActionDescriptor.EndpointMetadata;
-        var hasAuthorize = endpointMetadata.OfType<IAuthorizeData>().Any();
+        var hasAuthorize = endpointMetadata?.OfType<IAuthorizeData>().Any() == true;
 
         if (!hasAuthorize)
             return;
@@ -19,14 +19,7 @@ public class AuthOperationFilter : IOperationFilter
         var securityRequirement = new OpenApiSecurityRequirement
         {
             {
-                new()
-                {
-                    Reference = new()
-                    {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
-                },
+                new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme),
                 new List<string>()
             }
         };

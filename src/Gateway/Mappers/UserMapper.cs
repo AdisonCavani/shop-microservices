@@ -1,4 +1,4 @@
-﻿using Gateway.Contracts.Requests;
+using Gateway.Contracts.Requests;
 using Gateway.Database.Entities;
 
 namespace Gateway.Mappers;

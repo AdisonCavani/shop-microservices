@@ -1,4 +1,4 @@
-﻿namespace NotificationService.Contracts.Dtos;
+namespace NotificationService.Contracts.Dtos;
 
 public class NotificationTriggerDto
 {

@@ -1,4 +1,4 @@
-﻿namespace OrderService.Contracts.Requests;
+namespace OrderService.Contracts.Requests;
 
 public class CreateOrderReq
 {

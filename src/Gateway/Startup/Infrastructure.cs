@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 using Gateway.Database;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;

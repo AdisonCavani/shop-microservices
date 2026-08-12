@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 using Fluid;
 using Microsoft.EntityFrameworkCore;
 using NotificationService.Contracts.Dtos;

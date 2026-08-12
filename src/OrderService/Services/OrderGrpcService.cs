@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.Diagnostics.HealthChecks;

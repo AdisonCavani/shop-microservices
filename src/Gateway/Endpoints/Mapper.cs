@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 using Gateway.Contracts.Requests;
 using Gateway.Startup;
 using ProtobufSpec;
@@ -37,6 +37,6 @@ public static class Mapper
         
         app.MapGroup(ApiRoutes.User.Path).MapUserApi();
 
-        app.MapGetSwaggerForYarp();
+        // app.MapGetSwaggerForYarp();
     }
 }

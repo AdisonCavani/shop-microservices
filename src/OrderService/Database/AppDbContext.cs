@@ -1,4 +1,4 @@
-﻿using MassTransit;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using OrderService.Database.Entities;
 

@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 
 namespace NotificationService.Startup;
 

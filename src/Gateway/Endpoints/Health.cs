@@ -1,11 +1,11 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Common;
 using Gateway.Mappers;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using NotificationService;
 using OrderService;
 using ProtobufSpec.Dtos;

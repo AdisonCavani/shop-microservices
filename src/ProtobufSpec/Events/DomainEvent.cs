@@ -1,4 +1,4 @@
-﻿namespace ProtobufSpec.Events;
+namespace ProtobufSpec.Events;
 
 public abstract class DomainEvent
 {

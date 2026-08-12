@@ -1,4 +1,4 @@
-﻿using ProtobufSpec;
+using ProtobufSpec;
 
 namespace Gateway.Database.Entities;
 

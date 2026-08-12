@@ -1,4 +1,4 @@
-﻿namespace ProductService.Contracts.Responses;
+namespace ProductService.Contracts.Responses;
 
 public class ListProductsRes
 {

@@ -1,4 +1,4 @@
-﻿using NotificationService.Contracts.Dtos;
+using NotificationService.Contracts.Dtos;
 
 namespace NotificationService.Contracts.Responses;
 

@@ -1,4 +1,4 @@
-﻿namespace ProductService.Database.Entities;
+namespace ProductService.Database.Entities;
 
 public class ProductEntity
 {

@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 
 namespace OrderService.Startup;
 

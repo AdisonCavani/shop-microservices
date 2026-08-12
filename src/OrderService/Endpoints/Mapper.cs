@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 using OrderService.Contracts.Requests;
 using OrderService.Services;
 using ProtobufSpec;

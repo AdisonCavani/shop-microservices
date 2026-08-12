@@ -1,4 +1,4 @@
-﻿namespace CoreShared;
+namespace CoreShared;
 
 public static class ExceptionMessages
 {

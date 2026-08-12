@@ -17,7 +17,7 @@ namespace NotificationService.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.10")
+                .HasAnnotation("ProductVersion", "10.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -147,10 +147,6 @@ namespace NotificationService.Database.Migrations
 
                     b.HasKey("SequenceNumber");
 
-                    b.HasIndex("EnqueueTime");
-
-                    b.HasIndex("ExpirationTime");
-
                     b.HasIndex("OutboxId", "SequenceNumber")
                         .IsUnique();
 
@@ -165,6 +161,10 @@ namespace NotificationService.Database.Migrations
                     b.Property<Guid>("OutboxId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<string>("BusName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
@@ -185,7 +185,7 @@ namespace NotificationService.Database.Migrations
 
                     b.HasKey("OutboxId");
 
-                    b.HasIndex("Created");
+                    b.HasIndex("BusName", "Created");
 
                     b.ToTable("OutboxState");
                 });

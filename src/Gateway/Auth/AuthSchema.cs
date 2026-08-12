@@ -1,4 +1,4 @@
-﻿namespace Gateway.Auth;
+namespace Gateway.Auth;
 
 public static class AuthSchema
 {

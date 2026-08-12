@@ -1,4 +1,4 @@
-﻿extern alias ordersvc;
+extern alias ordersvc;
 
 using Bogus;
 using CoreShared;

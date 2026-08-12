@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using NotificationService.Contracts.Requests;
 
 namespace NotificationService.Validators;

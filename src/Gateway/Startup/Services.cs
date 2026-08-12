@@ -1,4 +1,4 @@
-﻿using Gateway.Repositories;
+using Gateway.Repositories;
 
 namespace Gateway.Startup;
 

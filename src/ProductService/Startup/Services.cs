@@ -1,4 +1,4 @@
-﻿using ProductService.Services;
+using ProductService.Services;
 
 namespace ProductService.Startup;
 

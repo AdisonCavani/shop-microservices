@@ -1,4 +1,4 @@
-﻿namespace OrderService.Contracts.Dtos;
+namespace OrderService.Contracts.Dtos;
 
 public class OrderDto
 {

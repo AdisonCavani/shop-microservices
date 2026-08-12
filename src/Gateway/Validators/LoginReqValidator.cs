@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Gateway.Contracts.Requests;
 
 namespace Gateway.Validators;

@@ -1,4 +1,4 @@
-﻿using CoreShared;
+using CoreShared;
 using Gateway.Auth;
 using Gateway.Contracts.Dtos;
 using Gateway.Contracts.Requests;

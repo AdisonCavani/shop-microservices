@@ -1,9 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using Gateway.Contracts.Requests;
 using Gateway.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using ProtobufSpec;
 
 namespace Gateway.Endpoints.User;
