@@ -25,11 +25,6 @@ public class PaymentService(
         if (order is null)
             return null;
 
-        var alreadyPaid = order.Payments.Any(x => x.Paid);
-        
-        if (alreadyPaid)
-            throw new ProblemException(ExceptionMessages.OrderAlreadyPaid, "You cannot pay twice for the same order");
-
         var validPaymentExists = order.Payments.Any(x => x.ExpiresAt > DateTime.UtcNow);
         
         if (validPaymentExists)
